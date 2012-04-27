@@ -1,0 +1,825 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 2.9.0 #5416 (Feb  3 2010) (UNIX)
+                              4 ; This file was generated Fri Apr 27 12:42:17 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module main
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 	.globl _SystemTask
+                             14 	.globl _Task2
+                             15 	.globl _Task1
+                             16 	.globl _SystemInit
+                             17 	.globl _PrintNumber
+                             18 	.globl _PrintReg
+                             19 	.globl _MainEntry
+                             20 	.globl _SystemLock
+                             21 	.globl _TestMemory
+                             22 ;--------------------------------------------------------
+                             23 ; special function registers
+                             24 ;--------------------------------------------------------
+                             25 ;--------------------------------------------------------
+                             26 ;  ram data
+                             27 ;--------------------------------------------------------
+                             28 	.area _DATA
+                    0000     29 G$SystemLock$0$0==.
+   0000                      30 _SystemLock::
+   0000                      31 	.ds 1
+                    0001     32 G$MainEntry$0$0==.
+   0001                      33 _MainEntry::
+   0001                      34 	.ds 2
+                    0003     35 G$PrintReg$0$0==.
+   0003                      36 _PrintReg::
+   0003                      37 	.ds 1
+                             38 ;--------------------------------------------------------
+                             39 ; overlayable items in  ram 
+                             40 ;--------------------------------------------------------
+                             41 	.area _OVERLAY
+                             42 ;--------------------------------------------------------
+                             43 ; external initialized ram data
+                             44 ;--------------------------------------------------------
+                             45 ;--------------------------------------------------------
+                             46 ; global & static initialisations
+                             47 ;--------------------------------------------------------
+                             48 	.area _HOME
+                             49 	.area _GSINIT
+                             50 	.area _GSFINAL
+                             51 	.area _GSINIT
+                             52 ;--------------------------------------------------------
+                             53 ; Home
+                             54 ;--------------------------------------------------------
+                             55 	.area _HOME
+                             56 	.area _HOME
+                             57 ;--------------------------------------------------------
+                             58 ; code
+                             59 ;--------------------------------------------------------
+                             60 	.area _CODE
+                    0000     61 	G$PrintNumber$0$0	= .
+                             62 	.globl	G$PrintNumber$0$0
+                    0000     63 	C$main.c$25$0$0	= .
+                             64 	.globl	C$main.c$25$0$0
+                             65 ;main.c:25: void PrintNumber(unsigned int n) {
+                             66 ;	---------------------------------
+                             67 ; Function PrintNumber
+                             68 ; ---------------------------------
+   0000                      69 _PrintNumber_start::
+   0000                      70 _PrintNumber:
+   0000 3E 03                71 	ld	a,#3
+   0002 CF                   72 	rst	0x08
+   0003 DD E5                73 	push	ix
+   0005 DD 21 00 00          74 	ld	ix,#0
+   0009 DD 39                75 	add	ix,sp
+   000B 21 F0 FF             76 	ld	hl,#-16
+   000E 39                   77 	add	hl,sp
+   000F F9                   78 	ld	sp,hl
+                    0010     79 	C$main.c$27$1$1	= .
+                             80 	.globl	C$main.c$27$1$1
+                             81 ;main.c:27: WordToString(n, Temp);
+   0010 21 00 00             82 	ld	hl,#0x0000
+   0013 39                   83 	add	hl,sp
+   0014 E5                   84 	push	hl
+   0015 DD 6E 04             85 	ld	l,4 (ix)
+   0018 DD 66 05             86 	ld	h,5 (ix)
+   001B E5                   87 	push	hl
+   001C CDr00s00             88 	call	_WordToString
+   001F F1                   89 	pop	af
+   0020 F1                   90 	pop	af
+                    0021     91 	C$main.c$28$1$1	= .
+                             92 	.globl	C$main.c$28$1$1
+                             93 ;main.c:28: ConsoleWrite(Temp);
+   0021 21 00 00             94 	ld	hl,#0x0000
+   0024 39                   95 	add	hl,sp
+   0025 E5                   96 	push	hl
+   0026 CDr00s00             97 	call	_ConsoleWrite
+   0029 F1                   98 	pop	af
+   002A DD F9                99 	ld	sp,ix
+   002C DD E1               100 	pop	ix
+   002E 3E 04               101 	ld	a,#4
+   0030 CF                  102 	rst	0x08
+                    0031    103 	C$main.c$29$1$1	= .
+                            104 	.globl	C$main.c$29$1$1
+                    0031    105 	XG$PrintNumber$0$0	= .
+                            106 	.globl	XG$PrintNumber$0$0
+   0031 C9                  107 	ret
+   0032                     108 _PrintNumber_end::
+                    0032    109 	G$SystemInit$0$0	= .
+                            110 	.globl	G$SystemInit$0$0
+                    0032    111 	C$main.c$31$1$1	= .
+                            112 	.globl	C$main.c$31$1$1
+                            113 ;main.c:31: void SystemInit() {
+                            114 ;	---------------------------------
+                            115 ; Function SystemInit
+                            116 ; ---------------------------------
+   0032                     117 _SystemInit_start::
+   0032                     118 _SystemInit:
+   0032 3E 03               119 	ld	a,#3
+   0034 CF                  120 	rst	0x08
+                    0035    121 	C$main.c$32$1$1	= .
+                            122 	.globl	C$main.c$32$1$1
+                            123 ;main.c:32: }
+   0035 3E 04               124 	ld	a,#4
+   0037 CF                  125 	rst	0x08
+                    0038    126 	C$main.c$32$1$1	= .
+                            127 	.globl	C$main.c$32$1$1
+                    0038    128 	XG$SystemInit$0$0	= .
+                            129 	.globl	XG$SystemInit$0$0
+   0038 C9                  130 	ret
+   0039                     131 _SystemInit_end::
+                    0039    132 	G$Task1$0$0	= .
+                            133 	.globl	G$Task1$0$0
+                    0039    134 	C$main.c$34$1$1	= .
+                            135 	.globl	C$main.c$34$1$1
+                            136 ;main.c:34: void Task1() {
+                            137 ;	---------------------------------
+                            138 ; Function Task1
+                            139 ; ---------------------------------
+   0039                     140 _Task1_start::
+   0039                     141 _Task1:
+   0039 3E 03               142 	ld	a,#3
+   003B CF                  143 	rst	0x08
+                    003C    144 	C$main.c$35$1$1	= .
+                            145 	.globl	C$main.c$35$1$1
+                            146 ;main.c:35: while(1) {
+   003C                     147 00104$:
+                    003C    148 	C$main.c$36$2$2	= .
+                            149 	.globl	C$main.c$36$2$2
+                            150 ;main.c:36: if(!IsMultitasking()) {
+   003C CDr00s00            151 	call	_IsMultitasking
+   003F AF                  152 	xor	a,a
+   0040 B5                  153 	or	a,l
+   0041 20 08               154 	jr	NZ,00102$
+                    0043    155 	C$main.c$37$3$3	= .
+                            156 	.globl	C$main.c$37$3$3
+                            157 ;main.c:37: Halt("INTS DISABLED PRC1");
+   0043 21r61s00            158 	ld	hl,#__str_0
+   0046 E5                  159 	push	hl
+   0047 CDr00s00            160 	call	_Halt
+   004A F1                  161 	pop	af
+   004B                     162 00102$:
+                    004B    163 	C$main.c$39$2$2	= .
+                            164 	.globl	C$main.c$39$2$2
+                            165 ;main.c:39: ConsoleWrite("1");
+   004B 21r74s00            166 	ld	hl,#__str_1
+   004E E5                  167 	push	hl
+   004F CDr00s00            168 	call	_ConsoleWrite
+   0052 F1                  169 	pop	af
+                    0053    170 	C$main.c$40$2$2	= .
+                            171 	.globl	C$main.c$40$2$2
+                            172 ;main.c:40: _SimPrintString("1");
+   0053 21r74s00            173 	ld	hl,#__str_1
+   0056 E5                  174 	push	hl
+   0057 CDr00s00            175 	call	__Z80SimPrintString
+   005A F1                  176 	pop	af
+   005B 18 DF               177 	jr	00104$
+   005D 3E 04               178 	ld	a,#4
+   005F CF                  179 	rst	0x08
+                    0060    180 	C$main.c$42$1$1	= .
+                            181 	.globl	C$main.c$42$1$1
+                    0060    182 	XG$Task1$0$0	= .
+                            183 	.globl	XG$Task1$0$0
+   0060 C9                  184 	ret
+   0061                     185 _Task1_end::
+                    0061    186 Fmain$_str_0$0$0 == .
+   0061                     187 __str_0:
+   0061 49 4E 54 53 20 44   188 	.ascii "INTS DISABLED PRC1"
+        49 53 41 42 4C 45
+        44 20 50 52 43 31
+   0073 00                  189 	.db 0x00
+                    0074    190 Fmain$_str_1$0$0 == .
+   0074                     191 __str_1:
+   0074 31                  192 	.ascii "1"
+   0075 00                  193 	.db 0x00
+                    0076    194 	G$Task2$0$0	= .
+                            195 	.globl	G$Task2$0$0
+                    0076    196 	C$main.c$44$1$1	= .
+                            197 	.globl	C$main.c$44$1$1
+                            198 ;main.c:44: void Task2() {
+                            199 ;	---------------------------------
+                            200 ; Function Task2
+                            201 ; ---------------------------------
+   0076                     202 _Task2_start::
+   0076                     203 _Task2:
+   0076 3E 03               204 	ld	a,#3
+   0078 CF                  205 	rst	0x08
+                    0079    206 	C$main.c$45$1$1	= .
+                            207 	.globl	C$main.c$45$1$1
+                            208 ;main.c:45: while(1) {
+   0079                     209 00104$:
+                    0079    210 	C$main.c$46$2$2	= .
+                            211 	.globl	C$main.c$46$2$2
+                            212 ;main.c:46: if(!IsMultitasking()) {
+   0079 CDr00s00            213 	call	_IsMultitasking
+   007C AF                  214 	xor	a,a
+   007D B5                  215 	or	a,l
+   007E 20 08               216 	jr	NZ,00102$
+                    0080    217 	C$main.c$47$3$3	= .
+                            218 	.globl	C$main.c$47$3$3
+                            219 ;main.c:47: Halt("INTS DISABLED PRC2");
+   0080 21r9Es00            220 	ld	hl,#__str_2
+   0083 E5                  221 	push	hl
+   0084 CDr00s00            222 	call	_Halt
+   0087 F1                  223 	pop	af
+   0088                     224 00102$:
+                    0088    225 	C$main.c$49$2$2	= .
+                            226 	.globl	C$main.c$49$2$2
+                            227 ;main.c:49: ConsoleWrite("2");
+   0088 21rB1s00            228 	ld	hl,#__str_3
+   008B E5                  229 	push	hl
+   008C CDr00s00            230 	call	_ConsoleWrite
+   008F F1                  231 	pop	af
+                    0090    232 	C$main.c$50$2$2	= .
+                            233 	.globl	C$main.c$50$2$2
+                            234 ;main.c:50: _SimPrintString("2");
+   0090 21rB1s00            235 	ld	hl,#__str_3
+   0093 E5                  236 	push	hl
+   0094 CDr00s00            237 	call	__Z80SimPrintString
+   0097 F1                  238 	pop	af
+   0098 18 DF               239 	jr	00104$
+   009A 3E 04               240 	ld	a,#4
+   009C CF                  241 	rst	0x08
+                    009D    242 	C$main.c$52$1$1	= .
+                            243 	.globl	C$main.c$52$1$1
+                    009D    244 	XG$Task2$0$0	= .
+                            245 	.globl	XG$Task2$0$0
+   009D C9                  246 	ret
+   009E                     247 _Task2_end::
+                    009E    248 Fmain$_str_2$0$0 == .
+   009E                     249 __str_2:
+   009E 49 4E 54 53 20 44   250 	.ascii "INTS DISABLED PRC2"
+        49 53 41 42 4C 45
+        44 20 50 52 43 32
+   00B0 00                  251 	.db 0x00
+                    00B1    252 Fmain$_str_3$0$0 == .
+   00B1                     253 __str_3:
+   00B1 32                  254 	.ascii "2"
+   00B2 00                  255 	.db 0x00
+                    00B3    256 	G$SystemTask$0$0	= .
+                            257 	.globl	G$SystemTask$0$0
+                    00B3    258 	C$main.c$54$1$1	= .
+                            259 	.globl	C$main.c$54$1$1
+                            260 ;main.c:54: void SystemTask() {
+                            261 ;	---------------------------------
+                            262 ; Function SystemTask
+                            263 ; ---------------------------------
+   00B3                     264 _SystemTask_start::
+   00B3                     265 _SystemTask:
+   00B3 3E 03               266 	ld	a,#3
+   00B5 CF                  267 	rst	0x08
+                    00B6    268 	C$main.c$55$1$1	= .
+                            269 	.globl	C$main.c$55$1$1
+                            270 ;main.c:55: if(!IsMultitasking()) Halt("PAUSE WITHOUT RESUME");
+   00B6 CDr00s00            271 	call	_IsMultitasking
+   00B9 AF                  272 	xor	a,a
+   00BA B5                  273 	or	a,l
+   00BB 20 08               274 	jr	NZ,00102$
+   00BD 21rCCs00            275 	ld	hl,#__str_4
+   00C0 E5                  276 	push	hl
+   00C1 CDr00s00            277 	call	_Halt
+   00C4 F1                  278 	pop	af
+   00C5                     279 00102$:
+                    00C5    280 	C$main.c$56$1$1	= .
+                            281 	.globl	C$main.c$56$1$1
+                            282 ;main.c:56: SystemMonitor();
+   00C5 CDr00s00            283 	call	_SystemMonitor
+   00C8 3E 04               284 	ld	a,#4
+   00CA CF                  285 	rst	0x08
+                    00CB    286 	C$main.c$57$1$1	= .
+                            287 	.globl	C$main.c$57$1$1
+                    00CB    288 	XG$SystemTask$0$0	= .
+                            289 	.globl	XG$SystemTask$0$0
+   00CB C9                  290 	ret
+   00CC                     291 _SystemTask_end::
+                    00CC    292 Fmain$_str_4$0$0 == .
+   00CC                     293 __str_4:
+   00CC 50 41 55 53 45 20   294 	.ascii "PAUSE WITHOUT RESUME"
+        57 49 54 48 4F 55
+        54 20 52 45 53 55
+        4D 45
+   00E0 00                  295 	.db 0x00
+                    00E1    296 	G$main$0$0	= .
+                            297 	.globl	G$main$0$0
+                    00E1    298 	C$main.c$59$1$1	= .
+                            299 	.globl	C$main.c$59$1$1
+                            300 ;main.c:59: void main() {
+                            301 ;	---------------------------------
+                            302 ; Function main
+                            303 ; ---------------------------------
+   00E1                     304 _main_start::
+   00E1                     305 _main:
+   00E1 3E 03               306 	ld	a,#3
+   00E3 CF                  307 	rst	0x08
+                    00E4    308 	C$main.c$76$1$1	= .
+                            309 	.globl	C$main.c$76$1$1
+                            310 ;main.c:76: _endasm;
+                            311 ;
+   00E4 F3                  312 		       di
+   00E5 31 FF FF            313 		       ld sp,#0xffff
+   00E8 3E 00               314 		       ld a,#0x0
+   00EA 01 00 00            315 		       ld bc,#0x0
+   00ED 11 00 00            316 		       ld de,#0x0
+   00F0 21 00 00            317 		       ld hl,#0x0
+   00F3 DD 21 00 00         318 		       ld ix,#0x0
+   00F7 FD 21 00 00         319 		       ld iy,#0x0
+                            320 		       
+                    00FB    321 	C$main.c$78$1$1	= .
+                            322 	.globl	C$main.c$78$1$1
+                            323 ;main.c:78: _SimWriteProtect((void*)0x0000, (void*)0x3fff);
+   00FB 21 FF 3F            324 	ld	hl,#0x3FFF
+   00FE E5                  325 	push	hl
+   00FF 21 00 00            326 	ld	hl,#0x0000
+   0102 E5                  327 	push	hl
+   0103 CDr00s00            328 	call	__Z80SimWriteProtect
+   0106 F1                  329 	pop	af
+   0107 F1                  330 	pop	af
+                    0108    331 	C$main.c$80$1$1	= .
+                            332 	.globl	C$main.c$80$1$1
+                            333 ;main.c:80: _SimPrintString("\n-------------------\n");
+   0108 21rA5s01            334 	ld	hl,#__str_5
+   010B E5                  335 	push	hl
+   010C CDr00s00            336 	call	__Z80SimPrintString
+   010F F1                  337 	pop	af
+                    0110    338 	C$main.c$81$1$1	= .
+                            339 	.globl	C$main.c$81$1$1
+                            340 ;main.c:81: _SimPrintString("System reset\n");
+   0110 21rBBs01            341 	ld	hl,#__str_6
+   0113 E5                  342 	push	hl
+   0114 CDr00s00            343 	call	__Z80SimPrintString
+   0117 F1                  344 	pop	af
+                    0118    345 	C$main.c$82$1$1	= .
+                            346 	.globl	C$main.c$82$1$1
+                            347 ;main.c:82: _SimPrintString("-------------------\n");
+   0118 21rC9s01            348 	ld	hl,#__str_7
+   011B E5                  349 	push	hl
+   011C CDr00s00            350 	call	__Z80SimPrintString
+   011F F1                  351 	pop	af
+                    0120    352 	C$main.c$84$1$1	= .
+                            353 	.globl	C$main.c$84$1$1
+                            354 ;main.c:84: IntsOff();
+   0120 F3                  355 		di 
+                    0121    356 	C$main.c$86$1$1	= .
+                            357 	.globl	C$main.c$86$1$1
+                            358 ;main.c:86: _SimPrintString("Interrupts disabled. Booting...\n");
+   0121 21rDEs01            359 	ld	hl,#__str_8
+   0124 E5                  360 	push	hl
+   0125 CDr00s00            361 	call	__Z80SimPrintString
+   0128 F1                  362 	pop	af
+                    0129    363 	C$main.c$88$1$1	= .
+                            364 	.globl	C$main.c$88$1$1
+                            365 ;main.c:88: TestMemory();
+   0129 CDr5Es02            366 	call	_TestMemory
+                    012C    367 	C$main.c$89$1$1	= .
+                            368 	.globl	C$main.c$89$1$1
+                            369 ;main.c:89: HardwareInit();
+   012C CDr00s00            370 	call	_HardwareInit
+                    012F    371 	C$main.c$90$1$1	= .
+                            372 	.globl	C$main.c$90$1$1
+                            373 ;main.c:90: LocksInit();
+   012F CDr00s00            374 	call	_LocksInit
+                    0132    375 	C$main.c$91$1$1	= .
+                            376 	.globl	C$main.c$91$1$1
+                            377 ;main.c:91: SchedulingInit();
+   0132 CDr00s00            378 	call	_SchedulingInit
+                    0135    379 	C$main.c$92$1$1	= .
+                            380 	.globl	C$main.c$92$1$1
+                            381 ;main.c:92: SupervisorMode();
+   0135 CDr00s00            382 	call	_SupervisorMode
+                    0138    383 	C$main.c$93$1$1	= .
+                            384 	.globl	C$main.c$93$1$1
+                            385 ;main.c:93: TimeInit();
+   0138 CDr00s00            386 	call	_TimeInit
+                    013B    387 	C$main.c$94$1$1	= .
+                            388 	.globl	C$main.c$94$1$1
+                            389 ;main.c:94: SystemInit();
+   013B CDr32s00            390 	call	_SystemInit
+                    013E    391 	C$main.c$95$1$1	= .
+                            392 	.globl	C$main.c$95$1$1
+                            393 ;main.c:95: MemoryInit();
+   013E CDr00s00            394 	call	_MemoryInit
+                    0141    395 	C$main.c$98$1$1	= .
+                            396 	.globl	C$main.c$98$1$1
+                            397 ;main.c:98: ConsoleInit();
+   0141 CDr00s00            398 	call	_ConsoleInit
+                    0144    399 	C$main.c$99$1$1	= .
+                            400 	.globl	C$main.c$99$1$1
+                            401 ;main.c:99: ConsoleWrite("LJL OS 0.1 FOR ZX SPECTRUM 48\n");
+   0144 21rFFs01            402 	ld	hl,#__str_9
+   0147 E5                  403 	push	hl
+   0148 CDr00s00            404 	call	_ConsoleWrite
+   014B F1                  405 	pop	af
+                    014C    406 	C$main.c$100$1$1	= .
+                            407 	.globl	C$main.c$100$1$1
+                            408 ;main.c:100: ConsoleWrite("\nCONSOLE OUTPUT\n\n");
+   014C 21r1Es02            409 	ld	hl,#__str_10
+   014F E5                  410 	push	hl
+   0150 CDr00s00            411 	call	_ConsoleWrite
+   0153 F1                  412 	pop	af
+                    0154    413 	C$main.c$110$1$1	= .
+                            414 	.globl	C$main.c$110$1$1
+                            415 ;main.c:110: MainEntry=Task1;
+   0154 21r01s00            416 	ld	hl,#_MainEntry + 0
+   0157 36r39               417 	ld	(hl), #<_Task1
+   0159 21r02s00            418 	ld	hl,#_MainEntry + 1
+   015C 36s00               419 	ld	(hl), #>_Task1
+                    015E    420 	C$main.c$111$1$1	= .
+                            421 	.globl	C$main.c$111$1$1
+                            422 ;main.c:111: TI1=CreateTask(MainEntry, 100);
+   015E ED 4Br01s00         423 	ld	bc,(_MainEntry)
+   0162 21 64 00            424 	ld	hl,#0x0064
+   0165 E5                  425 	push	hl
+   0166 C5                  426 	push	bc
+   0167 CDr00s00            427 	call	_CreateTask
+   016A F1                  428 	pop	af
+   016B F1                  429 	pop	af
+                    016C    430 	C$main.c$112$1$1	= .
+                            431 	.globl	C$main.c$112$1$1
+                            432 ;main.c:112: MainEntry=Task2;
+   016C 21r01s00            433 	ld	hl,#_MainEntry + 0
+   016F 36r76               434 	ld	(hl), #<_Task2
+   0171 21r02s00            435 	ld	hl,#_MainEntry + 1
+   0174 36s00               436 	ld	(hl), #>_Task2
+                    0176    437 	C$main.c$113$1$1	= .
+                            438 	.globl	C$main.c$113$1$1
+                            439 ;main.c:113: TI2=CreateTask(MainEntry, 100);
+   0176 ED 4Br01s00         440 	ld	bc,(_MainEntry)
+   017A 21 64 00            441 	ld	hl,#0x0064
+   017D E5                  442 	push	hl
+   017E C5                  443 	push	bc
+   017F CDr00s00            444 	call	_CreateTask
+   0182 F1                  445 	pop	af
+   0183 F1                  446 	pop	af
+                    0184    447 	C$main.c$114$1$1	= .
+                            448 	.globl	C$main.c$114$1$1
+                            449 ;main.c:114: ConsoleWrite("TASKS CREATED\n");
+   0184 21r30s02            450 	ld	hl,#__str_11
+   0187 E5                  451 	push	hl
+   0188 CDr00s00            452 	call	_ConsoleWrite
+   018B F1                  453 	pop	af
+                    018C    454 	C$main.c$115$1$1	= .
+                            455 	.globl	C$main.c$115$1$1
+                            456 ;main.c:115: SetScheduler(DefaultScheduler);
+   018C 21r00s00            457 	ld	hl,#_DefaultScheduler
+   018F E5                  458 	push	hl
+   0190 CDr00s00            459 	call	_SetScheduler
+   0193 F1                  460 	pop	af
+                    0194    461 	C$main.c$116$1$1	= .
+                            462 	.globl	C$main.c$116$1$1
+                            463 ;main.c:116: ConsoleWrite("SCHEDULER SET\n");
+   0194 21r3Fs02            464 	ld	hl,#__str_12
+   0197 E5                  465 	push	hl
+   0198 CDr00s00            466 	call	_ConsoleWrite
+   019B F1                  467 	pop	af
+                    019C    468 	C$main.c$117$1$1	= .
+                            469 	.globl	C$main.c$117$1$1
+                            470 ;main.c:117: Resume();
+   019C CDr00s00            471 	call	_Resume
+   019F                     472 00102$:
+   019F 18 FE               473 	jr	00102$
+                    01A1    474 	C$main.c$121$1$1	= .
+                            475 	.globl	C$main.c$121$1$1
+                            476 ;main.c:121: Halt("SYSTEM SHUTDOWN");
+   01A1 3E 04               477 	ld	a,#4
+   01A3 CF                  478 	rst	0x08
+                    01A4    479 	C$main.c$122$1$1	= .
+                            480 	.globl	C$main.c$122$1$1
+                    01A4    481 	XG$main$0$0	= .
+                            482 	.globl	XG$main$0$0
+   01A4 C9                  483 	ret
+   01A5                     484 _main_end::
+                    01A5    485 Fmain$_str_5$0$0 == .
+   01A5                     486 __str_5:
+   01A5 0A                  487 	.db 0x0A
+   01A6 2D 2D 2D 2D 2D 2D   488 	.ascii "-------------------"
+        2D 2D 2D 2D 2D 2D
+        2D 2D 2D 2D 2D 2D
+        2D
+   01B9 0A                  489 	.db 0x0A
+   01BA 00                  490 	.db 0x00
+                    01BB    491 Fmain$_str_6$0$0 == .
+   01BB                     492 __str_6:
+   01BB 53 79 73 74 65 6D   493 	.ascii "System reset"
+        20 72 65 73 65 74
+   01C7 0A                  494 	.db 0x0A
+   01C8 00                  495 	.db 0x00
+                    01C9    496 Fmain$_str_7$0$0 == .
+   01C9                     497 __str_7:
+   01C9 2D 2D 2D 2D 2D 2D   498 	.ascii "-------------------"
+        2D 2D 2D 2D 2D 2D
+        2D 2D 2D 2D 2D 2D
+        2D
+   01DC 0A                  499 	.db 0x0A
+   01DD 00                  500 	.db 0x00
+                    01DE    501 Fmain$_str_8$0$0 == .
+   01DE                     502 __str_8:
+   01DE 49 6E 74 65 72 72   503 	.ascii "Interrupts disabled. Booting..."
+        75 70 74 73 20 64
+        69 73 61 62 6C 65
+        64 2E 20 42 6F 6F
+        74 69 6E 67 2E 2E
+        2E
+   01FD 0A                  504 	.db 0x0A
+   01FE 00                  505 	.db 0x00
+                    01FF    506 Fmain$_str_9$0$0 == .
+   01FF                     507 __str_9:
+   01FF 4C 4A 4C 20 4F 53   508 	.ascii "LJL OS 0.1 FOR ZX SPECTRUM 48"
+        20 30 2E 31 20 46
+        4F 52 20 5A 58 20
+        53 50 45 43 54 52
+        55 4D 20 34 38
+   021C 0A                  509 	.db 0x0A
+   021D 00                  510 	.db 0x00
+                    021E    511 Fmain$_str_10$0$0 == .
+   021E                     512 __str_10:
+   021E 0A                  513 	.db 0x0A
+   021F 43 4F 4E 53 4F 4C   514 	.ascii "CONSOLE OUTPUT"
+        45 20 4F 55 54 50
+        55 54
+   022D 0A                  515 	.db 0x0A
+   022E 0A                  516 	.db 0x0A
+   022F 00                  517 	.db 0x00
+                    0230    518 Fmain$_str_11$0$0 == .
+   0230                     519 __str_11:
+   0230 54 41 53 4B 53 20   520 	.ascii "TASKS CREATED"
+        43 52 45 41 54 45
+        44
+   023D 0A                  521 	.db 0x0A
+   023E 00                  522 	.db 0x00
+                    023F    523 Fmain$_str_12$0$0 == .
+   023F                     524 __str_12:
+   023F 53 43 48 45 44 55   525 	.ascii "SCHEDULER SET"
+        4C 45 52 20 53 45
+        54
+   024C 0A                  526 	.db 0x0A
+   024D 00                  527 	.db 0x00
+                    024E    528 Fmain$_str_13$0$0 == .
+   024E                     529 __str_13:
+   024E 53 59 53 54 45 4D   530 	.ascii "SYSTEM SHUTDOWN"
+        20 53 48 55 54 44
+        4F 57 4E
+   025D 00                  531 	.db 0x00
+                    025E    532 	G$TestMemory$0$0	= .
+                            533 	.globl	G$TestMemory$0$0
+                    025E    534 	C$main.c$124$1$1	= .
+                            535 	.globl	C$main.c$124$1$1
+                            536 ;main.c:124: void TestMemory()
+                            537 ;	---------------------------------
+                            538 ; Function TestMemory
+                            539 ; ---------------------------------
+   025E                     540 _TestMemory_start::
+   025E                     541 _TestMemory:
+   025E 3E 03               542 	ld	a,#3
+   0260 CF                  543 	rst	0x08
+                    0261    544 	C$main.c$127$1$1	= .
+                            545 	.globl	C$main.c$127$1$1
+                            546 ;main.c:127: PutString("TESTING MEMORY A", 1, 1);
+   0261 21 01 01            547 	ld	hl,#0x0101
+   0264 E5                  548 	push	hl
+   0265 21r41s03            549 	ld	hl,#__str_14
+   0268 E5                  550 	push	hl
+   0269 CDr00s00            551 	call	_PutString
+   026C F1                  552 	pop	af
+   026D F1                  553 	pop	af
+                    026E    554 	C$main.c$128$1$1	= .
+                            555 	.globl	C$main.c$128$1$1
+                            556 ;main.c:128: _SimUnprotect(0x4000, 0x5fff);
+   026E 21 FF 5F            557 	ld	hl,#0x5FFF
+   0271 E5                  558 	push	hl
+   0272 21 00 40            559 	ld	hl,#0x4000
+   0275 E5                  560 	push	hl
+   0276 CDr00s00            561 	call	__Z80SimUnprotect
+   0279 F1                  562 	pop	af
+   027A F1                  563 	pop	af
+                    027B    564 	C$main.c$129$1$1	= .
+                            565 	.globl	C$main.c$129$1$1
+                            566 ;main.c:129: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   027B 01 00 40            567 	ld	bc,#0x4000
+   027E                     568 00105$:
+   027E 59                  569 	ld	e,c
+   027F 50                  570 	ld	d,b
+   0280 7B                  571 	ld	a,e
+   0281 D6 EA               572 	sub	a,#0xEA
+   0283 7A                  573 	ld	a,d
+   0284 DE EE               574 	sbc	a,#0xEE
+   0286 F2r8Fs02            575 	jp	P,00108$
+                    0289    576 	C$main.c$130$2$2	= .
+                            577 	.globl	C$main.c$130$2$2
+                            578 ;main.c:130: *i=0xAA;
+   0289 3E AA               579 	ld	a,#0xAA
+   028B 02                  580 	ld	(bc),a
+                    028C    581 	C$main.c$129$1$1	= .
+                            582 	.globl	C$main.c$129$1$1
+                            583 ;main.c:129: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   028C 03                  584 	inc	bc
+   028D 18 EF               585 	jr	00105$
+   028F                     586 00108$:
+                    028F    587 	C$main.c$132$1$1	= .
+                            588 	.globl	C$main.c$132$1$1
+                            589 ;main.c:132: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   028F 01 00 40            590 	ld	bc,#0x4000
+   0292                     591 00109$:
+   0292 59                  592 	ld	e,c
+   0293 50                  593 	ld	d,b
+   0294 7B                  594 	ld	a,e
+   0295 D6 EA               595 	sub	a,#0xEA
+   0297 7A                  596 	ld	a,d
+   0298 DE EE               597 	sbc	a,#0xEE
+   029A F2rBEs02            598 	jp	P,00112$
+                    029D    599 	C$main.c$133$2$3	= .
+                            600 	.globl	C$main.c$133$2$3
+                            601 ;main.c:133: if(*i!=0xAA) {
+   029D 0A                  602 	ld	a,(bc)
+   029E D6 AA               603 	sub	a,#0xAA
+   02A0 28 19               604 	jr	Z,00111$
+                    02A2    605 	C$main.c$134$3$4	= .
+                            606 	.globl	C$main.c$134$3$4
+                            607 ;main.c:134: PutString("BAD MEMORY", 1, 1);
+   02A2 C5                  608 	push	bc
+   02A3 21 01 01            609 	ld	hl,#0x0101
+   02A6 E5                  610 	push	hl
+   02A7 21r52s03            611 	ld	hl,#__str_15
+   02AA E5                  612 	push	hl
+   02AB CDr00s00            613 	call	_PutString
+   02AE F1                  614 	pop	af
+   02AF F1                  615 	pop	af
+   02B0 C1                  616 	pop	bc
+                    02B1    617 	C$main.c$135$3$4	= .
+                            618 	.globl	C$main.c$135$3$4
+                            619 ;main.c:135: Halt("BAD MEMORY");
+   02B1 C5                  620 	push	bc
+   02B2 21r52s03            621 	ld	hl,#__str_15
+   02B5 E5                  622 	push	hl
+   02B6 CDr00s00            623 	call	_Halt
+   02B9 F1                  624 	pop	af
+   02BA C1                  625 	pop	bc
+   02BB                     626 00111$:
+                    02BB    627 	C$main.c$132$1$1	= .
+                            628 	.globl	C$main.c$132$1$1
+                            629 ;main.c:132: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   02BB 03                  630 	inc	bc
+   02BC 18 D4               631 	jr	00109$
+   02BE                     632 00112$:
+                    02BE    633 	C$main.c$138$1$1	= .
+                            634 	.globl	C$main.c$138$1$1
+                            635 ;main.c:138: PutString("TESTING MEMORY B", 2, 1);
+   02BE 21 02 01            636 	ld	hl,#0x0102
+   02C1 E5                  637 	push	hl
+   02C2 21r5Ds03            638 	ld	hl,#__str_16
+   02C5 E5                  639 	push	hl
+   02C6 CDr00s00            640 	call	_PutString
+   02C9 F1                  641 	pop	af
+   02CA F1                  642 	pop	af
+                    02CB    643 	C$main.c$139$1$1	= .
+                            644 	.globl	C$main.c$139$1$1
+                            645 ;main.c:139: _SimUnprotect(0x4000, 0x5fff);
+   02CB 21 FF 5F            646 	ld	hl,#0x5FFF
+   02CE E5                  647 	push	hl
+   02CF 21 00 40            648 	ld	hl,#0x4000
+   02D2 E5                  649 	push	hl
+   02D3 CDr00s00            650 	call	__Z80SimUnprotect
+   02D6 F1                  651 	pop	af
+   02D7 F1                  652 	pop	af
+                    02D8    653 	C$main.c$140$1$1	= .
+                            654 	.globl	C$main.c$140$1$1
+                            655 ;main.c:140: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   02D8 01 00 40            656 	ld	bc,#0x4000
+   02DB                     657 00113$:
+   02DB 59                  658 	ld	e,c
+   02DC 50                  659 	ld	d,b
+   02DD 7B                  660 	ld	a,e
+   02DE D6 EA               661 	sub	a,#0xEA
+   02E0 7A                  662 	ld	a,d
+   02E1 DE EE               663 	sbc	a,#0xEE
+   02E3 F2rECs02            664 	jp	P,00116$
+                    02E6    665 	C$main.c$141$2$5	= .
+                            666 	.globl	C$main.c$141$2$5
+                            667 ;main.c:141: *i=(~0xAA);
+   02E6 3E 55               668 	ld	a,#0x55
+   02E8 02                  669 	ld	(bc),a
+                    02E9    670 	C$main.c$140$1$1	= .
+                            671 	.globl	C$main.c$140$1$1
+                            672 ;main.c:140: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   02E9 03                  673 	inc	bc
+   02EA 18 EF               674 	jr	00113$
+   02EC                     675 00116$:
+                    02EC    676 	C$main.c$143$1$1	= .
+                            677 	.globl	C$main.c$143$1$1
+                            678 ;main.c:143: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   02EC 01 00 40            679 	ld	bc,#0x4000
+   02EF                     680 00117$:
+   02EF 59                  681 	ld	e,c
+   02F0 50                  682 	ld	d,b
+   02F1 7B                  683 	ld	a,e
+   02F2 D6 EA               684 	sub	a,#0xEA
+   02F4 7A                  685 	ld	a,d
+   02F5 DE EE               686 	sbc	a,#0xEE
+   02F7 F2r07s03            687 	jp	P,00120$
+                    02FA    688 	C$main.c$144$2$6	= .
+                            689 	.globl	C$main.c$144$2$6
+                            690 ;main.c:144: if(*i!=(~0xAA)) Halt("BAD MEMORY");
+   02FA C5                  691 	push	bc
+   02FB 21r52s03            692 	ld	hl,#__str_15
+   02FE E5                  693 	push	hl
+   02FF CDr00s00            694 	call	_Halt
+   0302 F1                  695 	pop	af
+   0303 C1                  696 	pop	bc
+                    0304    697 	C$main.c$143$1$1	= .
+                            698 	.globl	C$main.c$143$1$1
+                            699 ;main.c:143: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   0304 03                  700 	inc	bc
+   0305 18 E8               701 	jr	00117$
+   0307                     702 00120$:
+                    0307    703 	C$main.c$146$1$1	= .
+                            704 	.globl	C$main.c$146$1$1
+                            705 ;main.c:146: PutString("MEMORY TEST COMPLETE", 3, 1);
+   0307 21 03 01            706 	ld	hl,#0x0103
+   030A E5                  707 	push	hl
+   030B 21r6Es03            708 	ld	hl,#__str_17
+   030E E5                  709 	push	hl
+   030F CDr00s00            710 	call	_PutString
+   0312 F1                  711 	pop	af
+   0313 F1                  712 	pop	af
+                    0314    713 	C$main.c$147$1$1	= .
+                            714 	.globl	C$main.c$147$1$1
+                            715 ;main.c:147: _SimUnprotect(0x4000, 0x5fff);
+   0314 21 FF 5F            716 	ld	hl,#0x5FFF
+   0317 E5                  717 	push	hl
+   0318 21 00 40            718 	ld	hl,#0x4000
+   031B E5                  719 	push	hl
+   031C CDr00s00            720 	call	__Z80SimUnprotect
+   031F F1                  721 	pop	af
+   0320 F1                  722 	pop	af
+                    0321    723 	C$main.c$148$1$1	= .
+                            724 	.globl	C$main.c$148$1$1
+                            725 ;main.c:148: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   0321 01 00 40            726 	ld	bc,#0x4000
+   0324                     727 00121$:
+   0324 59                  728 	ld	e,c
+   0325 50                  729 	ld	d,b
+   0326 7B                  730 	ld	a,e
+   0327 D6 EA               731 	sub	a,#0xEA
+   0329 7A                  732 	ld	a,d
+   032A DE EE               733 	sbc	a,#0xEE
+   032C F2r35s03            734 	jp	P,00124$
+                    032F    735 	C$main.c$149$2$7	= .
+                            736 	.globl	C$main.c$149$2$7
+                            737 ;main.c:149: *i=0;
+   032F 3E 00               738 	ld	a,#0x00
+   0331 02                  739 	ld	(bc),a
+                    0332    740 	C$main.c$148$1$1	= .
+                            741 	.globl	C$main.c$148$1$1
+                            742 ;main.c:148: for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+   0332 03                  743 	inc	bc
+   0333 18 EF               744 	jr	00121$
+   0335                     745 00124$:
+                    0335    746 	C$main.c$151$1$1	= .
+                            747 	.globl	C$main.c$151$1$1
+                            748 ;main.c:151: _SimPrintString("Memory test completed\n");
+   0335 21r83s03            749 	ld	hl,#__str_18
+   0338 E5                  750 	push	hl
+   0339 CDr00s00            751 	call	__Z80SimPrintString
+   033C F1                  752 	pop	af
+   033D 3E 04               753 	ld	a,#4
+   033F CF                  754 	rst	0x08
+                    0340    755 	C$main.c$152$1$1	= .
+                            756 	.globl	C$main.c$152$1$1
+                    0340    757 	XG$TestMemory$0$0	= .
+                            758 	.globl	XG$TestMemory$0$0
+   0340 C9                  759 	ret
+   0341                     760 _TestMemory_end::
+                    0341    761 Fmain$_str_14$0$0 == .
+   0341                     762 __str_14:
+   0341 54 45 53 54 49 4E   763 	.ascii "TESTING MEMORY A"
+        47 20 4D 45 4D 4F
+        52 59 20 41
+   0351 00                  764 	.db 0x00
+                    0352    765 Fmain$_str_15$0$0 == .
+   0352                     766 __str_15:
+   0352 42 41 44 20 4D 45   767 	.ascii "BAD MEMORY"
+        4D 4F 52 59
+   035C 00                  768 	.db 0x00
+                    035D    769 Fmain$_str_16$0$0 == .
+   035D                     770 __str_16:
+   035D 54 45 53 54 49 4E   771 	.ascii "TESTING MEMORY B"
+        47 20 4D 45 4D 4F
+        52 59 20 42
+   036D 00                  772 	.db 0x00
+                    036E    773 Fmain$_str_17$0$0 == .
+   036E                     774 __str_17:
+   036E 4D 45 4D 4F 52 59   775 	.ascii "MEMORY TEST COMPLETE"
+        20 54 45 53 54 20
+        43 4F 4D 50 4C 45
+        54 45
+   0382 00                  776 	.db 0x00
+                    0383    777 Fmain$_str_18$0$0 == .
+   0383                     778 __str_18:
+   0383 4D 65 6D 6F 72 79   779 	.ascii "Memory test completed"
+        20 74 65 73 74 20
+        63 6F 6D 70 6C 65
+        74 65 64
+   0398 0A                  780 	.db 0x0A
+   0399 00                  781 	.db 0x00
+                            782 	.area _CODE
+                            783 	.area _CABS

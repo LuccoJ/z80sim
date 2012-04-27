@@ -1,0 +1,592 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Fri Apr 27 12:30:19 2012
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module tape
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _SaveBlock
+                             13 	.globl _TapeSave
+                             14 	.globl _TapeLoad
+                             15 	.globl _TapeSaveManchester
+                             16 	.globl _TapeSaveC
+                             17 	.globl _PortOutput
+                             18 	.globl _TapeInit
+                             19 	.globl _TapeInited
+                             20 	.globl _TapeHalfWaveLength
+                             21 	.globl _TapeMeanWaveLength
+                             22 ;--------------------------------------------------------
+                             23 ;  ram data
+                             24 ;--------------------------------------------------------
+                             25 	.area _DATA
+                    0000     26 G$TapeMeanWaveLength$0$0==.
+   0000                      27 _TapeMeanWaveLength::
+   0000                      28 	.ds 1
+                    0001     29 G$TapeHalfWaveLength$0$0==.
+   0001                      30 _TapeHalfWaveLength::
+   0001                      31 	.ds 1
+                    0002     32 G$TapeInited$0$0==.
+   0002                      33 _TapeInited::
+   0002                      34 	.ds 1
+                             35 ;--------------------------------------------------------
+                             36 ; overlayable items in  ram 
+                             37 ;--------------------------------------------------------
+                             38 	.area _OVERLAY
+                             39 ;--------------------------------------------------------
+                             40 ; external initialized ram data
+                             41 ;--------------------------------------------------------
+                             42 ;--------------------------------------------------------
+                             43 ; global & static initialisations
+                             44 ;--------------------------------------------------------
+                             45 	.area _GSINIT
+                             46 	.area _GSFINAL
+                             47 	.area _GSINIT
+                             48 ;--------------------------------------------------------
+                             49 ; Home
+                             50 ;--------------------------------------------------------
+                             51 	.area _HOME
+                             52 	.area _CODE
+                             53 ;--------------------------------------------------------
+                             54 ; code
+                             55 ;--------------------------------------------------------
+                             56 	.area _CODE
+                             57 ;tape.c:7: bool TapeInited; void TapeInit() {
+                             58 ;	genLabel
+                             59 ;	genFunction
+                             60 ;	---------------------------------
+                             61 ; Function TapeInit
+                             62 ; ---------------------------------
+   0000                      63 _TapeInit_start::
+   0000                      64 _TapeInit:
+   0000 3E 03                65 	ld	a,#3
+   0002 CF                   66 	rst	0x08
+                             67 ;tape.c:8: if(!TapeInited) {
+                             68 ;	genIfx
+   0003 AF                   69 	xor	a,a
+   0004 FD 21r02s00          70 	ld	iy,#_TapeInited
+   0008 FD B6 00             71 	or	a,0(iy)
+   000B C2r26s00             72 	jp	nz,00103$
+                             73 ;tape.c:9: TapeHalfWaveLength=60;
+                             74 ;	genAssign
+   000E FD 21r01s00          75 	ld	iy,#_TapeHalfWaveLength
+   0012 FD 36 00 3C          76 	ld	0(iy),#0x3C
+                             77 ;tape.c:10: TapeMeanWaveLength=(TapeHalfWaveLength*3)/2;
+                             78 ;	genAssign
+   0016 FD 21r00s00          79 	ld	iy,#_TapeMeanWaveLength
+   001A FD 36 00 5A          80 	ld	0(iy),#0x5A
+                             81 ;tape.c:11: TapeInited=TRUE;
+                             82 ;	genAssign
+   001E FD 21r02s00          83 	ld	iy,#_TapeInited
+   0022 FD 36 00 01          84 	ld	0(iy),#0x01
+                             85 ;	genLabel
+   0026                      86 00103$:
+                             87 ;	genEndFunction
+   0026 3E 04                88 	ld	a,#4
+   0028 CF                   89 	rst	0x08
+   0029 C9                   90 	ret
+   002A                      91 _TapeInit_end::
+                             92 ;tape.c:15: void PortOutput(char PortNumber, char Value) {
+                             93 ;	genLabel
+                             94 ;	genFunction
+                             95 ;	---------------------------------
+                             96 ; Function PortOutput
+                             97 ; ---------------------------------
+   002A                      98 _PortOutput_start::
+   002A                      99 _PortOutput:
+   002A 3E 03               100 	ld	a,#3
+   002C CF                  101 	rst	0x08
+   002D DD E5               102 	push	ix
+   002F DD 21 00 00         103 	ld	ix,#0
+   0033 DD 39               104 	add	ix,sp
+                            105 ;tape.c:20: _endasm;
+                            106 ;	genInline
+                            107 	
+   0035 DD 4E 04            108 		       ld c,4(ix)
+   0038 DD 56 05            109 		       ld d,5(ix)
+   003B ED 51               110 		       out (c),d
+                            111 		       
+                            112 ;	genLabel
+   003D                     113 00101$:
+                            114 ;	genEndFunction
+   003D DD E1               115 	pop	ix
+   003F 3E 04               116 	ld	a,#4
+   0041 CF                  117 	rst	0x08
+   0042 C9                  118 	ret
+   0043                     119 _PortOutput_end::
+                            120 ;tape.c:23: void TapeSaveC(void *Start, void* End) {
+                            121 ;	genLabel
+                            122 ;	genFunction
+                            123 ;	---------------------------------
+                            124 ; Function TapeSaveC
+                            125 ; ---------------------------------
+   0043                     126 _TapeSaveC_start::
+   0043                     127 _TapeSaveC:
+   0043 3E 03               128 	ld	a,#3
+   0045 CF                  129 	rst	0x08
+   0046 DD E5               130 	push	ix
+   0048 DD 21 00 00         131 	ld	ix,#0
+   004C DD 39               132 	add	ix,sp
+   004E 21 FC FF            133 	ld	hl,#-4
+   0051 39                  134 	add	hl,sp
+   0052 F9                  135 	ld	sp,hl
+                            136 ;tape.c:28: for(i=Start; i<End; i++) {
+                            137 ;	genAssign
+                            138 ;	AOP_STK for 
+                            139 ;	AOP_STK for _TapeSaveC_i_1_1
+   0053 DD 7E 04            140 	ld	a,4(ix)
+   0056 DD 77 FE            141 	ld	-2(ix),a
+   0059 DD 7E 05            142 	ld	a,5(ix)
+   005C DD 77 FF            143 	ld	-1(ix),a
+                            144 ;	genCmpLt
+                            145 ;	AOP_STK for _TapeSaveC_i_1_1
+                            146 ;	AOP_STK for 
+   005F DD 7E FE            147 	ld	a,-2(ix)
+   0062 DD 96 06            148 	sub	a,6(ix)
+   0065 DD 7E FF            149 	ld	a,-1(ix)
+   0068 DD 9E 07            150 	sbc	a,7(ix)
+   006B 07                  151 	rlca
+   006C E6 01               152 	and     a,#0x01
+   006E 5F                  153 	ld	e,a
+                            154 ;	genLabel
+   006F                     155 00108$:
+                            156 ;	genIfx
+   006F AF                  157 	xor	a,a
+   0070 B3                  158 	or	a,e
+   0071 CArBCs00            159 	jp	z,00112$
+                            160 ;tape.c:29: Byte=*((char*)i);
+                            161 ;	genPointerGet
+                            162 ;	AOP_STK for _TapeSaveC_i_1_1
+   0074 DD 6E FE            163 	ld	l,-2(ix)
+   0077 DD 66 FF            164 	ld	h,-1(ix)
+   007A 6E                  165 	ld	l,(hl)
+                            166 ;	genAssign
+   007B 55                  167 	ld	d,l
+                            168 ;tape.c:30: for(j=0; j<8; j++) {
+                            169 ;	genAssign
+                            170 ;	AOP_STK for _TapeSaveC_j_1_1
+   007C DD 36 FD 08         171 	ld	-3(ix),#0x08
+                            172 ;	genLabel
+   0080                     173 00107$:
+                            174 ;tape.c:31: Byte=Byte>>1;
+                            175 ;	genRightShift
+   0080 42                  176 	ld	b,d
+   0081 CB 28               177 	sra	b
+                            178 ;	genAssign
+   0083 50                  179 	ld	d,b
+                            180 ;tape.c:32: Condition=Byte&1;
+                            181 ;	genAnd
+                            182 ;	AOP_STK for _TapeSaveC__1_0
+   0084 7A                  183 	ld	a,d
+   0085 E6 01               184 	and	a,#0x01
+   0087 DD 77 FC            185 	ld	-4(ix),a
+                            186 ;	genAssign
+                            187 ;	AOP_STK for _TapeSaveC__1_0
+   008A DD 4E FC            188 	ld	c,-4(ix)
+                            189 ;tape.c:33: if(Condition) PortOutput(0xfe, 0x02);
+                            190 ;	genIfx
+   008D AF                  191 	xor	a,a
+   008E B1                  192 	or	a,c
+   008F CAr9Es00            193 	jp	z,00102$
+                            194 ;	genIpush
+                            195 ; _saveRegsForCall: sendSetSize: 0 deInUse: 1 bcInUse: 1 deSending: 0
+   0092 C5                  196 	push	bc
+   0093 D5                  197 	push	de
+   0094 21 FE 02            198 	ld	hl,#0x02FE
+   0097 E5                  199 	push	hl
+                            200 ;	genCall
+   0098 CDr2As00            201 	call	_PortOutput
+   009B F1                  202 	pop	af
+   009C D1                  203 	pop	de
+   009D C1                  204 	pop	bc
+                            205 ;	genLabel
+   009E                     206 00102$:
+                            207 ;tape.c:34: if(!Condition) PortOutput(0xfe, 0x0d);
+                            208 ;	genIfx
+   009E AF                  209 	xor	a,a
+   009F B1                  210 	or	a,c
+   00A0 C2rAFs00            211 	jp	nz,00104$
+                            212 ;	genIpush
+                            213 ; _saveRegsForCall: sendSetSize: 0 deInUse: 1 bcInUse: 1 deSending: 0
+   00A3 C5                  214 	push	bc
+   00A4 D5                  215 	push	de
+   00A5 21 FE 0D            216 	ld	hl,#0x0DFE
+   00A8 E5                  217 	push	hl
+                            218 ;	genCall
+   00A9 CDr2As00            219 	call	_PortOutput
+   00AC F1                  220 	pop	af
+   00AD D1                  221 	pop	de
+   00AE C1                  222 	pop	bc
+                            223 ;	genLabel
+   00AF                     224 00104$:
+                            225 ;	genMinus
+                            226 ;	AOP_STK for _TapeSaveC_j_1_1
+   00AF DD 35 FD            227 	dec	-3(ix)
+                            228 ;tape.c:30: for(j=0; j<8; j++) {
+                            229 ;	genIfx
+                            230 ;	AOP_STK for _TapeSaveC_j_1_1
+   00B2 AF                  231 	xor	a,a
+   00B3 DD B6 FD            232 	or	a,-3(ix)
+   00B6 C2r80s00            233 	jp	nz,00107$
+                            234 ;tape.c:28: for(i=Start; i<End; i++) {
+                            235 ;	genGoto
+   00B9 C3r6Fs00            236 	jp	00108$
+                            237 ;	genLabel
+   00BC                     238 00112$:
+                            239 ;	genEndFunction
+   00BC DD F9               240 	ld	sp,ix
+   00BE DD E1               241 	pop	ix
+   00C0 3E 04               242 	ld	a,#4
+   00C2 CF                  243 	rst	0x08
+   00C3 C9                  244 	ret
+   00C4                     245 _TapeSaveC_end::
+                            246 ;tape.c:39: void TapeSaveManchester(void *StartPosition, void* StopPosition) {
+                            247 ;	genLabel
+                            248 ;	genFunction
+                            249 ;	---------------------------------
+                            250 ; Function TapeSaveManchester
+                            251 ; ---------------------------------
+   00C4                     252 _TapeSaveManchester_start::
+   00C4                     253 _TapeSaveManchester:
+   00C4 3E 03               254 	ld	a,#3
+   00C6 CF                  255 	rst	0x08
+   00C7 DD E5               256 	push	ix
+   00C9 DD 21 00 00         257 	ld	ix,#0
+   00CD DD 39               258 	add	ix,sp
+                            259 ;tape.c:80: _endasm;
+                            260 ;	genInline
+                            261 	
+                            262 	
+   00CF                     263         ManchesterLoadByte:
+   00CF 46                  264 		       ld b,(hl)
+   00D0 0E 07               265 		       ld c,#7
+   00D2 23                  266 		       inc hl
+   00D3 7C                  267 		       ld a,h
+   00D4 DD BE 07            268 		       cp a,7(ix)
+   00D7 C2rE1s00            269 		       jp nz,ManchesterDoBit
+   00DA 7D                  270 		       ld a,l
+   00DB DD BE 06            271 		       cp a,6(ix)
+   00DE CAr00s01            272 		       jp z,ManchesterEnd
+                            273 	
+   00E1                     274         ManchesterDoBit:
+   00E1 CB 20               275 		       sla b ; 8
+   00E3 D2rEBs00            276 		       jp nc,Manchester0 ; 10
+                            277 	
+   00E6                     278         Manchester1:
+   00E6 3E 02               279 		       ld a,£0x02 ; 7
+   00E8 C3rF0s00            280 		       jp ManchesterWriteBit ; 10
+                            281 	
+   00EB                     282         Manchester0:
+   00EB 3E 0D               283 		       ld a,£0x0d
+   00ED C3rF0s00            284 		       jp ManchesterWriteBit
+                            285 	
+   00F0                     286         ManchesterWriteBit:
+   00F0 D3 FE               287 		       out (0xfe),a
+   00F2 EE 11               288 		       xor a,£0x11 ; cambiare
+                            289 	
+   00F4 D3 FE               290 		       out (0xfe),a
+                            291 	
+   00F6                     292         ManchesterEndLoop:
+   00F6 0D                  293 		       dec c ; 4
+   00F7 CArCFs00            294 		       jp z,ManchesterLoadByte ; 10
+                            295 		       ; just wait
+   00FA C3rFDs00            296 		       jp ManchesterNext ; 10
+   00FD                     297         ManchesterNext:
+   00FD C3rE1s00            298 		       jp ManchesterDoBit ; 10
+                            299 	
+   0100                     300         ManchesterEnd:
+                            301 		       
+                            302 ;	genLabel
+   0100                     303 00101$:
+                            304 ;	genEndFunction
+   0100 DD E1               305 	pop	ix
+   0102 3E 04               306 	ld	a,#4
+   0104 CF                  307 	rst	0x08
+   0105 C9                  308 	ret
+   0106                     309 _TapeSaveManchester_end::
+                            310 ;tape.c:83: void TapeLoad(void* StartPosition, void* StopPosition) {
+                            311 ;	genLabel
+                            312 ;	genFunction
+                            313 ;	---------------------------------
+                            314 ; Function TapeLoad
+                            315 ; ---------------------------------
+   0106                     316 _TapeLoad_start::
+   0106                     317 _TapeLoad:
+   0106 3E 03               318 	ld	a,#3
+   0108 CF                  319 	rst	0x08
+   0109 DD E5               320 	push	ix
+   010B DD 21 00 00         321 	ld	ix,#0
+   010F DD 39               322 	add	ix,sp
+                            323 ;tape.c:145: _endasm;
+                            324 ;	genInline
+                            325 	
+   0111 DD 6E 04            326 		       ld l,4(ix)
+   0114 DD 66 05            327 		       ld h,5(ix)
+   0117 DD 5E 06            328 		       ld e,6(ix)
+   011A DD 56 07            329 		       ld d,7(ix)
+                            330 	
+   011D 06 07               331 		       ld b,£7
+                            332 	
+   011F                     333         WaitBit:
+   011F 0E 00               334 		       ld c,£0
+                            335 	
+   0121                     336         WaitTrigger1:
+   0121 0C                  337 		       inc c
+   0122 DB FE               338 		       in a,(0xfe)
+   0124 CB 77               339 		       bit 6,a
+   0126 C2r21s01            340 		       jp nz, WaitTrigger1
+                            341 	
+   0129 3E 0A               342 		       ld a,£10
+   012B B9                  343 		       cp a,c
+   012C F2r21s01            344 		       jp p,WaitTrigger1
+                            345 	
+   012F                     346         Border1:
+   012F 3E 01               347 		       ld a,£0x01
+   0131 D3 FE               348 		       out (0xfe),a
+                            349 	
+   0133                     350         WaitTrigger2:
+   0133 0C                  351 		       inc c
+   0134 DB FE               352 		       in a,(0xfe)
+   0136 CB 77               353 		       bit 6,a
+   0138 CAr33s01            354 		       jp z, WaitTrigger2
+                            355 	
+   013B 3E 14               356 		       ld a,£20
+   013D B9                  357 		       cp a,c
+   013E F2r33s01            358 		       jp p,WaitTrigger2
+                            359 	
+   0141                     360         Border2:
+   0141 3E 05               361 		       ld a,£0x05
+   0143 D3 FE               362 		       out (0xfe),a
+                            363 	
+   0145 05                  364 		       dec b
+   0146 C2r4Cs01            365 		       jp nz,DoBit
+                            366 	
+   0149 06 07               367 		       ld b,£7
+   014B 23                  368 		       inc hl
+                            369 	
+   014C                     370         DoBit:
+   014C CB 26               371 		       sla (hl)
+                            372 	
+   014E 3Ar00s00            373 		       ld a,(_TapeMeanWaveLength)
+   0151 B9                  374 		       cp a,c
+   0152 D2r56s01            375 		       jp nc,EndBit
+                            376 	
+   0155 34                  377 		       inc (hl)
+                            378 	
+   0156                     379         EndBit:
+   0156 7C                  380 		       ld a,h
+   0157 BA                  381 		       cp a,d
+   0158 C2r1Fs01            382 		       jp nz,WaitBit
+   015B 7D                  383 		       ld a,l
+   015C BB                  384 		       cp a,e
+   015D C2r1Fs01            385 		       jp nz,WaitBit
+                            386 		       
+                            387 ;	genLabel
+   0160                     388 00101$:
+                            389 ;	genEndFunction
+   0160 DD E1               390 	pop	ix
+   0162 3E 04               391 	ld	a,#4
+   0164 CF                  392 	rst	0x08
+   0165 C9                  393 	ret
+   0166                     394 _TapeLoad_end::
+                            395 ;tape.c:148: void TapeSave(void* StartPosition, void* EndPosition) {
+                            396 ;	genLabel
+                            397 ;	genFunction
+                            398 ;	---------------------------------
+                            399 ; Function TapeSave
+                            400 ; ---------------------------------
+   0166                     401 _TapeSave_start::
+   0166                     402 _TapeSave:
+   0166 3E 03               403 	ld	a,#3
+   0168 CF                  404 	rst	0x08
+   0169 DD E5               405 	push	ix
+   016B DD 21 00 00         406 	ld	ix,#0
+   016F DD 39               407 	add	ix,sp
+                            408 ;tape.c:200: _endasm;
+                            409 ;	genInline
+                            410 	
+   0171 DD 6E 04            411 		       ld l,4(ix)
+   0174 DD 66 05            412 		       ld h,5(ix)
+   0177 DD 5E 06            413 		       ld e,6(ix)
+   017A DD 56 07            414 		       ld d,7(ix)
+                            415 	
+   017D 06 07               416 		       ld b,£7
+                            417 	
+   017F                     418         SaveStart:
+   017F 3Ar01s00            419 		       ld a,(_TapeHalfWaveLength)
+   0182 57                  420 		       ld d,a
+                            421 	
+   0183 05                  422 		       dec b
+   0184 C2r8As01            423 		       jp nz,SaveDoBit
+                            424 	
+   0187 06 07               425 		       ld b,£7
+   0189 23                  426 		       inc hl
+                            427 	
+   018A                     428         SaveDoBit:
+   018A CB 26               429 		       sla (hl)
+   018C D2r91s01            430 		       jp nc, SaveWriteBit
+                            431 	
+   018F CB 22               432 		       sla d
+                            433 	
+   0191                     434         SaveWriteBit:
+   0191 4A                  435 		       ld c,d
+                            436 	
+   0192                     437         SaveWriteTrigger1:
+   0192 00 00 00 C6 00      438 		       nop nop nop add a,#0
+   0197 0D                  439 		       dec c
+   0198 C2r92s01            440 		       jp nz, SaveWriteTrigger1
+                            441 	
+   019B 3E 0D               442 		       ld a,£0x0d
+   019D D3 FE               443 		       out (0xfe),a
+                            444 	
+   019F 4A                  445 		       ld c,d
+                            446 	
+   01A0                     447         SaveWriteTrigger2:
+   01A0 00 00 00 C6 00      448 		       nop nop nop add a,#0
+   01A5 0D                  449 		       dec c
+   01A6 C2rA0s01            450 		       jp nz, SaveWriteTrigger2
+                            451 	
+   01A9 3E 02               452 		       ld a,£0x02
+   01AB D3 FE               453 		       out (0xfe),a
+                            454 	
+   01AD 7C                  455 		       ld a,h
+   01AE DD BE 07            456 		       cp a,7(ix)
+   01B1 C2r7Fs01            457 		       jp nz,SaveStart
+   01B4 7D                  458 		       ld a,l
+   01B5 DD BE 06            459 		       cp a,6(ix)
+   01B8 C2r7Fs01            460 		       jp nz,SaveStart
+                            461 		       
+                            462 ;	genLabel
+   01BB                     463 00101$:
+                            464 ;	genEndFunction
+   01BB DD E1               465 	pop	ix
+   01BD 3E 04               466 	ld	a,#4
+   01BF CF                  467 	rst	0x08
+   01C0 C9                  468 	ret
+   01C1                     469 _TapeSave_end::
+                            470 ;tape.c:204: void SaveBlock(void* BlockStart) {
+                            471 ;	genLabel
+                            472 ;	genFunction
+                            473 ;	---------------------------------
+                            474 ; Function SaveBlock
+                            475 ; ---------------------------------
+   01C1                     476 _SaveBlock_start::
+   01C1                     477 _SaveBlock:
+   01C1 3E 03               478 	ld	a,#3
+   01C3 CF                  479 	rst	0x08
+   01C4 DD E5               480 	push	ix
+   01C6 DD 21 00 00         481 	ld	ix,#0
+   01CA DD 39               482 	add	ix,sp
+                            483 ;tape.c:299: _endasm;
+                            484 ;	genInline
+                            485 ;
+   01CC DD 6E 04            486 		       ld l,4(ix)
+   01CF DD 66 05            487 		       ld h,5(ix)
+   01D2 DD 46 06            488 		       ld b,6(ix)
+                            489 	
+   01D5 11 10 00            490 		       ld de,#0x0010
+                            491 	
+   01D8                     492         Sync:
+   01D8 06 FF               493 		       ld b,#0xff ; 7
+   01DA 3E 0D               494 		       ld a,#0x0d ; 7
+   01DC D3 FE               495 		       out (0xfe),a ; 11
+   01DE                     496         W1:
+   01DE 10 FE               497 	djnz	W1
+   01E0 01 AD DE            498 		       ld bc,#0xDEAD ; 10
+   01E3 06 FF               499 		       ld b,#0xff ; 7
+   01E5 3E 02               500 		       ld a,#0x02 ; 7
+   01E7 3E 02               501 		       ld a,#0x02 ; 7
+   01E9 3E 02               502 		       ld a,#0x02 ; 7
+   01EB D3 FE               503 		       out (0xfe),a ; 11
+   01ED                     504         W2:
+   01ED 10 FE               505 	djnz	W2
+   01EF 1B                  506 		       dec de ; 6
+   01F0 7B                  507 		       ld a,e ; 4
+   01F1 B2                  508 		       or d ; 4
+   01F2 C2rD8s01            509 		       jp nz,Sync ; 10
+                            510 	
+   01F5 5D                  511 		       ld e,l
+                            512 	
+   01F6                     513         FetchByte:
+   01F6 0E 07               514 		       ld c,#7 ; 7
+   01F8 56                  515 		       ld d,(hl) ; 7
+   01F9 23                  516 		       inc hl ; 4
+   01FA 7B                  517 		       ld a,e ; 4
+   01FB BD                  518 		       cp a,l ; 4
+   01FC CAr40s02            519 		       jp z,BlockSaved ; 10
+                            520 	
+   01FF                     521         ProcessBit:
+   01FF CB 12               522 		       rl d ; 8
+   0201 DAr09s02            523 		       jp c, Bit0 ; 10
+                            524 	
+   0204                     525         Bit1:
+   0204 06 10               526 		       ld b,#16
+   0206 C3r0Es02            527 		       jp BitWrite
+                            528 	
+   0209                     529         Bit0:
+   0209 06 08               530 		       ld b,#8
+   020B C3r0Es02            531 		       jp BitWrite
+                            532 	
+   020E                     533         BitWrite:
+   020E 3E 02               534 		       ld a,£0x02 ; 7
+   0210 D3 FE               535 		       out (0xfe),a ; 11
+   0212 78                  536 		       ld a,b
+   0213                     537         W3:
+   0213 10 FE               538 	djnz	W3
+   0215 47                  539 		       ld b,a
+                            540 	
+   0216 00                  541 		       nop
+   0217 00                  542 		       nop
+   0218 00                  543 		       nop
+   0219 00                  544 		       nop
+   021A 00                  545 		       nop
+   021B 00                  546 		       nop
+   021C 00                  547 		       nop
+   021D 00                  548 		       nop
+   021E 00                  549 		       nop
+   021F 00                  550 		       nop
+   0220 00                  551 		       nop
+   0221 00                  552 		       nop
+   0222 00                  553 		       nop
+   0223 00                  554 		       nop
+   0224 00                  555 		       nop
+   0225 00                  556 		       nop
+   0226 00                  557 		       nop
+   0227 00                  558 		       nop
+   0228 00                  559 		       nop
+   0229 00                  560 		       nop
+                            561 	
+   022A 3E 0D               562 		       ld a,£0x0d ; 7
+   022C D3 FE               563 		       out (0xfe),a ; 11
+   022E                     564         W4:
+   022E 10 FE               565 	djnz	W4
+                            566 	
+   0230 0D                  567 		       dec c ; 4
+   0231 CArF6s01            568 		       jp z,FetchByte ; 10
+                            569 	
+   0234 00                  570 		       nop
+   0235 00                  571 		       nop
+   0236 00                  572 		       nop
+   0237 00                  573 		       nop
+   0238 00                  574 		       nop
+   0239 00                  575 		       nop
+   023A 00                  576 		       nop
+   023B 00                  577 		       nop
+   023C 00                  578 		       nop ; 36
+                            579 	
+   023D C3rFFs01            580 		       jp ProcessBit ; 10
+                            581 	
+   0240                     582         BlockSaved:
+                            583 		       
+                            584 ;	genLabel
+   0240                     585 00101$:
+                            586 ;	genEndFunction
+   0240 DD E1               587 	pop	ix
+   0242 3E 04               588 	ld	a,#4
+   0244 CF                  589 	rst	0x08
+   0245 C9                  590 	ret
+   0246                     591 _SaveBlock_end::
+                            592 	.area _CODE

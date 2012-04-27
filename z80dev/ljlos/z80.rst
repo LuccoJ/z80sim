@@ -1,0 +1,93 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Fri Apr 27 12:30:18 2012
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module z80
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _ActiveRegBank
+                             13 	.globl _HardwareInit
+                             14 	.globl _ExchangeRegs
+                             15 ;--------------------------------------------------------
+                             16 ;  ram data
+                             17 ;--------------------------------------------------------
+                             18 	.area _DATA
+                    0000     19 G$ActiveRegBank$0$0==.
+   0000                      20 _ActiveRegBank::
+   0000                      21 	.ds 1
+                             22 ;--------------------------------------------------------
+                             23 ; overlayable items in  ram 
+                             24 ;--------------------------------------------------------
+                             25 	.area _OVERLAY
+                             26 ;--------------------------------------------------------
+                             27 ; external initialized ram data
+                             28 ;--------------------------------------------------------
+                             29 ;--------------------------------------------------------
+                             30 ; global & static initialisations
+                             31 ;--------------------------------------------------------
+                             32 	.area _GSINIT
+                             33 	.area _GSFINAL
+                             34 	.area _GSINIT
+                             35 ;--------------------------------------------------------
+                             36 ; Home
+                             37 ;--------------------------------------------------------
+                             38 	.area _HOME
+                             39 	.area _CODE
+                             40 ;--------------------------------------------------------
+                             41 ; code
+                             42 ;--------------------------------------------------------
+                             43 	.area _CODE
+                             44 ;z80.c:5: void HardwareInit() {
+                             45 ;	genLabel
+                             46 ;	genFunction
+                             47 ;	---------------------------------
+                             48 ; Function HardwareInit
+                             49 ; ---------------------------------
+   0000                      50 _HardwareInit_start::
+   0000                      51 _HardwareInit:
+   03E5 3E 03                52 	ld	a,#3
+   03E7 CF                   53 	rst	0x08
+                             54 ;z80.c:6: ActiveRegBank=0;
+                             55 ;	genAssign
+   03E8 FD 21 04 80          56 	ld	iy,#_ActiveRegBank
+   03EC FD 36 00 00          57 	ld	0(iy),#0x00
+                             58 ;	genLabel
+   000B                      59 00101$:
+                             60 ;	genEndFunction
+   03F0 3E 04                61 	ld	a,#4
+   03F2 CF                   62 	rst	0x08
+   03F3 C9                   63 	ret
+   000F                      64 _HardwareInit_end::
+                             65 ;z80.c:9: void ExchangeRegs() {
+                             66 ;	genLabel
+                             67 ;	genFunction
+                             68 ;	---------------------------------
+                             69 ; Function ExchangeRegs
+                             70 ; ---------------------------------
+   000F                      71 _ExchangeRegs_start::
+   000F                      72 _ExchangeRegs:
+   03F4 3E 03                73 	ld	a,#3
+   03F6 CF                   74 	rst	0x08
+                             75 ;z80.c:18: _endasm;
+                             76 ;	genInline
+                             77 ;
+   03F7 F5                   78 		       push af
+   03F8 3A 04 80             79 		       ld a,(_ActiveRegBank)
+   03FB 2F                   80 		       cpl
+   03FC 32 04 80             81 		       ld (_ActiveRegBank),a
+   03FF F1                   82 		       pop af
+   0400 D9                   83 		       exx
+   0401 08                   84 		       ex af,af
+                             85 		       
+                             86 ;	genLabel
+   001D                      87 00101$:
+                             88 ;	genEndFunction
+   0402 3E 04                89 	ld	a,#4
+   0404 CF                   90 	rst	0x08
+   0405 C9                   91 	ret
+   0021                      92 _ExchangeRegs_end::
+                             93 	.area _CODE

@@ -1,0 +1,113 @@
+AREA .  .ABS.
+	RADIX HEX
+	BASE 0000
+	SIZE 0000
+	ATTRIB ABS OVR
+	GLOBALS
+		l_.  .ABS.	0000
+		s__CODE	0000
+		l__GSFINAL	0000
+		s_.  .ABS.	0000
+		l__HOME	0000
+		__InterruptService	0000
+		l__OVERLAY	0000
+		__SystemRequest	0000
+		l__GSINIT	0000
+		l__DATA	0102
+		l__CODE	01EE
+		s__DATA	8000
+		s__GSFINAL	8102
+		s__HOME	8102
+		s__OVERLAY	8102
+		s__GSINIT	8102
+AREA _CODE
+	RADIX HEX
+	BASE 0000
+	SIZE 01EE
+	ATTRIB REL CON
+	GLOBALS
+		_ROMSystemInit	0000
+		_ROMSystemInit_start	0000
+		_ROMSystemInit_end	003D
+		__Z80SimProtectedCodeBegins_star	003D
+		_main	0044
+		_main_start	0044
+		__Z80SimProtectedCodeBegins_end	0044
+		Fmemory$_str_0$0$0	00C4
+		_main_end	00C4
+		Fmemory$_str_1$0$0	00EA
+		Fmemory$_str_2$0$0	00FA
+		Fmemory$_str_3$0$0	0116
+		Fmemory$_str_4$0$0	014D
+		__Z80SimProtectedCodeEnds_start	0159
+		__Z80SimProtectedCodeEnds_end	0160
+		__Z80SimTerminate	0160
+		__Z80SimTerminate_start	0160
+		__Z80SimTerminate_end	0164
+		__Z80SimReturn	0164
+		__Z80SimReturn_start	0164
+		__Z80SimPrintCharacter	0168
+		__Z80SimPrintCharacter_start	0168
+		__Z80SimReturn_end	0168
+		__Z80SimPrintCharacter_end	017C
+		__Z80SimPrintString	017C
+		__Z80SimPrintString_start	017C
+		__Z80SimPrintString_end	01A4
+		__Z80SimPrintWord	01A4
+		__Z80SimPrintWord_start	01A4
+		__Z80SimEnterProfile_start	01BC
+		__Z80SimPrintWord_end	01BC
+		__Z80SimEnterProfile	01BC
+		__Z80SimEnterProfile_end	01C2
+		__Z80SimExitProfile	01C2
+		__Z80SimExitProfile_start	01C2
+		__Z80SimDumpRegs	01C8
+		__Z80SimDumpRegs_start	01C8
+		__Z80SimExitProfile_end	01C8
+		__Z80SimWriteProtect	01CE
+		__Z80SimWriteProtect_start	01CE
+		__Z80SimDumpRegs_end	01CE
+		__Z80SimWriteProtect_end	01EE
+AREA _DATA
+	RADIX HEX
+	BASE 8000
+	SIZE 0102
+	ATTRIB REL CON
+	GLOBALS
+		G$MyGlobalVar$0$0	8000
+		_MyGlobalVar	8000
+AREA _OVERLAY
+	RADIX HEX
+	BASE 8102
+	SIZE 0000
+	ATTRIB REL CON
+AREA _GSINIT
+	RADIX HEX
+	BASE 8102
+	SIZE 0000
+	ATTRIB REL CON
+AREA _GSFINAL
+	RADIX HEX
+	BASE 8102
+	SIZE 0000
+	ATTRIB REL CON
+AREA _HOME
+	RADIX HEX
+	BASE 8102
+	SIZE 0000
+	ATTRIB REL CON
+MODULES
+	FILE /home/ljl/z80dev/share/sdcc/lib/z80/pad.o
+		NAME pad
+	FILE memory.o
+		NAME memory
+LIBRARIES
+	LIBRARY /home/ljl/z80dev/share/sdcc/lib/z80/z80.lib
+		MODULE simulator.o
+USERBASEDEF
+	_CODE = 0x0000
+	_DATA = 0x8000
+
+?ASlink-Warning-Undefined Global __InterruptService referenced by module pad
+
+?ASlink-Warning-Undefined Global __SystemRequest referenced by module pad

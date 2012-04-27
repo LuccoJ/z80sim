@@ -1,0 +1,20 @@
+XL
+H 6 areas 4 global symbols
+M _uint2fs
+O -mz80
+S ___ulong2fs Ref0000
+A _CODE size 1F flags 0
+S ___uint2fs Def0000
+S ___uint2fs_start Def0000
+S ___uint2fs_end Def001F
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 DD E5 DD 21 00 00 DD 39 DD 4E 04 DD 46 05
+R 00 00 00 00
+T 0E 00 11 00 00 D5 C5 CD 00 00 44 4D F1 F1 69 60
+R 00 00 00 00 02 08 00 00
+T 1C 00 DD E1 C9
+R 00 00 00 00

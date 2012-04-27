@@ -1,0 +1,13 @@
+--
+-m
+-j
+-x
+-i prova
+-b _CODE = 0x0200
+-b _DATA = 0x8000
+-k /home/ljl/z80dev/share/sdcc/lib/z80
+-l z80
+-l simulator
+prova.o
+
+-e

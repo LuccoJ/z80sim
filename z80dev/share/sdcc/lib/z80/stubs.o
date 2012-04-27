@@ -1,0 +1,64 @@
+XL
+H 1 areas 2D global symbols
+S __modsint_rrx_s Ref0000
+S __moduint_rrx_s Ref0000
+S __rlslong_rrx_s Ref0000
+S __divsint_rrx_s Ref0000
+S __rlulong_rrx_s Ref0000
+S __divuint_rrx_s Ref0000
+S __rrslong_rrx_s Ref0000
+S __rrulong_rrx_s Ref0000
+S __modschar_rrx_s Ref0000
+S __moduchar_rrx_s Ref0000
+S __divschar_rrx_s Ref0000
+S __divuchar_rrx_s Ref0000
+S __modslong Ref0000
+S __modulong Ref0000
+S __mulint_rrx_s Ref0000
+S __divslong Ref0000
+S __divulong Ref0000
+S __mulschar_rrx_s Ref0000
+S __muluchar_rrx_s Ref0000
+S __mullong Ref0000
+A _CODE size 69 flags 0
+S __rrslong_rrf_s Def0057
+S __rrulong_rrf_s Def0051
+S __mullong_rrx_s Def0000
+S __modschar_rrf_s Def0039
+S __moduchar_rrf_s Def003F
+S __divschar_rrf_s Def0027
+S __divuchar_rrf_s Def0033
+S __mulint_rrf_s Def000F
+S __mulschar_rrf_s Def0021
+S __muluchar_rrf_s Def002D
+S __modslong_rrf_s Def0003
+S __modulong_rrf_s Def0006
+S __divslong_rrf_s Def0009
+S __divulong_rrf_s Def000C
+S __modslong_rrx_s Def0003
+S __modulong_rrx_s Def0006
+S __divslong_rrx_s Def0009
+S __divulong_rrx_s Def000C
+S __modsint_rrf_s Def0045
+S __mullong_rrf_s Def0000
+S __moduint_rrf_s Def004B
+S __rlslong_rrf_s Def0063
+S __divsint_rrf_s Def0015
+S __rlulong_rrf_s Def005D
+S __divuint_rrf_s Def001B
+T 00 00 C3 00 00 C3 00 00 C3 00 00 C3
+R 00 00 00 00 02 03 13 00 02 06 0C 00 02 09 0D 00
+T 0A 00 00 00 C3 00 00 3E 05 CF C3 00 00 3E 05 CF
+R 00 00 00 00 02 02 0F 00 02 05 10 00 02 0B 0E 00
+T 18 00 C3 00 00 3E 05 CF C3 00 00 3E 05 CF C3
+R 00 00 00 00 02 03 03 00 02 09 05 00
+T 25 00 00 00 3E 05 CF C3 00 00 3E 05 CF C3 00 00
+R 00 00 00 00 02 02 11 00 02 08 0A 00 02 0E 12 00
+T 33 00 3E 05 CF C3 00 00 3E 05 CF C3 00 00 3E 05
+R 00 00 00 00 02 06 0B 00 02 0C 08 00
+T 41 00 CF C3 00 00 3E 05 CF C3 00 00 3E 05 CF C3
+R 00 00 00 00 02 04 09 00 02 0A 00 00
+T 4F 00 00 00 3E 05 CF C3 00 00 3E 05 CF C3 00 00
+R 00 00 00 00 02 02 01 00 02 08 07 00 02 0E 06 00
+T 5D 00 3E 05 CF C3 00 00 3E 05 CF C3 00 00
+R 00 00 00 00 02 06 04 00 02 0C 02 00

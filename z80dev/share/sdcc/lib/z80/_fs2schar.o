@@ -1,0 +1,26 @@
+XL
+H 6 areas 4 global symbols
+M _fs2schar
+O -mz80
+S ___fs2slong Ref0000
+A _CODE size 49 flags 0
+S ___fs2schar_start Def0000
+S ___fs2schar_end Def0049
+S ___fs2schar Def0000
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 DD E5 DD 21 00 00 DD 39 DD 6E 06 DD 66 07
+R 00 00 00 00
+T 0E 00 E5 DD 6E 04 DD 66 05 E5 CD 00 00 44 4D F1
+R 00 00 00 00 02 0B 00 00
+T 1C 00 F1 79 D6 7F 78 DE 00 7B DE 00 7A DE 00 FA
+R 00 00 00 00
+T 2A 00 31 00 2E 7F C3 46 00 3E 80 91 3E FF 98 3E
+R 00 00 00 00 00 02 00 00 00 07 00 00
+T 38 00 FF 9B 3E FF 9A FA 45 00 2E 80 C3 46 00 69
+R 00 00 00 00 00 08 00 00 00 0D 00 00
+T 46 00 DD E1 C9
+R 00 00 00 00

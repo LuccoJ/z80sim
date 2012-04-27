@@ -1,0 +1,19 @@
+XL
+H 6 areas 3 global symbols
+M _strcpy
+O -mz80
+A _CODE size 25 flags 0
+S _strcpy Def0000
+S _strcpy_start Def0000
+S _strcpy_end Def0025
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 DD E5 DD 21 00 00 DD 39 DD 4E 04 DD 46 05
+R 00 00 00 00
+T 0E 00 DD 5E 06 DD 56 07 1A 13 02 03 B7 C2 14 00
+R 00 00 00 00 00 0E 00 00
+T 1C 00 DD 6E 04 DD 66 05 DD E1 C9
+R 00 00 00 00

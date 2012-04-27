@@ -1,0 +1,106 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 2.9.0 #5416 (Feb  3 2010) (UNIX)
+                              4 ; This file was generated Fri Apr 27 12:42:17 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module z80
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _ActiveRegBank
+                             13 	.globl _HardwareInit
+                             14 	.globl _ExchangeRegs
+                             15 ;--------------------------------------------------------
+                             16 ; special function registers
+                             17 ;--------------------------------------------------------
+                             18 ;--------------------------------------------------------
+                             19 ;  ram data
+                             20 ;--------------------------------------------------------
+                             21 	.area _DATA
+                    0000     22 G$ActiveRegBank$0$0==.
+   0000                      23 _ActiveRegBank::
+   0000                      24 	.ds 1
+                             25 ;--------------------------------------------------------
+                             26 ; overlayable items in  ram 
+                             27 ;--------------------------------------------------------
+                             28 	.area _OVERLAY
+                             29 ;--------------------------------------------------------
+                             30 ; external initialized ram data
+                             31 ;--------------------------------------------------------
+                             32 ;--------------------------------------------------------
+                             33 ; global & static initialisations
+                             34 ;--------------------------------------------------------
+                             35 	.area _HOME
+                             36 	.area _GSINIT
+                             37 	.area _GSFINAL
+                             38 	.area _GSINIT
+                             39 ;--------------------------------------------------------
+                             40 ; Home
+                             41 ;--------------------------------------------------------
+                             42 	.area _HOME
+                             43 	.area _HOME
+                             44 ;--------------------------------------------------------
+                             45 ; code
+                             46 ;--------------------------------------------------------
+                             47 	.area _CODE
+                    0000     48 	G$HardwareInit$0$0	= .
+                             49 	.globl	G$HardwareInit$0$0
+                    0000     50 	C$z80.c$5$0$0	= .
+                             51 	.globl	C$z80.c$5$0$0
+                             52 ;z80.c:5: void HardwareInit() {
+                             53 ;	---------------------------------
+                             54 ; Function HardwareInit
+                             55 ; ---------------------------------
+   0000                      56 _HardwareInit_start::
+   0000                      57 _HardwareInit:
+   0000 3E 03                58 	ld	a,#3
+   0002 CF                   59 	rst	0x08
+                    0003     60 	C$z80.c$6$1$1	= .
+                             61 	.globl	C$z80.c$6$1$1
+                             62 ;z80.c:6: ActiveRegBank=0;
+   0003 21r00s00             63 	ld	hl,#_ActiveRegBank + 0
+   0006 36 00                64 	ld	(hl), #0x00
+   0008 3E 04                65 	ld	a,#4
+   000A CF                   66 	rst	0x08
+                    000B     67 	C$z80.c$7$1$1	= .
+                             68 	.globl	C$z80.c$7$1$1
+                    000B     69 	XG$HardwareInit$0$0	= .
+                             70 	.globl	XG$HardwareInit$0$0
+   000B C9                   71 	ret
+   000C                      72 _HardwareInit_end::
+                    000C     73 	G$ExchangeRegs$0$0	= .
+                             74 	.globl	G$ExchangeRegs$0$0
+                    000C     75 	C$z80.c$9$1$1	= .
+                             76 	.globl	C$z80.c$9$1$1
+                             77 ;z80.c:9: void ExchangeRegs() {
+                             78 ;	---------------------------------
+                             79 ; Function ExchangeRegs
+                             80 ; ---------------------------------
+   000C                      81 _ExchangeRegs_start::
+   000C                      82 _ExchangeRegs:
+   000C 3E 03                83 	ld	a,#3
+   000E CF                   84 	rst	0x08
+                    000F     85 	C$z80.c$18$1$1	= .
+                             86 	.globl	C$z80.c$18$1$1
+                             87 ;z80.c:18: _endasm;
+                             88 ;
+   000F F5                   89 		       push af
+   0010 3Ar00s00             90 		       ld a,(_ActiveRegBank)
+   0013 2F                   91 		       cpl
+   0014 32r00s00             92 		       ld (_ActiveRegBank),a
+   0017 F1                   93 		       pop af
+   0018 D9                   94 		       exx
+   0019 08                   95 		       ex af,af
+                             96 		       
+   001A 3E 04                97 	ld	a,#4
+   001C CF                   98 	rst	0x08
+                    001D     99 	C$z80.c$19$1$1	= .
+                            100 	.globl	C$z80.c$19$1$1
+                    001D    101 	XG$ExchangeRegs$0$0	= .
+                            102 	.globl	XG$ExchangeRegs$0$0
+   001D C9                  103 	ret
+   001E                     104 _ExchangeRegs_end::
+                            105 	.area _CODE
+                            106 	.area _CABS

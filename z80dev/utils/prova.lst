@@ -1,0 +1,71 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Sun Oct  5 23:40:55 2003
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module prova
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 ;--------------------------------------------------------
+                             14 ;  ram data
+                             15 ;--------------------------------------------------------
+                             16 	.area _DATA
+                             17 ;--------------------------------------------------------
+                             18 ; overlayable items in  ram 
+                             19 ;--------------------------------------------------------
+                             20 	.area _OVERLAY
+                             21 ;--------------------------------------------------------
+                             22 ; external initialized ram data
+                             23 ;--------------------------------------------------------
+                             24 ;--------------------------------------------------------
+                             25 ; global & static initialisations
+                             26 ;--------------------------------------------------------
+                             27 	.area _GSINIT
+                             28 	.area _GSFINAL
+                             29 	.area _GSINIT
+                             30 ;--------------------------------------------------------
+                             31 ; Home
+                             32 ;--------------------------------------------------------
+                             33 	.area _HOME
+                             34 	.area _CODE
+                             35 ;--------------------------------------------------------
+                             36 ; code
+                             37 ;--------------------------------------------------------
+                             38 	.area _CODE
+                             39 ;prova.c:5: void main() {
+                             40 ;	genLabel
+                             41 ;	genFunction
+                             42 ;	---------------------------------
+                             43 ; Function main
+                             44 ; ---------------------------------
+   0000                      45 _main_start::
+   0000                      46 _main:
+                             47 ;prova.c:6: SimulatorWriteString("Hello, world!\n\n");
+                             48 ;	genIpush
+                             49 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0000 21r0Cs00             50 	ld	hl,#__str_0
+   0003 E5                   51 	push	hl
+                             52 ;	genCall
+   0004 CDr00s00             53 	call	_SimulatorWriteString
+   0007 F1                   54 	pop	af
+                             55 ;prova.c:7: SimulatorTerminate();
+                             56 ;	genCall
+                             57 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0008 CDr00s00             58 	call	_SimulatorTerminate
+                             59 ;	genLabel
+   000B                      60 00101$:
+                             61 ;	genEndFunction
+   000B C9                   62 	ret
+   000C                      63 _main_end::
+   000C                      64 __str_0:
+   000C 48 65 6C 6C 6F 2C    65 	.ascii "Hello, world!"
+        20 77 6F 72 6C 64
+        21
+   0019 0A                   66 	.db 0x0A
+   001A 0A                   67 	.db 0x0A
+   001B 00                   68 	.db 0x00
+                             69 	.area _CODE

@@ -1,0 +1,811 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 2.9.0 #5416 (Feb  3 2010) (UNIX)
+                              4 ; This file was generated Fri Apr 27 12:42:17 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module strings
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _Power
+                             13 	.globl _Divide
+                             14 	.globl _Mod
+                             15 	.globl _StringLength
+                             16 	.globl _StringWrite
+                             17 	.globl _SameString
+                             18 	.globl _WordToHex
+                             19 	.globl _WordToString
+                             20 	.globl _IntToString
+                             21 ;--------------------------------------------------------
+                             22 ; special function registers
+                             23 ;--------------------------------------------------------
+                             24 ;--------------------------------------------------------
+                             25 ;  ram data
+                             26 ;--------------------------------------------------------
+                             27 	.area _DATA
+                             28 ;--------------------------------------------------------
+                             29 ; overlayable items in  ram 
+                             30 ;--------------------------------------------------------
+                             31 	.area _OVERLAY
+                             32 ;--------------------------------------------------------
+                             33 ; external initialized ram data
+                             34 ;--------------------------------------------------------
+                             35 ;--------------------------------------------------------
+                             36 ; global & static initialisations
+                             37 ;--------------------------------------------------------
+                             38 	.area _HOME
+                             39 	.area _GSINIT
+                             40 	.area _GSFINAL
+                             41 	.area _GSINIT
+                             42 ;--------------------------------------------------------
+                             43 ; Home
+                             44 ;--------------------------------------------------------
+                             45 	.area _HOME
+                             46 	.area _HOME
+                             47 ;--------------------------------------------------------
+                             48 ; code
+                             49 ;--------------------------------------------------------
+                             50 	.area _CODE
+                    0000     51 	G$StringLength$0$0	= .
+                             52 	.globl	G$StringLength$0$0
+                    0000     53 	C$strings.c$5$0$0	= .
+                             54 	.globl	C$strings.c$5$0$0
+                             55 ;strings.c:5: int StringLength(char* String) {
+                             56 ;	---------------------------------
+                             57 ; Function StringLength
+                             58 ; ---------------------------------
+   0000                      59 _StringLength_start::
+   0000                      60 _StringLength:
+   0000 3E 03                61 	ld	a,#3
+   0002 CF                   62 	rst	0x08
+   0003 DD E5                63 	push	ix
+   0005 DD 21 00 00          64 	ld	ix,#0
+   0009 DD 39                65 	add	ix,sp
+                    000B     66 	C$strings.c$8$1$1	= .
+                             67 	.globl	C$strings.c$8$1$1
+                             68 ;strings.c:8: while(String[i]!='\0') i++;
+   000B 01 00 00             69 	ld	bc,#0x0000
+   000E                      70 00101$:
+   000E DD 7E 04             71 	ld	a,4 (ix)
+   0011 81                   72 	add	a,c
+   0012 5F                   73 	ld	e,a
+   0013 DD 7E 05             74 	ld	a,5 (ix)
+   0016 88                   75 	adc	a,b
+   0017 57                   76 	ld	d,a
+   0018 1A                   77 	ld	a,(de)
+   0019 B7                   78 	or	a,a
+   001A 28 03                79 	jr	Z,00103$
+   001C 03                   80 	inc	bc
+   001D 18 EF                81 	jr	00101$
+   001F                      82 00103$:
+                    001F     83 	C$strings.c$9$1$1	= .
+                             84 	.globl	C$strings.c$9$1$1
+                             85 ;strings.c:9: return i;
+   001F 69                   86 	ld	l,c
+   0020 60                   87 	ld	h,b
+   0021 DD E1                88 	pop	ix
+   0023 3E 04                89 	ld	a,#4
+   0025 CF                   90 	rst	0x08
+                    0026     91 	C$strings.c$10$1$1	= .
+                             92 	.globl	C$strings.c$10$1$1
+                    0026     93 	XG$StringLength$0$0	= .
+                             94 	.globl	XG$StringLength$0$0
+   0026 C9                   95 	ret
+   0027                      96 _StringLength_end::
+                    0027     97 	G$StringWrite$0$0	= .
+                             98 	.globl	G$StringWrite$0$0
+                    0027     99 	C$strings.c$12$1$1	= .
+                            100 	.globl	C$strings.c$12$1$1
+                            101 ;strings.c:12: void StringWrite(char* Destination, const char* Source) {
+                            102 ;	---------------------------------
+                            103 ; Function StringWrite
+                            104 ; ---------------------------------
+   0027                     105 _StringWrite_start::
+   0027                     106 _StringWrite:
+   0027 3E 03               107 	ld	a,#3
+   0029 CF                  108 	rst	0x08
+   002A DD E5               109 	push	ix
+   002C DD 21 00 00         110 	ld	ix,#0
+   0030 DD 39               111 	add	ix,sp
+                    0032    112 	C$strings.c$13$1$1	= .
+                            113 	.globl	C$strings.c$13$1$1
+                            114 ;strings.c:13: MemoryCopy((void*)Destination, (void*)Source, StringLength(Source));
+   0032 DD 6E 06            115 	ld	l,6 (ix)
+   0035 DD 66 07            116 	ld	h,7 (ix)
+   0038 E5                  117 	push	hl
+   0039 CDr00s00            118 	call	_StringLength
+   003C F1                  119 	pop	af
+   003D 44                  120 	ld	b,h
+   003E 4D                  121 	ld	c,l
+   003F DD 5E 04            122 	ld	e,4 (ix)
+   0042 DD 56 05            123 	ld	d,5 (ix)
+   0045 C5                  124 	push	bc
+   0046 DD 6E 06            125 	ld	l,6 (ix)
+   0049 DD 66 07            126 	ld	h,7 (ix)
+   004C E5                  127 	push	hl
+   004D D5                  128 	push	de
+   004E CDr00s00            129 	call	_MemoryCopy
+   0051 F1                  130 	pop	af
+   0052 F1                  131 	pop	af
+   0053 F1                  132 	pop	af
+   0054 DD E1               133 	pop	ix
+   0056 3E 04               134 	ld	a,#4
+   0058 CF                  135 	rst	0x08
+                    0059    136 	C$strings.c$14$1$1	= .
+                            137 	.globl	C$strings.c$14$1$1
+                    0059    138 	XG$StringWrite$0$0	= .
+                            139 	.globl	XG$StringWrite$0$0
+   0059 C9                  140 	ret
+   005A                     141 _StringWrite_end::
+                    005A    142 	G$SameString$0$0	= .
+                            143 	.globl	G$SameString$0$0
+                    005A    144 	C$strings.c$16$1$1	= .
+                            145 	.globl	C$strings.c$16$1$1
+                            146 ;strings.c:16: bool SameString(char* String1, char* String2) {
+                            147 ;	---------------------------------
+                            148 ; Function SameString
+                            149 ; ---------------------------------
+   005A                     150 _SameString_start::
+   005A                     151 _SameString:
+   005A 3E 03               152 	ld	a,#3
+   005C CF                  153 	rst	0x08
+   005D DD E5               154 	push	ix
+   005F DD 21 00 00         155 	ld	ix,#0
+   0063 DD 39               156 	add	ix,sp
+   0065 F5                  157 	push	af
+                    0066    158 	C$strings.c$19$1$1	= .
+                            159 	.globl	C$strings.c$19$1$1
+                            160 ;strings.c:19: while(String1[i]!='\0') {
+   0066 DD 36 FE 00         161 	ld	-2 (ix),#0x00
+   006A DD 36 FF 00         162 	ld	-1 (ix),#0x00
+   006E                     163 00103$:
+   006E DD 7E 04            164 	ld	a,4 (ix)
+   0071 DD 86 FE            165 	add	a,-2 (ix)
+   0074 5F                  166 	ld	e,a
+   0075 DD 7E 05            167 	ld	a,5 (ix)
+   0078 DD 8E FF            168 	adc	a,-1 (ix)
+   007B 57                  169 	ld	d,a
+   007C 1A                  170 	ld	a,(de)
+   007D 5F                  171 	ld	e,a
+   007E B7                  172 	or	a,a
+   007F 28 22               173 	jr	Z,00105$
+                    0081    174 	C$strings.c$20$2$2	= .
+                            175 	.globl	C$strings.c$20$2$2
+                            176 ;strings.c:20: if(String1[i]!=String2[i]) return FALSE;
+   0081 DD 7E 06            177 	ld	a,6 (ix)
+   0084 DD 86 FE            178 	add	a,-2 (ix)
+   0087 57                  179 	ld	d,a
+   0088 DD 7E 07            180 	ld	a,7 (ix)
+   008B DD 8E FF            181 	adc	a,-1 (ix)
+   008E 6A                  182 	ld	l,d
+   008F 67                  183 	ld	h,a
+   0090 56                  184 	ld	d,(hl)
+   0091 7B                  185 	ld	a,e
+   0092 92                  186 	sub	d
+   0093 28 04               187 	jr	Z,00102$
+   0095 2E 00               188 	ld	l,#0x00
+   0097 18 0C               189 	jr	00106$
+   0099                     190 00102$:
+                    0099    191 	C$strings.c$21$2$2	= .
+                            192 	.globl	C$strings.c$21$2$2
+                            193 ;strings.c:21: i++;
+   0099 DD 34 FE            194 	inc	-2 (ix)
+   009C 20 03               195 	jr	NZ,00112$
+   009E DD 34 FF            196 	inc	-1 (ix)
+   00A1                     197 00112$:
+   00A1 18 CB               198 	jr	00103$
+   00A3                     199 00105$:
+                    00A3    200 	C$strings.c$23$1$1	= .
+                            201 	.globl	C$strings.c$23$1$1
+                            202 ;strings.c:23: return TRUE;
+   00A3 2E 01               203 	ld	l,#0x01
+   00A5                     204 00106$:
+   00A5 DD F9               205 	ld	sp,ix
+   00A7 DD E1               206 	pop	ix
+   00A9 3E 04               207 	ld	a,#4
+   00AB CF                  208 	rst	0x08
+                    00AC    209 	C$strings.c$24$1$1	= .
+                            210 	.globl	C$strings.c$24$1$1
+                    00AC    211 	XG$SameString$0$0	= .
+                            212 	.globl	XG$SameString$0$0
+   00AC C9                  213 	ret
+   00AD                     214 _SameString_end::
+                    00AD    215 	G$Mod$0$0	= .
+                            216 	.globl	G$Mod$0$0
+                    00AD    217 	C$strings.c$26$1$1	= .
+                            218 	.globl	C$strings.c$26$1$1
+                            219 ;strings.c:26: unsigned int Mod(unsigned int Dividend, unsigned int Divisor) {
+                            220 ;	---------------------------------
+                            221 ; Function Mod
+                            222 ; ---------------------------------
+   00AD                     223 _Mod_start::
+   00AD                     224 _Mod:
+   00AD 3E 03               225 	ld	a,#3
+   00AF CF                  226 	rst	0x08
+   00B0 DD E5               227 	push	ix
+   00B2 DD 21 00 00         228 	ld	ix,#0
+   00B6 DD 39               229 	add	ix,sp
+                    00B8    230 	C$strings.c$28$1$1	= .
+                            231 	.globl	C$strings.c$28$1$1
+                            232 ;strings.c:28: Temp=Dividend;
+   00B8 DD 4E 04            233 	ld	c,4 (ix)
+   00BB DD 46 05            234 	ld	b,5 (ix)
+                    00BE    235 	C$strings.c$29$1$1	= .
+                            236 	.globl	C$strings.c$29$1$1
+                            237 ;strings.c:29: while(Temp>=Divisor) {
+   00BE                     238 00101$:
+   00BE 79                  239 	ld	a,c
+   00BF DD 96 06            240 	sub	a,6 (ix)
+   00C2 78                  241 	ld	a,b
+   00C3 DD 9E 07            242 	sbc	a,7 (ix)
+   00C6 38 0C               243 	jr	C,00103$
+                    00C8    244 	C$strings.c$30$2$2	= .
+                            245 	.globl	C$strings.c$30$2$2
+                            246 ;strings.c:30: Temp-=Divisor;
+   00C8 79                  247 	ld	a,c
+   00C9 DD 96 06            248 	sub	a,6 (ix)
+   00CC 4F                  249 	ld	c,a
+   00CD 78                  250 	ld	a,b
+   00CE DD 9E 07            251 	sbc	a,7 (ix)
+   00D1 47                  252 	ld	b,a
+   00D2 18 EA               253 	jr	00101$
+   00D4                     254 00103$:
+                    00D4    255 	C$strings.c$32$1$1	= .
+                            256 	.globl	C$strings.c$32$1$1
+                            257 ;strings.c:32: return Temp;
+   00D4 69                  258 	ld	l,c
+   00D5 60                  259 	ld	h,b
+   00D6 DD E1               260 	pop	ix
+   00D8 3E 04               261 	ld	a,#4
+   00DA CF                  262 	rst	0x08
+                    00DB    263 	C$strings.c$33$1$1	= .
+                            264 	.globl	C$strings.c$33$1$1
+                    00DB    265 	XG$Mod$0$0	= .
+                            266 	.globl	XG$Mod$0$0
+   00DB C9                  267 	ret
+   00DC                     268 _Mod_end::
+                    00DC    269 	G$Divide$0$0	= .
+                            270 	.globl	G$Divide$0$0
+                    00DC    271 	C$strings.c$35$1$1	= .
+                            272 	.globl	C$strings.c$35$1$1
+                            273 ;strings.c:35: unsigned int Divide(unsigned int Dividend, int Divisor) {
+                            274 ;	---------------------------------
+                            275 ; Function Divide
+                            276 ; ---------------------------------
+   00DC                     277 _Divide_start::
+   00DC                     278 _Divide:
+   00DC 3E 03               279 	ld	a,#3
+   00DE CF                  280 	rst	0x08
+   00DF DD E5               281 	push	ix
+   00E1 DD 21 00 00         282 	ld	ix,#0
+   00E5 DD 39               283 	add	ix,sp
+   00E7 F5                  284 	push	af
+                    00E8    285 	C$strings.c$39$1$1	= .
+                            286 	.globl	C$strings.c$39$1$1
+                            287 ;strings.c:39: Temp=Dividend;
+   00E8 DD 4E 04            288 	ld	c,4 (ix)
+   00EB DD 46 05            289 	ld	b,5 (ix)
+                    00EE    290 	C$strings.c$40$1$1	= .
+                            291 	.globl	C$strings.c$40$1$1
+                            292 ;strings.c:40: while(Temp>=Divisor) {
+   00EE DD 5E 06            293 	ld	e,6 (ix)
+   00F1 DD 56 07            294 	ld	d,7 (ix)
+   00F4 DD 36 FE 00         295 	ld	-2 (ix),#0x00
+   00F8 DD 36 FF 00         296 	ld	-1 (ix),#0x00
+   00FC                     297 00101$:
+   00FC 79                  298 	ld	a,c
+   00FD 93                  299 	sub	a,e
+   00FE 78                  300 	ld	a,b
+   00FF 9A                  301 	sbc	a,d
+   0100 38 1A               302 	jr	C,00103$
+                    0102    303 	C$strings.c$41$2$2	= .
+                            304 	.globl	C$strings.c$41$2$2
+                            305 ;strings.c:41: Temp-=Divisor;
+   0102 DD 73 06            306 	ld	6 (ix),e
+   0105 DD 72 07            307 	ld	7 (ix),d
+   0108 79                  308 	ld	a,c
+   0109 DD 96 06            309 	sub	a,6 (ix)
+   010C 4F                  310 	ld	c,a
+   010D 78                  311 	ld	a,b
+   010E DD 9E 07            312 	sbc	a,7 (ix)
+   0111 47                  313 	ld	b,a
+                    0112    314 	C$strings.c$42$2$2	= .
+                            315 	.globl	C$strings.c$42$2$2
+                            316 ;strings.c:42: i++;
+   0112 DD 34 FE            317 	inc	-2 (ix)
+   0115 20 03               318 	jr	NZ,00109$
+   0117 DD 34 FF            319 	inc	-1 (ix)
+   011A                     320 00109$:
+   011A 18 E0               321 	jr	00101$
+   011C                     322 00103$:
+                    011C    323 	C$strings.c$44$1$1	= .
+                            324 	.globl	C$strings.c$44$1$1
+                            325 ;strings.c:44: return i;
+   011C DD 6E FE            326 	ld	l,-2 (ix)
+   011F DD 66 FF            327 	ld	h,-1 (ix)
+   0122 DD F9               328 	ld	sp,ix
+   0124 DD E1               329 	pop	ix
+   0126 3E 04               330 	ld	a,#4
+   0128 CF                  331 	rst	0x08
+                    0129    332 	C$strings.c$45$1$1	= .
+                            333 	.globl	C$strings.c$45$1$1
+                    0129    334 	XG$Divide$0$0	= .
+                            335 	.globl	XG$Divide$0$0
+   0129 C9                  336 	ret
+   012A                     337 _Divide_end::
+                    012A    338 	G$Power$0$0	= .
+                            339 	.globl	G$Power$0$0
+                    012A    340 	C$strings.c$48$1$1	= .
+                            341 	.globl	C$strings.c$48$1$1
+                            342 ;strings.c:48: int Power(int Base, int Exponent) {
+                            343 ;	---------------------------------
+                            344 ; Function Power
+                            345 ; ---------------------------------
+   012A                     346 _Power_start::
+   012A                     347 _Power:
+   012A 3E 03               348 	ld	a,#3
+   012C CF                  349 	rst	0x08
+   012D DD E5               350 	push	ix
+   012F DD 21 00 00         351 	ld	ix,#0
+   0133 DD 39               352 	add	ix,sp
+   0135 F5                  353 	push	af
+                    0136    354 	C$strings.c$51$1$1	= .
+                            355 	.globl	C$strings.c$51$1$1
+                            356 ;strings.c:51: Temp=1;
+   0136 01 01 00            357 	ld	bc,#0x0001
+                    0139    358 	C$strings.c$52$1$1	= .
+                            359 	.globl	C$strings.c$52$1$1
+                            360 ;strings.c:52: for(i=0; i<Exponent; i++) {
+   0139 DD 36 FE 00         361 	ld	-2 (ix),#0x00
+   013D DD 36 FF 00         362 	ld	-1 (ix),#0x00
+   0141                     363 00101$:
+   0141 DD 7E FE            364 	ld	a,-2 (ix)
+   0144 DD 96 06            365 	sub	a,6 (ix)
+   0147 DD 7E FF            366 	ld	a,-1 (ix)
+   014A DD 9E 07            367 	sbc	a,7 (ix)
+   014D F2r6As01            368 	jp	P,00104$
+                    0150    369 	C$strings.c$53$1$1	= .
+                            370 	.globl	C$strings.c$53$1$1
+                            371 ;strings.c:53: Temp=Temp*Base;
+   0150 DD 6E 04            372 	ld	l,4 (ix)
+   0153 DD 66 05            373 	ld	h,5 (ix)
+   0156 E5                  374 	push	hl
+   0157 C5                  375 	push	bc
+   0158 CDr00s00            376 	call	__mulint_rrf_s
+   015B F1                  377 	pop	af
+   015C F1                  378 	pop	af
+   015D EB                  379 	ex	de,hl
+   015E 4B                  380 	ld	c,e
+   015F 42                  381 	ld	b,d
+                    0160    382 	C$strings.c$52$1$1	= .
+                            383 	.globl	C$strings.c$52$1$1
+                            384 ;strings.c:52: for(i=0; i<Exponent; i++) {
+   0160 DD 34 FE            385 	inc	-2 (ix)
+   0163 20 03               386 	jr	NZ,00110$
+   0165 DD 34 FF            387 	inc	-1 (ix)
+   0168                     388 00110$:
+   0168 18 D7               389 	jr	00101$
+   016A                     390 00104$:
+                    016A    391 	C$strings.c$55$1$1	= .
+                            392 	.globl	C$strings.c$55$1$1
+                            393 ;strings.c:55: return Temp;
+   016A 69                  394 	ld	l,c
+   016B 60                  395 	ld	h,b
+   016C DD F9               396 	ld	sp,ix
+   016E DD E1               397 	pop	ix
+   0170 3E 04               398 	ld	a,#4
+   0172 CF                  399 	rst	0x08
+                    0173    400 	C$strings.c$56$1$1	= .
+                            401 	.globl	C$strings.c$56$1$1
+                    0173    402 	XG$Power$0$0	= .
+                            403 	.globl	XG$Power$0$0
+   0173 C9                  404 	ret
+   0174                     405 _Power_end::
+                    0174    406 	G$WordToHex$0$0	= .
+                            407 	.globl	G$WordToHex$0$0
+                    0174    408 	C$strings.c$58$1$1	= .
+                            409 	.globl	C$strings.c$58$1$1
+                            410 ;strings.c:58: void WordToHex(unsigned int Number, char* String) {
+                            411 ;	---------------------------------
+                            412 ; Function WordToHex
+                            413 ; ---------------------------------
+   0174                     414 _WordToHex_start::
+   0174                     415 _WordToHex:
+   0174 3E 03               416 	ld	a,#3
+   0176 CF                  417 	rst	0x08
+   0177 DD E5               418 	push	ix
+   0179 DD 21 00 00         419 	ld	ix,#0
+   017D DD 39               420 	add	ix,sp
+   017F 21 FA FF            421 	ld	hl,#-6
+   0182 39                  422 	add	hl,sp
+   0183 F9                  423 	ld	sp,hl
+                    0184    424 	C$strings.c$61$1$1	= .
+                            425 	.globl	C$strings.c$61$1$1
+                            426 ;strings.c:61: Temp=Number;
+   0184 DD 7E 04            427 	ld	a,4 (ix)
+   0187 DD 77 FC            428 	ld	-4 (ix),a
+   018A DD 7E 05            429 	ld	a,5 (ix)
+   018D DD 77 FD            430 	ld	-3 (ix),a
+                    0190    431 	C$strings.c$62$1$1	= .
+                            432 	.globl	C$strings.c$62$1$1
+                            433 ;strings.c:62: for(i=3; i>=0; i--) {
+   0190 DD 36 FE 03         434 	ld	-2 (ix),#0x03
+   0194 DD 36 FF 00         435 	ld	-1 (ix),#0x00
+   0198                     436 00104$:
+   0198 DD CB FF 7E         437 	bit	7,-1 (ix)
+   019C C2r12s02            438 	jp	NZ,00107$
+                    019F    439 	C$strings.c$63$2$2	= .
+                            440 	.globl	C$strings.c$63$2$2
+                            441 ;strings.c:63: Module=Temp&15;
+   019F DD 7E FC            442 	ld	a,-4 (ix)
+   01A2 E6 0F               443 	and	a,#0x0F
+   01A4 DD 77 FA            444 	ld	-6 (ix),a
+   01A7 DD 36 FB 00         445 	ld	-5 (ix),#0x00
+                    01AB    446 	C$strings.c$64$2$2	= .
+                            447 	.globl	C$strings.c$64$2$2
+                            448 ;strings.c:64: if(Module<10) String[i]=Module+'0'; else String[i]=Module+'A'-10;
+   01AB DD 7E FA            449 	ld	a,-6 (ix)
+   01AE D6 0A               450 	sub	a,#0x0A
+   01B0 DD 7E FB            451 	ld	a,-5 (ix)
+   01B3 DE 00               452 	sbc	a,#0x00
+   01B5 30 17               453 	jr	NC,00102$
+   01B7 DD 7E 06            454 	ld	a,6 (ix)
+   01BA DD 86 FE            455 	add	a,-2 (ix)
+   01BD 4F                  456 	ld	c,a
+   01BE DD 7E 07            457 	ld	a,7 (ix)
+   01C1 DD 8E FF            458 	adc	a,-1 (ix)
+   01C4 47                  459 	ld	b,a
+   01C5 DD 5E FA            460 	ld	e,-6 (ix)
+   01C8 7B                  461 	ld	a,e
+   01C9 C6 30               462 	add	a,#0x30
+   01CB 02                  463 	ld	(bc),a
+   01CC 18 15               464 	jr	00103$
+   01CE                     465 00102$:
+   01CE DD 7E 06            466 	ld	a,6 (ix)
+   01D1 DD 86 FE            467 	add	a,-2 (ix)
+   01D4 4F                  468 	ld	c,a
+   01D5 DD 7E 07            469 	ld	a,7 (ix)
+   01D8 DD 8E FF            470 	adc	a,-1 (ix)
+   01DB 47                  471 	ld	b,a
+   01DC DD 5E FA            472 	ld	e,-6 (ix)
+   01DF 7B                  473 	ld	a,e
+   01E0 C6 37               474 	add	a,#0x37
+   01E2 02                  475 	ld	(bc),a
+   01E3                     476 00103$:
+                    01E3    477 	C$strings.c$65$2$2	= .
+                            478 	.globl	C$strings.c$65$2$2
+                            479 ;strings.c:65: Temp=(Temp>>4)&0xfff;
+   01E3 DD 4E FC            480 	ld	c,-4 (ix)
+   01E6 DD 46 FD            481 	ld	b,-3 (ix)
+   01E9 CB 38               482 	srl	b
+   01EB CB 19               483 	rr	c
+   01ED CB 38               484 	srl	b
+   01EF CB 19               485 	rr	c
+   01F1 CB 38               486 	srl	b
+   01F3 CB 19               487 	rr	c
+   01F5 CB 38               488 	srl	b
+   01F7 CB 19               489 	rr	c
+   01F9 DD 71 FC            490 	ld	-4 (ix),c
+   01FC 78                  491 	ld	a,b
+   01FD E6 0F               492 	and	a,#0x0F
+   01FF DD 77 FD            493 	ld	-3 (ix),a
+                    0202    494 	C$strings.c$62$1$1	= .
+                            495 	.globl	C$strings.c$62$1$1
+                            496 ;strings.c:62: for(i=3; i>=0; i--) {
+   0202 DD 6E FE            497 	ld	l,-2 (ix)
+   0205 DD 66 FF            498 	ld	h,-1 (ix)
+   0208 2B                  499 	dec	hl
+   0209 DD 75 FE            500 	ld	-2 (ix),l
+   020C DD 74 FF            501 	ld	-1 (ix),h
+   020F C3r98s01            502 	jp	00104$
+   0212                     503 00107$:
+                    0212    504 	C$strings.c$67$1$1	= .
+                            505 	.globl	C$strings.c$67$1$1
+                            506 ;strings.c:67: String[4]='\0';
+   0212 DD 7E 06            507 	ld	a,6 (ix)
+   0215 C6 04               508 	add	a,#0x04
+   0217 4F                  509 	ld	c,a
+   0218 DD 7E 07            510 	ld	a,7 (ix)
+   021B CE 00               511 	adc	a,#0x00
+   021D 47                  512 	ld	b,a
+   021E 3E 00               513 	ld	a,#0x00
+   0220 02                  514 	ld	(bc),a
+   0221 DD F9               515 	ld	sp,ix
+   0223 DD E1               516 	pop	ix
+   0225 3E 04               517 	ld	a,#4
+   0227 CF                  518 	rst	0x08
+                    0228    519 	C$strings.c$68$1$1	= .
+                            520 	.globl	C$strings.c$68$1$1
+                    0228    521 	XG$WordToHex$0$0	= .
+                            522 	.globl	XG$WordToHex$0$0
+   0228 C9                  523 	ret
+   0229                     524 _WordToHex_end::
+                    0229    525 	G$WordToString$0$0	= .
+                            526 	.globl	G$WordToString$0$0
+                    0229    527 	C$strings.c$71$1$1	= .
+                            528 	.globl	C$strings.c$71$1$1
+                            529 ;strings.c:71: void WordToString(unsigned int Number, char* String) {
+                            530 ;	---------------------------------
+                            531 ; Function WordToString
+                            532 ; ---------------------------------
+   0229                     533 _WordToString_start::
+   0229                     534 _WordToString:
+   0229 3E 03               535 	ld	a,#3
+   022B CF                  536 	rst	0x08
+   022C DD E5               537 	push	ix
+   022E DD 21 00 00         538 	ld	ix,#0
+   0232 DD 39               539 	add	ix,sp
+   0234 F5                  540 	push	af
+   0235 F5                  541 	push	af
+                    0236    542 	C$strings.c$74$1$1	= .
+                            543 	.globl	C$strings.c$74$1$1
+                            544 ;strings.c:74: Temp=Number;
+   0236 DD 7E 04            545 	ld	a,4 (ix)
+   0239 DD 77 FC            546 	ld	-4 (ix),a
+   023C DD 7E 05            547 	ld	a,5 (ix)
+   023F DD 77 FD            548 	ld	-3 (ix),a
+                    0242    549 	C$strings.c$75$1$1	= .
+                            550 	.globl	C$strings.c$75$1$1
+                            551 ;strings.c:75: for(i=0; i<7; i++) String[i]=' ';
+   0242 01 00 00            552 	ld	bc,#0x0000
+   0245                     553 00104$:
+   0245 79                  554 	ld	a,c
+   0246 D6 07               555 	sub	a,#0x07
+   0248 78                  556 	ld	a,b
+   0249 DE 00               557 	sbc	a,#0x00
+   024B F2r5Es02            558 	jp	P,00107$
+   024E DD 7E 06            559 	ld	a,6 (ix)
+   0251 81                  560 	add	a,c
+   0252 5F                  561 	ld	e,a
+   0253 DD 7E 07            562 	ld	a,7 (ix)
+   0256 88                  563 	adc	a,b
+   0257 57                  564 	ld	d,a
+   0258 3E 20               565 	ld	a,#0x20
+   025A 12                  566 	ld	(de),a
+   025B 03                  567 	inc	bc
+   025C 18 E7               568 	jr	00104$
+   025E                     569 00107$:
+                    025E    570 	C$strings.c$77$1$1	= .
+                            571 	.globl	C$strings.c$77$1$1
+                            572 ;strings.c:77: while(Temp!=0) {
+   025E DD 36 FE 00         573 	ld	-2 (ix),#0x00
+   0262 DD 36 FF 00         574 	ld	-1 (ix),#0x00
+   0266                     575 00101$:
+   0266 DD 7E FC            576 	ld	a,-4 (ix)
+   0269 DD B6 FD            577 	or	a,-3 (ix)
+   026C 28 4F               578 	jr	Z,00103$
+                    026E    579 	C$strings.c$78$2$2	= .
+                            580 	.globl	C$strings.c$78$2$2
+                            581 ;strings.c:78: String[5-i]=Mod(Temp, 10)+'0';
+   026E 3E 05               582 	ld	a,#0x05
+   0270 DD 96 FE            583 	sub	a,-2 (ix)
+   0273 5F                  584 	ld	e,a
+   0274 3E 00               585 	ld	a,#0x00
+   0276 DD 9E FF            586 	sbc	a,-1 (ix)
+   0279 57                  587 	ld	d,a
+   027A DD 7E 06            588 	ld	a,6 (ix)
+   027D 83                  589 	add	a,e
+   027E 5F                  590 	ld	e,a
+   027F DD 7E 07            591 	ld	a,7 (ix)
+   0282 8A                  592 	adc	a,d
+   0283 57                  593 	ld	d,a
+   0284 D5                  594 	push	de
+   0285 21 0A 00            595 	ld	hl,#0x000A
+   0288 E5                  596 	push	hl
+   0289 DD 6E FC            597 	ld	l,-4 (ix)
+   028C DD 66 FD            598 	ld	h,-3 (ix)
+   028F E5                  599 	push	hl
+   0290 CDrADs00            600 	call	_Mod
+   0293 F1                  601 	pop	af
+   0294 F1                  602 	pop	af
+   0295 4D                  603 	ld	c,l
+   0296 D1                  604 	pop	de
+   0297 79                  605 	ld	a,c
+   0298 C6 30               606 	add	a,#0x30
+   029A 12                  607 	ld	(de),a
+                    029B    608 	C$strings.c$79$2$2	= .
+                            609 	.globl	C$strings.c$79$2$2
+                            610 ;strings.c:79: Temp=Divide(Temp, 10);
+   029B 21 0A 00            611 	ld	hl,#0x000A
+   029E E5                  612 	push	hl
+   029F DD 6E FC            613 	ld	l,-4 (ix)
+   02A2 DD 66 FD            614 	ld	h,-3 (ix)
+   02A5 E5                  615 	push	hl
+   02A6 CDrDCs00            616 	call	_Divide
+   02A9 F1                  617 	pop	af
+   02AA F1                  618 	pop	af
+   02AB 44                  619 	ld	b,h
+   02AC DD 75 FC            620 	ld	-4 (ix),l
+   02AF DD 70 FD            621 	ld	-3 (ix),b
+                    02B2    622 	C$strings.c$80$2$2	= .
+                            623 	.globl	C$strings.c$80$2$2
+                            624 ;strings.c:80: i++;
+   02B2 DD 34 FE            625 	inc	-2 (ix)
+   02B5 20 03               626 	jr	NZ,00116$
+   02B7 DD 34 FF            627 	inc	-1 (ix)
+   02BA                     628 00116$:
+   02BA C3r66s02            629 	jp	00101$
+   02BD                     630 00103$:
+                    02BD    631 	C$strings.c$82$1$1	= .
+                            632 	.globl	C$strings.c$82$1$1
+                            633 ;strings.c:82: String[6]='\0';
+   02BD DD 7E 06            634 	ld	a,6 (ix)
+   02C0 C6 06               635 	add	a,#0x06
+   02C2 4F                  636 	ld	c,a
+   02C3 DD 7E 07            637 	ld	a,7 (ix)
+   02C6 CE 00               638 	adc	a,#0x00
+   02C8 47                  639 	ld	b,a
+   02C9 3E 00               640 	ld	a,#0x00
+   02CB 02                  641 	ld	(bc),a
+   02CC DD F9               642 	ld	sp,ix
+   02CE DD E1               643 	pop	ix
+   02D0 3E 04               644 	ld	a,#4
+   02D2 CF                  645 	rst	0x08
+                    02D3    646 	C$strings.c$83$1$1	= .
+                            647 	.globl	C$strings.c$83$1$1
+                    02D3    648 	XG$WordToString$0$0	= .
+                            649 	.globl	XG$WordToString$0$0
+   02D3 C9                  650 	ret
+   02D4                     651 _WordToString_end::
+                    02D4    652 	G$IntToString$0$0	= .
+                            653 	.globl	G$IntToString$0$0
+                    02D4    654 	C$strings.c$86$1$1	= .
+                            655 	.globl	C$strings.c$86$1$1
+                            656 ;strings.c:86: void IntToString(int Number, char* String) {
+                            657 ;	---------------------------------
+                            658 ; Function IntToString
+                            659 ; ---------------------------------
+   02D4                     660 _IntToString_start::
+   02D4                     661 _IntToString:
+   02D4 3E 03               662 	ld	a,#3
+   02D6 CF                  663 	rst	0x08
+   02D7 DD E5               664 	push	ix
+   02D9 DD 21 00 00         665 	ld	ix,#0
+   02DD DD 39               666 	add	ix,sp
+   02DF F5                  667 	push	af
+   02E0 F5                  668 	push	af
+                    02E1    669 	C$strings.c$89$1$1	= .
+                            670 	.globl	C$strings.c$89$1$1
+                            671 ;strings.c:89: Temp=Number;
+   02E1 DD 7E 04            672 	ld	a,4 (ix)
+   02E4 DD 77 FE            673 	ld	-2 (ix),a
+   02E7 DD 7E 05            674 	ld	a,5 (ix)
+   02EA DD 77 FF            675 	ld	-1 (ix),a
+                    02ED    676 	C$strings.c$90$1$1	= .
+                            677 	.globl	C$strings.c$90$1$1
+                            678 ;strings.c:90: for(i=0; i<7; i++) String[i]=' ';
+   02ED 01 00 00            679 	ld	bc,#0x0000
+   02F0                     680 00106$:
+   02F0 79                  681 	ld	a,c
+   02F1 D6 07               682 	sub	a,#0x07
+   02F3 78                  683 	ld	a,b
+   02F4 DE 00               684 	sbc	a,#0x00
+   02F6 F2r09s03            685 	jp	P,00109$
+   02F9 DD 7E 06            686 	ld	a,6 (ix)
+   02FC 81                  687 	add	a,c
+   02FD 5F                  688 	ld	e,a
+   02FE DD 7E 07            689 	ld	a,7 (ix)
+   0301 88                  690 	adc	a,b
+   0302 57                  691 	ld	d,a
+   0303 3E 20               692 	ld	a,#0x20
+   0305 12                  693 	ld	(de),a
+   0306 03                  694 	inc	bc
+   0307 18 E7               695 	jr	00106$
+   0309                     696 00109$:
+                    0309    697 	C$strings.c$91$1$1	= .
+                            698 	.globl	C$strings.c$91$1$1
+                            699 ;strings.c:91: i=0;
+   0309 11 00 00            700 	ld	de,#0x0000
+                    030C    701 	C$strings.c$92$1$1	= .
+                            702 	.globl	C$strings.c$92$1$1
+                            703 ;strings.c:92: if(Temp<0) {
+   030C DD CB FF 7E         704 	bit	7,-1 (ix)
+   0310 28 1F               705 	jr	Z,00116$
+                    0312    706 	C$strings.c$93$2$2	= .
+                            707 	.globl	C$strings.c$93$2$2
+                            708 ;strings.c:93: Temp=-Temp;
+   0312 AF                  709 	xor	a,a
+   0313 DD 9E FE            710 	sbc	a,-2 (ix)
+   0316 DD 77 FE            711 	ld	-2 (ix),a
+   0319 3E 00               712 	ld	a,#0x00
+   031B DD 9E FF            713 	sbc	a,-1 (ix)
+   031E DD 77 FF            714 	ld	-1 (ix),a
+                    0321    715 	C$strings.c$94$2$2	= .
+                            716 	.globl	C$strings.c$94$2$2
+                            717 ;strings.c:94: String[i]='-';
+   0321 DD 4E 06            718 	ld	c,6 (ix)
+   0324 DD 46 07            719 	ld	b,7 (ix)
+   0327 C5                  720 	push	bc
+   0328 FD E1               721 	pop	iy
+   032A FD 36 00 2D         722 	ld	(iy),#0x2D
+                    032E    723 	C$strings.c$95$2$2	= .
+                            724 	.globl	C$strings.c$95$2$2
+                            725 ;strings.c:95: i++;
+   032E 11 01 00            726 	ld	de,#0x0001
+                    0331    727 	C$strings.c$97$1$1	= .
+                            728 	.globl	C$strings.c$97$1$1
+                            729 ;strings.c:97: while(Temp!=0) {
+   0331                     730 00116$:
+   0331                     731 00103$:
+   0331 DD 7E FE            732 	ld	a,-2 (ix)
+   0334 DD B6 FF            733 	or	a,-1 (ix)
+   0337 CAr8Bs03            734 	jp	Z,00105$
+                    033A    735 	C$strings.c$98$2$3	= .
+                            736 	.globl	C$strings.c$98$2$3
+                            737 ;strings.c:98: String[5-i]=Mod(Temp, 10)+'0';
+   033A 3E 05               738 	ld	a,#0x05
+   033C 93                  739 	sub	a,e
+   033D 4F                  740 	ld	c,a
+   033E 3E 00               741 	ld	a,#0x00
+   0340 9A                  742 	sbc	a,d
+   0341 47                  743 	ld	b,a
+   0342 DD 7E 06            744 	ld	a,6 (ix)
+   0345 81                  745 	add	a,c
+   0346 DD 77 FC            746 	ld	-4 (ix),a
+   0349 DD 7E 07            747 	ld	a,7 (ix)
+   034C 88                  748 	adc	a,b
+   034D DD 77 FD            749 	ld	-3 (ix),a
+   0350 D5                  750 	push	de
+   0351 21 0A 00            751 	ld	hl,#0x000A
+   0354 E5                  752 	push	hl
+   0355 DD 6E FE            753 	ld	l,-2 (ix)
+   0358 DD 66 FF            754 	ld	h,-1 (ix)
+   035B E5                  755 	push	hl
+   035C CDrADs00            756 	call	_Mod
+   035F F1                  757 	pop	af
+   0360 F1                  758 	pop	af
+   0361 4D                  759 	ld	c,l
+   0362 D1                  760 	pop	de
+   0363 79                  761 	ld	a,c
+   0364 C6 30               762 	add	a,#0x30
+   0366 DD 6E FC            763 	ld	l,-4 (ix)
+   0369 DD 66 FD            764 	ld	h,-3 (ix)
+   036C 77                  765 	ld	(hl),a
+                    036D    766 	C$strings.c$99$2$3	= .
+                            767 	.globl	C$strings.c$99$2$3
+                            768 ;strings.c:99: Temp=Divide(Temp, 10);
+   036D D5                  769 	push	de
+   036E 21 0A 00            770 	ld	hl,#0x000A
+   0371 E5                  771 	push	hl
+   0372 DD 6E FE            772 	ld	l,-2 (ix)
+   0375 DD 66 FF            773 	ld	h,-1 (ix)
+   0378 E5                  774 	push	hl
+   0379 CDrDCs00            775 	call	_Divide
+   037C F1                  776 	pop	af
+   037D F1                  777 	pop	af
+   037E 44                  778 	ld	b,h
+   037F 4D                  779 	ld	c,l
+   0380 D1                  780 	pop	de
+   0381 DD 71 FE            781 	ld	-2 (ix),c
+   0384 DD 70 FF            782 	ld	-1 (ix),b
+                    0387    783 	C$strings.c$100$2$3	= .
+                            784 	.globl	C$strings.c$100$2$3
+                            785 ;strings.c:100: i++;
+   0387 13                  786 	inc	de
+   0388 C3r31s03            787 	jp	00103$
+   038B                     788 00105$:
+                    038B    789 	C$strings.c$102$1$1	= .
+                            790 	.globl	C$strings.c$102$1$1
+                            791 ;strings.c:102: String[6]='\0';
+   038B DD 7E 06            792 	ld	a,6 (ix)
+   038E C6 06               793 	add	a,#0x06
+   0390 4F                  794 	ld	c,a
+   0391 DD 7E 07            795 	ld	a,7 (ix)
+   0394 CE 00               796 	adc	a,#0x00
+   0396 47                  797 	ld	b,a
+   0397 3E 00               798 	ld	a,#0x00
+   0399 02                  799 	ld	(bc),a
+   039A DD F9               800 	ld	sp,ix
+   039C DD E1               801 	pop	ix
+   039E 3E 04               802 	ld	a,#4
+   03A0 CF                  803 	rst	0x08
+                    03A1    804 	C$strings.c$103$1$1	= .
+                            805 	.globl	C$strings.c$103$1$1
+                    03A1    806 	XG$IntToString$0$0	= .
+                            807 	.globl	XG$IntToString$0$0
+   03A1 C9                  808 	ret
+   03A2                     809 _IntToString_end::
+                            810 	.area _CODE
+                            811 	.area _CABS

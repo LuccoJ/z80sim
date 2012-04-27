@@ -1,0 +1,367 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 2.9.0 #5416 (Feb  3 2010) (UNIX)
+                              4 ; This file was generated Fri Apr 27 12:42:17 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module locks
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _LocksInited
+                             13 	.globl _LockCount
+                             14 	.globl _Locks
+                             15 	.globl _SystemLock
+                             16 	.globl _LocksInit
+                             17 	.globl _LockCreate
+                             18 	.globl _LockObtain
+                             19 	.globl _LockRelease
+                             20 	.globl _LockQuery
+                             21 ;--------------------------------------------------------
+                             22 ; special function registers
+                             23 ;--------------------------------------------------------
+                             24 ;--------------------------------------------------------
+                             25 ;  ram data
+                             26 ;--------------------------------------------------------
+                             27 	.area _DATA
+                    0000     28 G$SystemLock$0$0==.
+   0000                      29 _SystemLock::
+   0000                      30 	.ds 1
+                    0001     31 G$Locks$0$0==.
+   0001                      32 _Locks::
+   0001                      33 	.ds 256
+                    0101     34 G$LockCount$0$0==.
+   0101                      35 _LockCount::
+   0101                      36 	.ds 1
+                    0102     37 G$LocksInited$0$0==.
+   0102                      38 _LocksInited::
+   0102                      39 	.ds 1
+                             40 ;--------------------------------------------------------
+                             41 ; overlayable items in  ram 
+                             42 ;--------------------------------------------------------
+                             43 	.area _OVERLAY
+                             44 ;--------------------------------------------------------
+                             45 ; external initialized ram data
+                             46 ;--------------------------------------------------------
+                             47 ;--------------------------------------------------------
+                             48 ; global & static initialisations
+                             49 ;--------------------------------------------------------
+                             50 	.area _HOME
+                             51 	.area _GSINIT
+                             52 	.area _GSFINAL
+                             53 	.area _GSINIT
+                             54 ;--------------------------------------------------------
+                             55 ; Home
+                             56 ;--------------------------------------------------------
+                             57 	.area _HOME
+                             58 	.area _HOME
+                             59 ;--------------------------------------------------------
+                             60 ; code
+                             61 ;--------------------------------------------------------
+                             62 	.area _CODE
+                    0000     63 	G$LocksInit$0$0	= .
+                             64 	.globl	G$LocksInit$0$0
+                    0000     65 	C$locks.c$13$0$0	= .
+                             66 	.globl	C$locks.c$13$0$0
+                             67 ;locks.c:13: bool LocksInited; void LocksInit() {
+                             68 ;	---------------------------------
+                             69 ; Function LocksInit
+                             70 ; ---------------------------------
+   0000                      71 _LocksInit_start::
+   0000                      72 _LocksInit:
+   0000 3E 03                73 	ld	a,#3
+   0002 CF                   74 	rst	0x08
+                    0003     75 	C$locks.c$14$1$1	= .
+                             76 	.globl	C$locks.c$14$1$1
+                             77 ;locks.c:14: if(!LocksInited) {
+   0003 AF                   78 	xor	a,a
+   0004 21r02s01             79 	ld	hl,#_LocksInited + 0
+   0007 B6                   80 	or	a,(hl)
+   0008 20 15                81 	jr	NZ,00103$
+                    000A     82 	C$locks.c$15$2$2	= .
+                             83 	.globl	C$locks.c$15$2$2
+                             84 ;locks.c:15: LockCount=0;
+   000A 21r01s01             85 	ld	hl,#_LockCount + 0
+   000D 36 00                86 	ld	(hl), #0x00
+                    000F     87 	C$locks.c$16$2$2	= .
+                             88 	.globl	C$locks.c$16$2$2
+                             89 ;locks.c:16: SchedulingInit();
+   000F CDr00s00             90 	call	_SchedulingInit
+                    0012     91 	C$locks.c$17$2$2	= .
+                             92 	.globl	C$locks.c$17$2$2
+                             93 ;locks.c:17: LocksInited=TRUE;
+   0012 21r02s01             94 	ld	hl,#_LocksInited + 0
+   0015 36 01                95 	ld	(hl), #0x01
+                    0017     96 	C$locks.c$18$2$2	= .
+                             97 	.globl	C$locks.c$18$2$2
+                             98 ;locks.c:18: _SimPrintString("Locks initialized\n");
+   0017 21r23s00             99 	ld	hl,#__str_0
+   001A E5                  100 	push	hl
+   001B CDr00s00            101 	call	__Z80SimPrintString
+   001E F1                  102 	pop	af
+   001F                     103 00103$:
+   001F 3E 04               104 	ld	a,#4
+   0021 CF                  105 	rst	0x08
+                    0022    106 	C$locks.c$20$2$1	= .
+                            107 	.globl	C$locks.c$20$2$1
+                    0022    108 	XG$LocksInit$0$0	= .
+                            109 	.globl	XG$LocksInit$0$0
+   0022 C9                  110 	ret
+   0023                     111 _LocksInit_end::
+                    0023    112 Flocks$_str_0$0$0 == .
+   0023                     113 __str_0:
+   0023 4C 6F 63 6B 73 20   114 	.ascii "Locks initialized"
+        69 6E 69 74 69 61
+        6C 69 7A 65 64
+   0034 0A                  115 	.db 0x0A
+   0035 00                  116 	.db 0x00
+                    0036    117 	G$LockCreate$0$0	= .
+                            118 	.globl	G$LockCreate$0$0
+                    0036    119 	C$locks.c$22$2$1	= .
+                            120 	.globl	C$locks.c$22$2$1
+                            121 ;locks.c:22: lock LockCreate() {
+                            122 ;	---------------------------------
+                            123 ; Function LockCreate
+                            124 ; ---------------------------------
+   0036                     125 _LockCreate_start::
+   0036                     126 _LockCreate:
+   0036 3E 03               127 	ld	a,#3
+   0038 CF                  128 	rst	0x08
+                    0039    129 	C$locks.c$24$1$1	= .
+                            130 	.globl	C$locks.c$24$1$1
+                            131 ;locks.c:24: Pause();
+   0039 CDr00s00            132 	call	_Pause
+                    003C    133 	C$locks.c$25$1$1	= .
+                            134 	.globl	C$locks.c$25$1$1
+                            135 ;locks.c:25: NewLock=LockCount;
+   003C 21r01s01            136 	ld	hl,#_LockCount + 0
+   003F 4E                  137 	ld	c,(hl)
+                    0040    138 	C$locks.c$26$1$1	= .
+                            139 	.globl	C$locks.c$26$1$1
+                            140 ;locks.c:26: Locks[NewLock]=FALSE;
+   0040 3Er01               141 	ld	a,#<_Locks
+   0042 81                  142 	add	a,c
+   0043 5F                  143 	ld	e,a
+   0044 3Es00               144 	ld	a,#>_Locks
+   0046 CE 00               145 	adc	a,#0x00
+   0048 57                  146 	ld	d,a
+   0049 3E 00               147 	ld	a,#0x00
+   004B 12                  148 	ld	(de),a
+                    004C    149 	C$locks.c$27$1$1	= .
+                            150 	.globl	C$locks.c$27$1$1
+                            151 ;locks.c:27: LockCount++;
+   004C FD 21r01s01         152 	ld	iy,#_LockCount
+   0050 FD 34 00            153 	inc	0 (iy)
+                    0053    154 	C$locks.c$28$1$1	= .
+                            155 	.globl	C$locks.c$28$1$1
+                            156 ;locks.c:28: Resume();
+   0053 C5                  157 	push	bc
+   0054 CDr00s00            158 	call	_Resume
+   0057 C1                  159 	pop	bc
+                    0058    160 	C$locks.c$29$1$1	= .
+                            161 	.globl	C$locks.c$29$1$1
+                            162 ;locks.c:29: return NewLock;
+   0058 69                  163 	ld	l,c
+   0059 3E 04               164 	ld	a,#4
+   005B CF                  165 	rst	0x08
+                    005C    166 	C$locks.c$31$1$1	= .
+                            167 	.globl	C$locks.c$31$1$1
+                    005C    168 	XG$LockCreate$0$0	= .
+                            169 	.globl	XG$LockCreate$0$0
+   005C C9                  170 	ret
+   005D                     171 _LockCreate_end::
+                    005D    172 	G$LockObtain$0$0	= .
+                            173 	.globl	G$LockObtain$0$0
+                    005D    174 	C$locks.c$33$1$1	= .
+                            175 	.globl	C$locks.c$33$1$1
+                            176 ;locks.c:33: void LockObtain(lock Handle) {
+                            177 ;	---------------------------------
+                            178 ; Function LockObtain
+                            179 ; ---------------------------------
+   005D                     180 _LockObtain_start::
+   005D                     181 _LockObtain:
+   005D 3E 03               182 	ld	a,#3
+   005F CF                  183 	rst	0x08
+   0060 DD E5               184 	push	ix
+   0062 DD 21 00 00         185 	ld	ix,#0
+   0066 DD 39               186 	add	ix,sp
+                    0068    187 	C$locks.c$34$1$1	= .
+                            188 	.globl	C$locks.c$34$1$1
+                            189 ;locks.c:34: if(!IsMultitasking() && LockQuery(Handle)) Halt("DEADLOCK IN KERNEL MODE");
+   0068 CDr00s00            190 	call	_IsMultitasking
+   006B AF                  191 	xor	a,a
+   006C B5                  192 	or	a,l
+   006D 20 15               193 	jr	NZ,00104$
+   006F DD 7E 04            194 	ld	a,4 (ix)
+   0072 F5                  195 	push	af
+   0073 33                  196 	inc	sp
+   0074 CDrFBs00            197 	call	_LockQuery
+   0077 33                  198 	inc	sp
+   0078 AF                  199 	xor	a,a
+   0079 B5                  200 	or	a,l
+   007A 28 08               201 	jr	Z,00104$
+   007C 21rB5s00            202 	ld	hl,#__str_1
+   007F E5                  203 	push	hl
+   0080 CDr00s00            204 	call	_Halt
+   0083 F1                  205 	pop	af
+                    0084    206 	C$locks.c$35$1$1	= .
+                            207 	.globl	C$locks.c$35$1$1
+                            208 ;locks.c:35: while(LockQuery(Handle)) AwaitEvent(EVENT_UNLOCK);
+   0084                     209 00104$:
+   0084 DD 7E 04            210 	ld	a,4 (ix)
+   0087 F5                  211 	push	af
+   0088 33                  212 	inc	sp
+   0089 CDrFBs00            213 	call	_LockQuery
+   008C 33                  214 	inc	sp
+   008D AF                  215 	xor	a,a
+   008E B5                  216 	or	a,l
+   008F 28 0A               217 	jr	Z,00106$
+   0091 21 01 00            218 	ld	hl,#0x0001
+   0094 E5                  219 	push	hl
+   0095 CDr00s00            220 	call	_AwaitEvent
+   0098 F1                  221 	pop	af
+   0099 18 E9               222 	jr	00104$
+   009B                     223 00106$:
+                    009B    224 	C$locks.c$36$1$1	= .
+                            225 	.globl	C$locks.c$36$1$1
+                            226 ;locks.c:36: Pause();
+   009B CDr00s00            227 	call	_Pause
+                    009E    228 	C$locks.c$37$1$1	= .
+                            229 	.globl	C$locks.c$37$1$1
+                            230 ;locks.c:37: Locks[Handle]=TRUE;
+   009E 3Er01               231 	ld	a,#<_Locks
+   00A0 DD 86 04            232 	add	a,4 (ix)
+   00A3 4F                  233 	ld	c,a
+   00A4 3Es00               234 	ld	a,#>_Locks
+   00A6 CE 00               235 	adc	a,#0x00
+   00A8 47                  236 	ld	b,a
+   00A9 3E 01               237 	ld	a,#0x01
+   00AB 02                  238 	ld	(bc),a
+                    00AC    239 	C$locks.c$38$1$1	= .
+                            240 	.globl	C$locks.c$38$1$1
+                            241 ;locks.c:38: Resume();
+   00AC CDr00s00            242 	call	_Resume
+   00AF DD E1               243 	pop	ix
+   00B1 3E 04               244 	ld	a,#4
+   00B3 CF                  245 	rst	0x08
+                    00B4    246 	C$locks.c$39$1$1	= .
+                            247 	.globl	C$locks.c$39$1$1
+                    00B4    248 	XG$LockObtain$0$0	= .
+                            249 	.globl	XG$LockObtain$0$0
+   00B4 C9                  250 	ret
+   00B5                     251 _LockObtain_end::
+                    00B5    252 Flocks$_str_1$0$0 == .
+   00B5                     253 __str_1:
+   00B5 44 45 41 44 4C 4F   254 	.ascii "DEADLOCK IN KERNEL MODE"
+        43 4B 20 49 4E 20
+        4B 45 52 4E 45 4C
+        20 4D 4F 44 45
+   00CC 00                  255 	.db 0x00
+                    00CD    256 	G$LockRelease$0$0	= .
+                            257 	.globl	G$LockRelease$0$0
+                    00CD    258 	C$locks.c$41$1$1	= .
+                            259 	.globl	C$locks.c$41$1$1
+                            260 ;locks.c:41: void LockRelease(lock Handle) {
+                            261 ;	---------------------------------
+                            262 ; Function LockRelease
+                            263 ; ---------------------------------
+   00CD                     264 _LockRelease_start::
+   00CD                     265 _LockRelease:
+   00CD 3E 03               266 	ld	a,#3
+   00CF CF                  267 	rst	0x08
+   00D0 DD E5               268 	push	ix
+   00D2 DD 21 00 00         269 	ld	ix,#0
+   00D6 DD 39               270 	add	ix,sp
+                    00D8    271 	C$locks.c$42$1$1	= .
+                            272 	.globl	C$locks.c$42$1$1
+                            273 ;locks.c:42: Pause();
+   00D8 CDr00s00            274 	call	_Pause
+                    00DB    275 	C$locks.c$43$1$1	= .
+                            276 	.globl	C$locks.c$43$1$1
+                            277 ;locks.c:43: if(Locks[Handle]) {
+   00DB 3Er01               278 	ld	a,#<_Locks
+   00DD DD 86 04            279 	add	a,4 (ix)
+   00E0 4F                  280 	ld	c,a
+   00E1 3Es00               281 	ld	a,#>_Locks
+   00E3 CE 00               282 	adc	a,#0x00
+   00E5 47                  283 	ld	b,a
+   00E6 0A                  284 	ld	a,(bc)
+   00E7 B7                  285 	or	a,a
+   00E8 28 08               286 	jr	Z,00102$
+                    00EA    287 	C$locks.c$44$2$2	= .
+                            288 	.globl	C$locks.c$44$2$2
+                            289 ;locks.c:44: Locks[Handle]=FALSE;
+   00EA 3E 00               290 	ld	a,#0x00
+   00EC 02                  291 	ld	(bc),a
+                    00ED    292 	C$locks.c$45$2$2	= .
+                            293 	.globl	C$locks.c$45$2$2
+                            294 ;locks.c:45: Resume();
+   00ED CDr00s00            295 	call	_Resume
+   00F0 18 03               296 	jr	00104$
+   00F2                     297 00102$:
+                    00F2    298 	C$locks.c$47$1$1	= .
+                            299 	.globl	C$locks.c$47$1$1
+                            300 ;locks.c:47: } else Resume();
+   00F2 CDr00s00            301 	call	_Resume
+   00F5                     302 00104$:
+   00F5 DD E1               303 	pop	ix
+   00F7 3E 04               304 	ld	a,#4
+   00F9 CF                  305 	rst	0x08
+                    00FA    306 	C$locks.c$48$1$1	= .
+                            307 	.globl	C$locks.c$48$1$1
+                    00FA    308 	XG$LockRelease$0$0	= .
+                            309 	.globl	XG$LockRelease$0$0
+   00FA C9                  310 	ret
+   00FB                     311 _LockRelease_end::
+                    00FB    312 	G$LockQuery$0$0	= .
+                            313 	.globl	G$LockQuery$0$0
+                    00FB    314 	C$locks.c$50$1$1	= .
+                            315 	.globl	C$locks.c$50$1$1
+                            316 ;locks.c:50: bool LockQuery(lock Handle) {
+                            317 ;	---------------------------------
+                            318 ; Function LockQuery
+                            319 ; ---------------------------------
+   00FB                     320 _LockQuery_start::
+   00FB                     321 _LockQuery:
+   00FB 3E 03               322 	ld	a,#3
+   00FD CF                  323 	rst	0x08
+   00FE DD E5               324 	push	ix
+   0100 DD 21 00 00         325 	ld	ix,#0
+   0104 DD 39               326 	add	ix,sp
+                    0106    327 	C$locks.c$52$1$1	= .
+                            328 	.globl	C$locks.c$52$1$1
+                            329 ;locks.c:52: Pause();
+   0106 CDr00s00            330 	call	_Pause
+                    0109    331 	C$locks.c$53$1$1	= .
+                            332 	.globl	C$locks.c$53$1$1
+                            333 ;locks.c:53: State=Locks[Handle];
+   0109 3Er01               334 	ld	a,#<_Locks
+   010B DD 86 04            335 	add	a,4 (ix)
+   010E 4F                  336 	ld	c,a
+   010F 3Es00               337 	ld	a,#>_Locks
+   0111 CE 00               338 	adc	a,#0x00
+   0113 47                  339 	ld	b,a
+   0114 0A                  340 	ld	a,(bc)
+   0115 4F                  341 	ld	c,a
+                    0116    342 	C$locks.c$54$1$1	= .
+                            343 	.globl	C$locks.c$54$1$1
+                            344 ;locks.c:54: Resume();
+   0116 C5                  345 	push	bc
+   0117 CDr00s00            346 	call	_Resume
+   011A C1                  347 	pop	bc
+                    011B    348 	C$locks.c$55$1$1	= .
+                            349 	.globl	C$locks.c$55$1$1
+                            350 ;locks.c:55: return State;
+   011B 69                  351 	ld	l,c
+   011C DD E1               352 	pop	ix
+   011E 3E 04               353 	ld	a,#4
+   0120 CF                  354 	rst	0x08
+                    0121    355 	C$locks.c$56$1$1	= .
+                            356 	.globl	C$locks.c$56$1$1
+                    0121    357 	XG$LockQuery$0$0	= .
+                            358 	.globl	XG$LockQuery$0$0
+   0121 C9                  359 	ret
+   0122                     360 _LockQuery_end::
+                            361 	.area _CODE
+                            362 	.area _CABS

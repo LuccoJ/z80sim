@@ -1,0 +1,2 @@
+comp --profile --z80labels --asm --map --syscalls --rom --bin main.c z80.c strings.c screen.c console.c memory.c \
+locks.c scheduling.c exceptions.c time.c sound.c keyboard.c tape.c -o ljlos

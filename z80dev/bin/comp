@@ -1,0 +1,185 @@
+#!/bin/bash
+
+COMPILER=/usr/bin/sdcc
+
+COMPILERPARMS="---short-is-8bits -mz80 --debug"
+LINKERPARMS="--lib-path /home/ljl/Downloads/z80dev/share/sdcc/lib/z80 -mz80 --no-std-crt0 -Wl-- -Wl-u"
+PROFILE=0
+ROM=0
+HEXOUTPUT=0
+BINOUTPUT=0
+Z80LABELS=0
+SYMBOLS=0
+MAP=0
+SYSCALLS=0
+LEAVEASM=0
+SOURCES=""
+OBJECTS=""
+PROJNAME=""
+
+WAITPROJNAME=0
+
+for PARAMETER in $@; do
+	if [[ $WAITPROJNAME == 1 ]]; then
+		PROJNAME="$PARAMETER"
+		WAITPROJNAME=0
+		continue
+	fi
+	case "$PARAMETER" in
+	"--profile" )
+		PROFILE=1
+		BINOUTPUT=1
+		SYMBOLS=1
+		;;
+	"--asm" )
+		LEAVEASM=1
+		;;
+	"--rom" )
+		ROM=1
+		;;
+        "--ihx" )
+                HEXOUTPUT=1
+                ;;
+        "--bin" )
+                BINOUTPUT=1
+                ;;
+	"--z80labels" )
+		Z80LABELS=1
+		;;
+        "--sym" )
+                SYMBOLS=1
+                ;;
+	"--map" )
+		MAP=1
+		;;
+	"--syscalls" )
+		SYSCALLS=1
+		;;
+	-o )
+		WAITPROJNAME=1
+		;;
+	-* )
+		echo "Invalid parameter $PARAMETER"
+		exit
+		;;
+	*.c )
+		SOURCES="$SOURCES $PARAMETER"
+		;;
+	* )
+		echo "'$PARAMETER' is not a C file"
+		exit
+		;;
+	esac
+done
+
+if [[ $PROJNAME == "" ]]; then
+	echo "An output filename must be specified"
+	exit
+fi
+
+echo ""
+echo "Compiling project '$PROJNAME'..."
+
+if [[ $PROFILE == 1 ]]; then
+	COMPILERPARMS="--profile -D_Z80SIMULATOR $COMPILERPARMS"
+fi
+
+if [[ $ROM == 1 ]]; then
+        LINKERPARMS="--code-loc 0x0000 --data-loc 0x8000 $LINKERPARMS"
+	OBJECTS="/home/ljl/Downloads/z80dev/share/sdcc/lib/z80/pad.o $OBJECTS"
+fi
+
+for SOURCEFILE in $SOURCES; do
+	echo "  Compiling file '$SOURCEFILE'..."
+	$COMPILER $COMPILERPARMS -c "$SOURCEFILE" -o "${SOURCEFILE%.*}.o" 1>/dev/null 2>_temp_output
+        if [[ $? != 0 ]]; then
+		indent 4 <_temp_output
+		echo ""
+                echo "Errors during compile."
+                rm _temp_output
+		rm *.o
+		exit
+        fi
+	indent 4 <_temp_output
+        OBJECTS="$OBJECTS ${SOURCEFILE%.*}.o"
+	if [[ $LEAVEASM == 0 ]]; then
+		rm "${SOURCEFILE%.*}.asm"
+		rm "${SOURCEFILE%.*}.lst"
+	fi
+	rm "${SOURCEFILE%.*}.sym"
+done
+
+rm _temp_output
+
+if [[ $SYSCALLS == 1 ]]; then
+        OBJECTS="$OBJECTS /home/ljl/Downloads/z80dev/share/sdcc/lib/z80/jumptable.o"
+fi
+
+echo ""
+echo "Linking project..."
+
+$COMPILER $LINKERPARMS $OBJECTS -o "temp_$PROJNAME.ihx" 2>&1 | indent 2
+
+#if [[ @? != 0 ]]; then
+#	echo ""
+#	echo "Errors during link."
+#	exit
+#fi
+
+#rm *.o
+
+if [[ $BINOUTPUT == 1 || $ROM == 1 ]]; then
+	echo ""
+	echo "Creating binary..."
+	hex2bin -e .nocalls.bin "temp_$PROJNAME.ihx" | grep "address" | indent 2
+	if [[ $SYSCALLS == 1 ]]; then
+        	echo ""
+	        echo "Creating system calls jump table..."
+	        funcmap --jp --code "${PROJNAME}_library.c" --sym "temp_$PROJNAME.sym" -i "$PROJNAME.cls" -o "temp_$PROJNAME.syscalls.bin" 2>&1 1>/dev/null | indent 2
+		cat >"temp_$PROJNAME.bin" "temp_$PROJNAME.nocalls.bin" "temp_$PROJNAME.syscalls.bin"
+		rm "temp_$PROJNAME.nocalls.bin"
+		rm "temp_$PROJNAME.syscalls.bin"
+	else
+	        mv "temp_$PROJNAME.nocalls.bin" "temp_$PROJNAME.bin"
+	fi
+	if [[ $ROM == 1 ]]; then
+		echo ""
+		echo "Creating ROM file..."
+		bin2rom <"temp_$PROJNAME.bin" >"$PROJNAME.rom"
+
+	fi
+	if [[ $BINOUTPUT == 1 ]]; then
+		mv "temp_$PROJNAME.bin" "$PROJNAME.bin"
+	else
+		rm "temp_$PROJNAME.bin"
+	fi
+fi
+
+if [[ $HEXOUTPUT == 1 ]]; then
+	mv "temp_$PROJNAME.ihx" "$PROJNAME.ihx"
+else
+	rm "temp_$PROJNAME.ihx"
+fi
+
+if [[ $Z80LABELS == 1 ]]; then
+	echo ""
+	echo "Generating Z80-compatible labels (labels.asm)..."
+	z80labels <"temp_$PROJNAME.sym" >"labels.asm"
+fi
+
+if [[ $SYMBOLS == 1 ]]; then
+	mv "temp_$PROJNAME.sym" "$PROJNAME.sym"
+else
+	rm "temp_$PROJNAME.sym"
+fi
+
+if [[ $MAP == 1 ]]; then
+        mv "temp_$PROJNAME.map" "$PROJNAME.map"
+else
+	rm "temp_$PROJNAME.map"
+fi
+
+
+rm "temp_$PROJNAME.lnk"
+
+echo ""

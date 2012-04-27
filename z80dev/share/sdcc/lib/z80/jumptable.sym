@@ -1,0 +1,16 @@
+ASxxxx Assembler V01.75  (Zilog Z80 / Hitachi HD64180), page 1.
+
+Symbol Table
+
+  1 __JumpTable                        0000 GR
+
+ASxxxx Assembler V01.75  (Zilog Z80 / Hitachi HD64180), page 2.
+
+Area Table
+
+   0 _CODE                              size    0   flags 0
+   1 _DATA                              size    1   flags 0
+   2 _OVERLAY                           size    0   flags 0
+   3 _GSINIT                            size    0   flags 0
+   4 _GSFINAL                           size    0   flags 0
+   5 _HOME                              size    0   flags 0

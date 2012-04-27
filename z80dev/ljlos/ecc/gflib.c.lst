@@ -1,0 +1,799 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Wed Oct 15 22:42:05 2003
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module gflib
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _gfexp
+                             13 	.globl _gfinv
+                             14 	.globl _gfmul
+                             15 	.globl _v2e
+                             16 	.globl _e2v
+                             17 ;--------------------------------------------------------
+                             18 ;  ram data
+                             19 ;--------------------------------------------------------
+                             20 	.area _DATA
+                             21 ;--------------------------------------------------------
+                             22 ; overlayable items in  ram 
+                             23 ;--------------------------------------------------------
+                             24 	.area _OVERLAY
+                             25 ;--------------------------------------------------------
+                             26 ; external initialized ram data
+                             27 ;--------------------------------------------------------
+                             28 ;--------------------------------------------------------
+                             29 ; global & static initialisations
+                             30 ;--------------------------------------------------------
+                             31 	.area _GSINIT
+                             32 	.area _GSFINAL
+                             33 	.area _GSINIT
+                             34 ;--------------------------------------------------------
+                             35 ; Home
+                             36 ;--------------------------------------------------------
+                             37 	.area _HOME
+                             38 	.area _CODE
+                             39 ;--------------------------------------------------------
+                             40 ; code
+                             41 ;--------------------------------------------------------
+                             42 	.area _CODE
+                             43 ;ecc/gflib.c:71: unsigned char gfmul(unsigned char mul1, unsigned char mul2) {
+                             44 ;	genLabel
+                             45 ;	genFunction
+                             46 ;	---------------------------------
+                             47 ; Function gfmul
+                             48 ; ---------------------------------
+   0000                      49 _gfmul_start::
+   0000                      50 _gfmul:
+   0000 DD E5                51 	push	ix
+   0002 DD 21 00 00          52 	ld	ix,#0
+   0006 DD 39                53 	add	ix,sp
+                             54 ;ecc/gflib.c:73: if(mul1 == 0 || mul2 == 0) mul3 = 0;
+                             55 ;	genCmpEq
+                             56 ;	AOP_STK for 
+                             57 ; genCmpEq: left 1, right 1, result 0
+   0008 DD 7E 04             58 	ld	a,4(ix)
+   000B B7                   59 	or	a,a
+   000C CAr19s00             60 	jp	z,00101$
+   000F                      61 00108$:
+                             62 ;	genCmpEq
+                             63 ;	AOP_STK for 
+                             64 ; genCmpEq: left 1, right 1, result 0
+   000F DD 7E 05             65 	ld	a,5(ix)
+   0012 B7                   66 	or	a,a
+   0013 CAr19s00             67 	jp	z,00110$
+   0016                      68 00109$:
+   0016 C3r1Es00             69 	jp	00102$
+   0019                      70 00110$:
+                             71 ;	genLabel
+   0019                      72 00101$:
+                             73 ;	genAssign
+   0019 0E 00                74 	ld	c,#0x00
+                             75 ;	genGoto
+   001B C3r53s00             76 	jp	00103$
+                             77 ;	genLabel
+   001E                      78 00102$:
+                             79 ;ecc/gflib.c:74: else mul3 = e2v[(v2e[mul1] + v2e[mul2]) % 255];
+                             80 ;	genPlus
+                             81 ;	AOP_STK for 
+                             82 ;	Can't optimise plus by inc, falling back to the normal way
+   001E 3Er57                83 	ld	a,#<_v2e
+   0020 DD 86 04             84 	add	a,4(ix)
+   0023 6F                   85 	ld	l,a
+   0024 3Es01                86 	ld	a,#>_v2e
+   0026 CE 00                87 	adc	a,#0x00
+   0028 67                   88 	ld	h,a
+                             89 ;	genPointerGet
+   0029 46                   90 	ld	b,(hl)
+                             91 ;	genPlus
+                             92 ;	AOP_STK for 
+                             93 ;	Can't optimise plus by inc, falling back to the normal way
+   002A 3Er57                94 	ld	a,#<_v2e
+   002C DD 86 05             95 	add	a,5(ix)
+   002F 6F                   96 	ld	l,a
+   0030 3Es01                97 	ld	a,#>_v2e
+   0032 CE 00                98 	adc	a,#0x00
+   0034 67                   99 	ld	h,a
+                            100 ;	genPointerGet
+   0035 6E                  101 	ld	l,(hl)
+                            102 ;	genPlus
+                            103 ;	Can't optimise plus by inc, falling back to the normal way
+   0036 78                  104 	ld	a,b
+   0037 85                  105 	add	a,l
+   0038 47                  106 	ld	b,a
+                            107 ;	genIpush
+                            108 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0039 C5                  109 	push	bc
+   003A 3E FF               110 	ld	a,#0xFF
+   003C F5                  111 	push	af
+   003D 33                  112 	inc	sp
+                            113 ;	genIpush
+   003E C5                  114 	push    bc
+   003F 33                  115 	inc     sp
+                            116 ;	genCall
+   0040 CDr00s00            117 	call	__moduchar_rrx_s
+   0043 45                  118 	ld	b,l
+   0044 F1                  119 	pop	af
+   0045 78                  120 	ld	a,b
+   0046 C1                  121 	pop	bc
+   0047 47                  122 	ld	b,a
+                            123 ;	genPlus
+                            124 ;	Can't optimise plus by inc, falling back to the normal way
+   0048 3Er57               125 	ld	a,#<_e2v
+   004A 80                  126 	add	a,b
+   004B 6F                  127 	ld	l,a
+   004C 3Es00               128 	ld	a,#>_e2v
+   004E CE 00               129 	adc	a,#0x00
+   0050 67                  130 	ld	h,a
+                            131 ;	genPointerGet
+   0051 6E                  132 	ld	l,(hl)
+                            133 ;	genAssign
+   0052 4D                  134 	ld	c,l
+                            135 ;	genLabel
+   0053                     136 00103$:
+                            137 ;ecc/gflib.c:75: return (mul3);
+                            138 ;	genRet
+                            139 ; Dump of IC_LEFT: type AOP_REG size 1
+                            140 ;	 reg = c
+   0053 69                  141 	ld	l,c
+                            142 ;	genLabel
+   0054                     143 00105$:
+                            144 ;	genEndFunction
+   0054 DD E1               145 	pop	ix
+   0056 C9                  146 	ret
+   0057                     147 _gfmul_end::
+   0057                     148 _e2v:
+   0057 01                  149 	.db #0x01
+   0058 02                  150 	.db #0x02
+   0059 04                  151 	.db #0x04
+   005A 08                  152 	.db #0x08
+   005B 10                  153 	.db #0x10
+   005C 20                  154 	.db #0x20
+   005D 40                  155 	.db #0x40
+   005E 80                  156 	.db #0x80
+   005F 1D                  157 	.db #0x1D
+   0060 3A                  158 	.db #0x3A
+   0061 74                  159 	.db #0x74
+   0062 E8                  160 	.db #0xE8
+   0063 CD                  161 	.db #0xCD
+   0064 87                  162 	.db #0x87
+   0065 13                  163 	.db #0x13
+   0066 26                  164 	.db #0x26
+   0067 4C                  165 	.db #0x4C
+   0068 98                  166 	.db #0x98
+   0069 2D                  167 	.db #0x2D
+   006A 5A                  168 	.db #0x5A
+   006B B4                  169 	.db #0xB4
+   006C 75                  170 	.db #0x75
+   006D EA                  171 	.db #0xEA
+   006E C9                  172 	.db #0xC9
+   006F 8F                  173 	.db #0x8F
+   0070 03                  174 	.db #0x03
+   0071 06                  175 	.db #0x06
+   0072 0C                  176 	.db #0x0C
+   0073 18                  177 	.db #0x18
+   0074 30                  178 	.db #0x30
+   0075 60                  179 	.db #0x60
+   0076 C0                  180 	.db #0xC0
+   0077 9D                  181 	.db #0x9D
+   0078 27                  182 	.db #0x27
+   0079 4E                  183 	.db #0x4E
+   007A 9C                  184 	.db #0x9C
+   007B 25                  185 	.db #0x25
+   007C 4A                  186 	.db #0x4A
+   007D 94                  187 	.db #0x94
+   007E 35                  188 	.db #0x35
+   007F 6A                  189 	.db #0x6A
+   0080 D4                  190 	.db #0xD4
+   0081 B5                  191 	.db #0xB5
+   0082 77                  192 	.db #0x77
+   0083 EE                  193 	.db #0xEE
+   0084 C1                  194 	.db #0xC1
+   0085 9F                  195 	.db #0x9F
+   0086 23                  196 	.db #0x23
+   0087 46                  197 	.db #0x46
+   0088 8C                  198 	.db #0x8C
+   0089 05                  199 	.db #0x05
+   008A 0A                  200 	.db #0x0A
+   008B 14                  201 	.db #0x14
+   008C 28                  202 	.db #0x28
+   008D 50                  203 	.db #0x50
+   008E A0                  204 	.db #0xA0
+   008F 5D                  205 	.db #0x5D
+   0090 BA                  206 	.db #0xBA
+   0091 69                  207 	.db #0x69
+   0092 D2                  208 	.db #0xD2
+   0093 B9                  209 	.db #0xB9
+   0094 6F                  210 	.db #0x6F
+   0095 DE                  211 	.db #0xDE
+   0096 A1                  212 	.db #0xA1
+   0097 5F                  213 	.db #0x5F
+   0098 BE                  214 	.db #0xBE
+   0099 61                  215 	.db #0x61
+   009A C2                  216 	.db #0xC2
+   009B 99                  217 	.db #0x99
+   009C 2F                  218 	.db #0x2F
+   009D 5E                  219 	.db #0x5E
+   009E BC                  220 	.db #0xBC
+   009F 65                  221 	.db #0x65
+   00A0 CA                  222 	.db #0xCA
+   00A1 89                  223 	.db #0x89
+   00A2 0F                  224 	.db #0x0F
+   00A3 1E                  225 	.db #0x1E
+   00A4 3C                  226 	.db #0x3C
+   00A5 78                  227 	.db #0x78
+   00A6 F0                  228 	.db #0xF0
+   00A7 FD                  229 	.db #0xFD
+   00A8 E7                  230 	.db #0xE7
+   00A9 D3                  231 	.db #0xD3
+   00AA BB                  232 	.db #0xBB
+   00AB 6B                  233 	.db #0x6B
+   00AC D6                  234 	.db #0xD6
+   00AD B1                  235 	.db #0xB1
+   00AE 7F                  236 	.db #0x7F
+   00AF FE                  237 	.db #0xFE
+   00B0 E1                  238 	.db #0xE1
+   00B1 DF                  239 	.db #0xDF
+   00B2 A3                  240 	.db #0xA3
+   00B3 5B                  241 	.db #0x5B
+   00B4 B6                  242 	.db #0xB6
+   00B5 71                  243 	.db #0x71
+   00B6 E2                  244 	.db #0xE2
+   00B7 D9                  245 	.db #0xD9
+   00B8 AF                  246 	.db #0xAF
+   00B9 43                  247 	.db #0x43
+   00BA 86                  248 	.db #0x86
+   00BB 11                  249 	.db #0x11
+   00BC 22                  250 	.db #0x22
+   00BD 44                  251 	.db #0x44
+   00BE 88                  252 	.db #0x88
+   00BF 0D                  253 	.db #0x0D
+   00C0 1A                  254 	.db #0x1A
+   00C1 34                  255 	.db #0x34
+   00C2 68                  256 	.db #0x68
+   00C3 D0                  257 	.db #0xD0
+   00C4 BD                  258 	.db #0xBD
+   00C5 67                  259 	.db #0x67
+   00C6 CE                  260 	.db #0xCE
+   00C7 81                  261 	.db #0x81
+   00C8 1F                  262 	.db #0x1F
+   00C9 3E                  263 	.db #0x3E
+   00CA 7C                  264 	.db #0x7C
+   00CB F8                  265 	.db #0xF8
+   00CC ED                  266 	.db #0xED
+   00CD C7                  267 	.db #0xC7
+   00CE 93                  268 	.db #0x93
+   00CF 3B                  269 	.db #0x3B
+   00D0 76                  270 	.db #0x76
+   00D1 EC                  271 	.db #0xEC
+   00D2 C5                  272 	.db #0xC5
+   00D3 97                  273 	.db #0x97
+   00D4 33                  274 	.db #0x33
+   00D5 66                  275 	.db #0x66
+   00D6 CC                  276 	.db #0xCC
+   00D7 85                  277 	.db #0x85
+   00D8 17                  278 	.db #0x17
+   00D9 2E                  279 	.db #0x2E
+   00DA 5C                  280 	.db #0x5C
+   00DB B8                  281 	.db #0xB8
+   00DC 6D                  282 	.db #0x6D
+   00DD DA                  283 	.db #0xDA
+   00DE A9                  284 	.db #0xA9
+   00DF 4F                  285 	.db #0x4F
+   00E0 9E                  286 	.db #0x9E
+   00E1 21                  287 	.db #0x21
+   00E2 42                  288 	.db #0x42
+   00E3 84                  289 	.db #0x84
+   00E4 15                  290 	.db #0x15
+   00E5 2A                  291 	.db #0x2A
+   00E6 54                  292 	.db #0x54
+   00E7 A8                  293 	.db #0xA8
+   00E8 4D                  294 	.db #0x4D
+   00E9 9A                  295 	.db #0x9A
+   00EA 29                  296 	.db #0x29
+   00EB 52                  297 	.db #0x52
+   00EC A4                  298 	.db #0xA4
+   00ED 55                  299 	.db #0x55
+   00EE AA                  300 	.db #0xAA
+   00EF 49                  301 	.db #0x49
+   00F0 92                  302 	.db #0x92
+   00F1 39                  303 	.db #0x39
+   00F2 72                  304 	.db #0x72
+   00F3 E4                  305 	.db #0xE4
+   00F4 D5                  306 	.db #0xD5
+   00F5 B7                  307 	.db #0xB7
+   00F6 73                  308 	.db #0x73
+   00F7 E6                  309 	.db #0xE6
+   00F8 D1                  310 	.db #0xD1
+   00F9 BF                  311 	.db #0xBF
+   00FA 63                  312 	.db #0x63
+   00FB C6                  313 	.db #0xC6
+   00FC 91                  314 	.db #0x91
+   00FD 3F                  315 	.db #0x3F
+   00FE 7E                  316 	.db #0x7E
+   00FF FC                  317 	.db #0xFC
+   0100 E5                  318 	.db #0xE5
+   0101 D7                  319 	.db #0xD7
+   0102 B3                  320 	.db #0xB3
+   0103 7B                  321 	.db #0x7B
+   0104 F6                  322 	.db #0xF6
+   0105 F1                  323 	.db #0xF1
+   0106 FF                  324 	.db #0xFF
+   0107 E3                  325 	.db #0xE3
+   0108 DB                  326 	.db #0xDB
+   0109 AB                  327 	.db #0xAB
+   010A 4B                  328 	.db #0x4B
+   010B 96                  329 	.db #0x96
+   010C 31                  330 	.db #0x31
+   010D 62                  331 	.db #0x62
+   010E C4                  332 	.db #0xC4
+   010F 95                  333 	.db #0x95
+   0110 37                  334 	.db #0x37
+   0111 6E                  335 	.db #0x6E
+   0112 DC                  336 	.db #0xDC
+   0113 A5                  337 	.db #0xA5
+   0114 57                  338 	.db #0x57
+   0115 AE                  339 	.db #0xAE
+   0116 41                  340 	.db #0x41
+   0117 82                  341 	.db #0x82
+   0118 19                  342 	.db #0x19
+   0119 32                  343 	.db #0x32
+   011A 64                  344 	.db #0x64
+   011B C8                  345 	.db #0xC8
+   011C 8D                  346 	.db #0x8D
+   011D 07                  347 	.db #0x07
+   011E 0E                  348 	.db #0x0E
+   011F 1C                  349 	.db #0x1C
+   0120 38                  350 	.db #0x38
+   0121 70                  351 	.db #0x70
+   0122 E0                  352 	.db #0xE0
+   0123 DD                  353 	.db #0xDD
+   0124 A7                  354 	.db #0xA7
+   0125 53                  355 	.db #0x53
+   0126 A6                  356 	.db #0xA6
+   0127 51                  357 	.db #0x51
+   0128 A2                  358 	.db #0xA2
+   0129 59                  359 	.db #0x59
+   012A B2                  360 	.db #0xB2
+   012B 79                  361 	.db #0x79
+   012C F2                  362 	.db #0xF2
+   012D F9                  363 	.db #0xF9
+   012E EF                  364 	.db #0xEF
+   012F C3                  365 	.db #0xC3
+   0130 9B                  366 	.db #0x9B
+   0131 2B                  367 	.db #0x2B
+   0132 56                  368 	.db #0x56
+   0133 AC                  369 	.db #0xAC
+   0134 45                  370 	.db #0x45
+   0135 8A                  371 	.db #0x8A
+   0136 09                  372 	.db #0x09
+   0137 12                  373 	.db #0x12
+   0138 24                  374 	.db #0x24
+   0139 48                  375 	.db #0x48
+   013A 90                  376 	.db #0x90
+   013B 3D                  377 	.db #0x3D
+   013C 7A                  378 	.db #0x7A
+   013D F4                  379 	.db #0xF4
+   013E F5                  380 	.db #0xF5
+   013F F7                  381 	.db #0xF7
+   0140 F3                  382 	.db #0xF3
+   0141 FB                  383 	.db #0xFB
+   0142 EB                  384 	.db #0xEB
+   0143 CB                  385 	.db #0xCB
+   0144 8B                  386 	.db #0x8B
+   0145 0B                  387 	.db #0x0B
+   0146 16                  388 	.db #0x16
+   0147 2C                  389 	.db #0x2C
+   0148 58                  390 	.db #0x58
+   0149 B0                  391 	.db #0xB0
+   014A 7D                  392 	.db #0x7D
+   014B FA                  393 	.db #0xFA
+   014C E9                  394 	.db #0xE9
+   014D CF                  395 	.db #0xCF
+   014E 83                  396 	.db #0x83
+   014F 1B                  397 	.db #0x1B
+   0150 36                  398 	.db #0x36
+   0151 6C                  399 	.db #0x6C
+   0152 D8                  400 	.db #0xD8
+   0153 AD                  401 	.db #0xAD
+   0154 47                  402 	.db #0x47
+   0155 8E                  403 	.db #0x8E
+   0156 01                  404 	.db #0x01
+   0157                     405 _v2e:
+   0157 FF                  406 	.db #0xFF
+   0158 00                  407 	.db #0x00
+   0159 01                  408 	.db #0x01
+   015A 19                  409 	.db #0x19
+   015B 02                  410 	.db #0x02
+   015C 32                  411 	.db #0x32
+   015D 1A                  412 	.db #0x1A
+   015E C6                  413 	.db #0xC6
+   015F 03                  414 	.db #0x03
+   0160 DF                  415 	.db #0xDF
+   0161 33                  416 	.db #0x33
+   0162 EE                  417 	.db #0xEE
+   0163 1B                  418 	.db #0x1B
+   0164 68                  419 	.db #0x68
+   0165 C7                  420 	.db #0xC7
+   0166 4B                  421 	.db #0x4B
+   0167 04                  422 	.db #0x04
+   0168 64                  423 	.db #0x64
+   0169 E0                  424 	.db #0xE0
+   016A 0E                  425 	.db #0x0E
+   016B 34                  426 	.db #0x34
+   016C 8D                  427 	.db #0x8D
+   016D EF                  428 	.db #0xEF
+   016E 81                  429 	.db #0x81
+   016F 1C                  430 	.db #0x1C
+   0170 C1                  431 	.db #0xC1
+   0171 69                  432 	.db #0x69
+   0172 F8                  433 	.db #0xF8
+   0173 C8                  434 	.db #0xC8
+   0174 08                  435 	.db #0x08
+   0175 4C                  436 	.db #0x4C
+   0176 71                  437 	.db #0x71
+   0177 05                  438 	.db #0x05
+   0178 8A                  439 	.db #0x8A
+   0179 65                  440 	.db #0x65
+   017A 2F                  441 	.db #0x2F
+   017B E1                  442 	.db #0xE1
+   017C 24                  443 	.db #0x24
+   017D 0F                  444 	.db #0x0F
+   017E 21                  445 	.db #0x21
+   017F 35                  446 	.db #0x35
+   0180 93                  447 	.db #0x93
+   0181 8E                  448 	.db #0x8E
+   0182 DA                  449 	.db #0xDA
+   0183 F0                  450 	.db #0xF0
+   0184 12                  451 	.db #0x12
+   0185 82                  452 	.db #0x82
+   0186 45                  453 	.db #0x45
+   0187 1D                  454 	.db #0x1D
+   0188 B5                  455 	.db #0xB5
+   0189 C2                  456 	.db #0xC2
+   018A 7D                  457 	.db #0x7D
+   018B 6A                  458 	.db #0x6A
+   018C 27                  459 	.db #0x27
+   018D F9                  460 	.db #0xF9
+   018E B9                  461 	.db #0xB9
+   018F C9                  462 	.db #0xC9
+   0190 9A                  463 	.db #0x9A
+   0191 09                  464 	.db #0x09
+   0192 78                  465 	.db #0x78
+   0193 4D                  466 	.db #0x4D
+   0194 E4                  467 	.db #0xE4
+   0195 72                  468 	.db #0x72
+   0196 A6                  469 	.db #0xA6
+   0197 06                  470 	.db #0x06
+   0198 BF                  471 	.db #0xBF
+   0199 8B                  472 	.db #0x8B
+   019A 62                  473 	.db #0x62
+   019B 66                  474 	.db #0x66
+   019C DD                  475 	.db #0xDD
+   019D 30                  476 	.db #0x30
+   019E FD                  477 	.db #0xFD
+   019F E2                  478 	.db #0xE2
+   01A0 98                  479 	.db #0x98
+   01A1 25                  480 	.db #0x25
+   01A2 B3                  481 	.db #0xB3
+   01A3 10                  482 	.db #0x10
+   01A4 91                  483 	.db #0x91
+   01A5 22                  484 	.db #0x22
+   01A6 88                  485 	.db #0x88
+   01A7 36                  486 	.db #0x36
+   01A8 D0                  487 	.db #0xD0
+   01A9 94                  488 	.db #0x94
+   01AA CE                  489 	.db #0xCE
+   01AB 8F                  490 	.db #0x8F
+   01AC 96                  491 	.db #0x96
+   01AD DB                  492 	.db #0xDB
+   01AE BD                  493 	.db #0xBD
+   01AF F1                  494 	.db #0xF1
+   01B0 D2                  495 	.db #0xD2
+   01B1 13                  496 	.db #0x13
+   01B2 5C                  497 	.db #0x5C
+   01B3 83                  498 	.db #0x83
+   01B4 38                  499 	.db #0x38
+   01B5 46                  500 	.db #0x46
+   01B6 40                  501 	.db #0x40
+   01B7 1E                  502 	.db #0x1E
+   01B8 42                  503 	.db #0x42
+   01B9 B6                  504 	.db #0xB6
+   01BA A3                  505 	.db #0xA3
+   01BB C3                  506 	.db #0xC3
+   01BC 48                  507 	.db #0x48
+   01BD 7E                  508 	.db #0x7E
+   01BE 6E                  509 	.db #0x6E
+   01BF 6B                  510 	.db #0x6B
+   01C0 3A                  511 	.db #0x3A
+   01C1 28                  512 	.db #0x28
+   01C2 54                  513 	.db #0x54
+   01C3 FA                  514 	.db #0xFA
+   01C4 85                  515 	.db #0x85
+   01C5 BA                  516 	.db #0xBA
+   01C6 3D                  517 	.db #0x3D
+   01C7 CA                  518 	.db #0xCA
+   01C8 5E                  519 	.db #0x5E
+   01C9 9B                  520 	.db #0x9B
+   01CA 9F                  521 	.db #0x9F
+   01CB 0A                  522 	.db #0x0A
+   01CC 15                  523 	.db #0x15
+   01CD 79                  524 	.db #0x79
+   01CE 2B                  525 	.db #0x2B
+   01CF 4E                  526 	.db #0x4E
+   01D0 D4                  527 	.db #0xD4
+   01D1 E5                  528 	.db #0xE5
+   01D2 AC                  529 	.db #0xAC
+   01D3 73                  530 	.db #0x73
+   01D4 F3                  531 	.db #0xF3
+   01D5 A7                  532 	.db #0xA7
+   01D6 57                  533 	.db #0x57
+   01D7 07                  534 	.db #0x07
+   01D8 70                  535 	.db #0x70
+   01D9 C0                  536 	.db #0xC0
+   01DA F7                  537 	.db #0xF7
+   01DB 8C                  538 	.db #0x8C
+   01DC 80                  539 	.db #0x80
+   01DD 63                  540 	.db #0x63
+   01DE 0D                  541 	.db #0x0D
+   01DF 67                  542 	.db #0x67
+   01E0 4A                  543 	.db #0x4A
+   01E1 DE                  544 	.db #0xDE
+   01E2 ED                  545 	.db #0xED
+   01E3 31                  546 	.db #0x31
+   01E4 C5                  547 	.db #0xC5
+   01E5 FE                  548 	.db #0xFE
+   01E6 18                  549 	.db #0x18
+   01E7 E3                  550 	.db #0xE3
+   01E8 A5                  551 	.db #0xA5
+   01E9 99                  552 	.db #0x99
+   01EA 77                  553 	.db #0x77
+   01EB 26                  554 	.db #0x26
+   01EC B8                  555 	.db #0xB8
+   01ED B4                  556 	.db #0xB4
+   01EE 7C                  557 	.db #0x7C
+   01EF 11                  558 	.db #0x11
+   01F0 44                  559 	.db #0x44
+   01F1 92                  560 	.db #0x92
+   01F2 D9                  561 	.db #0xD9
+   01F3 23                  562 	.db #0x23
+   01F4 20                  563 	.db #0x20
+   01F5 89                  564 	.db #0x89
+   01F6 2E                  565 	.db #0x2E
+   01F7 37                  566 	.db #0x37
+   01F8 3F                  567 	.db #0x3F
+   01F9 D1                  568 	.db #0xD1
+   01FA 5B                  569 	.db #0x5B
+   01FB 95                  570 	.db #0x95
+   01FC BC                  571 	.db #0xBC
+   01FD CF                  572 	.db #0xCF
+   01FE CD                  573 	.db #0xCD
+   01FF 90                  574 	.db #0x90
+   0200 87                  575 	.db #0x87
+   0201 97                  576 	.db #0x97
+   0202 B2                  577 	.db #0xB2
+   0203 DC                  578 	.db #0xDC
+   0204 FC                  579 	.db #0xFC
+   0205 BE                  580 	.db #0xBE
+   0206 61                  581 	.db #0x61
+   0207 F2                  582 	.db #0xF2
+   0208 56                  583 	.db #0x56
+   0209 D3                  584 	.db #0xD3
+   020A AB                  585 	.db #0xAB
+   020B 14                  586 	.db #0x14
+   020C 2A                  587 	.db #0x2A
+   020D 5D                  588 	.db #0x5D
+   020E 9E                  589 	.db #0x9E
+   020F 84                  590 	.db #0x84
+   0210 3C                  591 	.db #0x3C
+   0211 39                  592 	.db #0x39
+   0212 53                  593 	.db #0x53
+   0213 47                  594 	.db #0x47
+   0214 6D                  595 	.db #0x6D
+   0215 41                  596 	.db #0x41
+   0216 A2                  597 	.db #0xA2
+   0217 1F                  598 	.db #0x1F
+   0218 2D                  599 	.db #0x2D
+   0219 43                  600 	.db #0x43
+   021A D8                  601 	.db #0xD8
+   021B B7                  602 	.db #0xB7
+   021C 7B                  603 	.db #0x7B
+   021D A4                  604 	.db #0xA4
+   021E 76                  605 	.db #0x76
+   021F C4                  606 	.db #0xC4
+   0220 17                  607 	.db #0x17
+   0221 49                  608 	.db #0x49
+   0222 EC                  609 	.db #0xEC
+   0223 7F                  610 	.db #0x7F
+   0224 0C                  611 	.db #0x0C
+   0225 6F                  612 	.db #0x6F
+   0226 F6                  613 	.db #0xF6
+   0227 6C                  614 	.db #0x6C
+   0228 A1                  615 	.db #0xA1
+   0229 3B                  616 	.db #0x3B
+   022A 52                  617 	.db #0x52
+   022B 29                  618 	.db #0x29
+   022C 9D                  619 	.db #0x9D
+   022D 55                  620 	.db #0x55
+   022E AA                  621 	.db #0xAA
+   022F FB                  622 	.db #0xFB
+   0230 60                  623 	.db #0x60
+   0231 86                  624 	.db #0x86
+   0232 B1                  625 	.db #0xB1
+   0233 BB                  626 	.db #0xBB
+   0234 CC                  627 	.db #0xCC
+   0235 3E                  628 	.db #0x3E
+   0236 5A                  629 	.db #0x5A
+   0237 CB                  630 	.db #0xCB
+   0238 59                  631 	.db #0x59
+   0239 5F                  632 	.db #0x5F
+   023A B0                  633 	.db #0xB0
+   023B 9C                  634 	.db #0x9C
+   023C A9                  635 	.db #0xA9
+   023D A0                  636 	.db #0xA0
+   023E 51                  637 	.db #0x51
+   023F 0B                  638 	.db #0x0B
+   0240 F5                  639 	.db #0xF5
+   0241 16                  640 	.db #0x16
+   0242 EB                  641 	.db #0xEB
+   0243 7A                  642 	.db #0x7A
+   0244 75                  643 	.db #0x75
+   0245 2C                  644 	.db #0x2C
+   0246 D7                  645 	.db #0xD7
+   0247 4F                  646 	.db #0x4F
+   0248 AE                  647 	.db #0xAE
+   0249 D5                  648 	.db #0xD5
+   024A E9                  649 	.db #0xE9
+   024B E6                  650 	.db #0xE6
+   024C E7                  651 	.db #0xE7
+   024D AD                  652 	.db #0xAD
+   024E E8                  653 	.db #0xE8
+   024F 74                  654 	.db #0x74
+   0250 D6                  655 	.db #0xD6
+   0251 F4                  656 	.db #0xF4
+   0252 EA                  657 	.db #0xEA
+   0253 A8                  658 	.db #0xA8
+   0254 50                  659 	.db #0x50
+   0255 58                  660 	.db #0x58
+   0256 AF                  661 	.db #0xAF
+                            662 ;ecc/gflib.c:93: unsigned char gfinv(unsigned char ivt) {
+                            663 ;	genLabel
+                            664 ;	genFunction
+                            665 ;	---------------------------------
+                            666 ; Function gfinv
+                            667 ; ---------------------------------
+   0257                     668 _gfinv_start::
+   0257                     669 _gfinv:
+   0257 DD E5               670 	push	ix
+   0259 DD 21 00 00         671 	ld	ix,#0
+   025D DD 39               672 	add	ix,sp
+                            673 ;ecc/gflib.c:96: ivtd = e2v[255 - v2e[ivt]];
+                            674 ;	genPlus
+                            675 ;	AOP_STK for 
+                            676 ;	Can't optimise plus by inc, falling back to the normal way
+   025F 3Er57               677 	ld	a,#<_v2e
+   0261 DD 86 04            678 	add	a,4(ix)
+   0264 6F                  679 	ld	l,a
+   0265 3Es01               680 	ld	a,#>_v2e
+   0267 CE 00               681 	adc	a,#0x00
+   0269 67                  682 	ld	h,a
+                            683 ;	genPointerGet
+   026A 6E                  684 	ld	l,(hl)
+                            685 ;	genMinus
+   026B 3E FF               686 	ld	a,#0xFF
+   026D 95                  687 	sub	a,l
+   026E 6F                  688 	ld	l,a
+                            689 ;	genPlus
+                            690 ;	Can't optimise plus by inc, falling back to the normal way
+   026F 3Er57               691 	ld	a,#<_e2v
+   0271 85                  692 	add	a,l
+   0272 6F                  693 	ld	l,a
+   0273 3Es00               694 	ld	a,#>_e2v
+   0275 CE 00               695 	adc	a,#0x00
+   0277 67                  696 	ld	h,a
+                            697 ;	genPointerGet
+   0278 6E                  698 	ld	l,(hl)
+                            699 ;	genAssign
+                            700 ;ecc/gflib.c:97: return (ivtd);
+                            701 ;	genRet
+                            702 ; Dump of IC_LEFT: type AOP_STR size 1
+                            703 ;	genLabel
+   0279                     704 00101$:
+                            705 ;	genEndFunction
+   0279 DD E1               706 	pop	ix
+   027B C9                  707 	ret
+   027C                     708 _gfinv_end::
+                            709 ;ecc/gflib.c:103: unsigned char gfexp(unsigned char mant, unsigned char powr) {
+                            710 ;	genLabel
+                            711 ;	genFunction
+                            712 ;	---------------------------------
+                            713 ; Function gfexp
+                            714 ; ---------------------------------
+   027C                     715 _gfexp_start::
+   027C                     716 _gfexp:
+   027C DD E5               717 	push	ix
+   027E DD 21 00 00         718 	ld	ix,#0
+   0282 DD 39               719 	add	ix,sp
+                            720 ;ecc/gflib.c:105: if(mant == 0) expt = 0;
+                            721 ;	genCmpEq
+                            722 ;	AOP_STK for 
+                            723 ; genCmpEq: left 1, right 1, result 0
+   0284 DD 7E 04            724 	ld	a,4(ix)
+   0287 B7                  725 	or	a,a
+   0288 CAr8Es02            726 	jp	z,00108$
+   028B                     727 00107$:
+   028B C3r93s02            728 	jp	00102$
+   028E                     729 00108$:
+                            730 ;	genAssign
+   028E 0E 00               731 	ld	c,#0x00
+                            732 ;	genGoto
+   0290 C3rC2s02            733 	jp	00103$
+                            734 ;	genLabel
+   0293                     735 00102$:
+                            736 ;ecc/gflib.c:106: else expt = e2v[(v2e[mant] * powr) % 255];
+                            737 ;	genPlus
+                            738 ;	AOP_STK for 
+                            739 ;	Can't optimise plus by inc, falling back to the normal way
+   0293 3Er57               740 	ld	a,#<_v2e
+   0295 DD 86 04            741 	add	a,4(ix)
+   0298 6F                  742 	ld	l,a
+   0299 3Es01               743 	ld	a,#>_v2e
+   029B CE 00               744 	adc	a,#0x00
+   029D 67                  745 	ld	h,a
+                            746 ;	genPointerGet
+   029E 46                  747 	ld	b,(hl)
+                            748 ;	genIpush
+                            749 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   029F C5                  750 	push	bc
+                            751 ;	AOP_STK for 
+   02A0 DD 7E 05            752 	ld	a,5(ix)
+   02A3 F5                  753 	push	af
+   02A4 33                  754 	inc	sp
+                            755 ;	genIpush
+   02A5 C5                  756 	push    bc
+   02A6 33                  757 	inc     sp
+                            758 ;	genCall
+   02A7 CDr00s00            759 	call	__muluchar_rrx_s
+   02AA 54                  760 	ld	d,h
+   02AB 5D                  761 	ld	e,l
+   02AC F1                  762 	pop	af
+   02AD C1                  763 	pop	bc
+                            764 ;	genIpush
+                            765 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02AE C5                  766 	push	bc
+   02AF 21 FF 00            767 	ld	hl,#0x00FF
+   02B2 E5                  768 	push	hl
+                            769 ;	genIpush
+   02B3 D5                  770 	push	de
+                            771 ;	genCall
+   02B4 CDr00s00            772 	call	__moduint_rrx_s
+   02B7 54                  773 	ld	d,h
+   02B8 5D                  774 	ld	e,l
+   02B9 F1                  775 	pop	af
+   02BA F1                  776 	pop	af
+   02BB C1                  777 	pop	bc
+                            778 ;	genPlus
+                            779 ;	Can't optimise plus by inc, falling back to the normal way
+   02BC 21r57s00            780 	ld	hl,#_e2v
+   02BF 19                  781 	add	hl,de
+                            782 ;	genPointerGet
+   02C0 6E                  783 	ld	l,(hl)
+                            784 ;	genAssign
+   02C1 4D                  785 	ld	c,l
+                            786 ;	genLabel
+   02C2                     787 00103$:
+                            788 ;ecc/gflib.c:107: return (expt);
+                            789 ;	genRet
+                            790 ; Dump of IC_LEFT: type AOP_REG size 1
+                            791 ;	 reg = c
+   02C2 69                  792 	ld	l,c
+                            793 ;	genLabel
+   02C3                     794 00104$:
+                            795 ;	genEndFunction
+   02C3 DD E1               796 	pop	ix
+   02C5 C9                  797 	ret
+   02C6                     798 _gfexp_end::
+                            799 	.area _CODE

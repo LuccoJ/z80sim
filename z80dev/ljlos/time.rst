@@ -1,0 +1,178 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Fri Apr 27 12:30:18 2012
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module time
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _TickCounter
+                             13 	.globl _TimeInit
+                             14 	.globl _Tick
+                             15 	.globl _Sleep
+                             16 ;--------------------------------------------------------
+                             17 ;  ram data
+                             18 ;--------------------------------------------------------
+                             19 	.area _DATA
+                    0000     20 G$TickCounter$0$0==.
+   0000                      21 _TickCounter::
+   0000                      22 	.ds 4
+                             23 ;--------------------------------------------------------
+                             24 ; overlayable items in  ram 
+                             25 ;--------------------------------------------------------
+                             26 	.area _OVERLAY
+                             27 ;--------------------------------------------------------
+                             28 ; external initialized ram data
+                             29 ;--------------------------------------------------------
+                             30 ;--------------------------------------------------------
+                             31 ; global & static initialisations
+                             32 ;--------------------------------------------------------
+                             33 	.area _GSINIT
+                             34 	.area _GSFINAL
+                             35 	.area _GSINIT
+                             36 ;--------------------------------------------------------
+                             37 ; Home
+                             38 ;--------------------------------------------------------
+                             39 	.area _HOME
+                             40 	.area _CODE
+                             41 ;--------------------------------------------------------
+                             42 ; code
+                             43 ;--------------------------------------------------------
+                             44 	.area _CODE
+                             45 ;time.c:7: void TimeInit() {
+                             46 ;	genLabel
+                             47 ;	genFunction
+                             48 ;	---------------------------------
+                             49 ; Function TimeInit
+                             50 ; ---------------------------------
+   0000                      51 _TimeInit_start::
+   0000                      52 _TimeInit:
+   247B 3E 03                53 	ld	a,#3
+   247D CF                   54 	rst	0x08
+                             55 ;time.c:8: TickCounter=0;
+                             56 ;	genAssign
+   247E AF                   57 	xor	a,a
+   247F FD 21 2E 83          58 	ld	iy,#_TickCounter
+   2483 FD 77 00             59 	ld	0(iy),a
+   2486 FD 77 01             60 	ld	1(iy),a
+   2489 FD 77 02             61 	ld	2(iy),a
+   248C FD 77 03             62 	ld	3(iy),a
+                             63 ;time.c:9: _SimPrintString("Time services initialized\n");
+                             64 ;	genIpush
+                             65 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   248F 21 9B 24             66 	ld	hl,#__str_0
+   2492 E5                   67 	push	hl
+                             68 ;	genCall
+   2493 CD CA 2A             69 	call	__Z80SimPrintString
+   2496 F1                   70 	pop	af
+                             71 ;	genLabel
+   001C                      72 00101$:
+                             73 ;	genEndFunction
+   2497 3E 04                74 	ld	a,#4
+   2499 CF                   75 	rst	0x08
+   249A C9                   76 	ret
+   0020                      77 _TimeInit_end::
+                    0020     78 Ftime$_str_0$0$0 == .
+   0020                      79 __str_0:
+   249B 54 69 6D 65 20 73    80 	.ascii "Time services initialized"
+        65 72 76 69 63 65
+        73 20 69 6E 69 74
+        69 61 6C 69 7A 65
+        64
+   24B4 0A                   81 	.db 0x0A
+   24B5 00                   82 	.db 0x00
+                             83 ;time.c:12: void Tick() {
+                             84 ;	genLabel
+                             85 ;	genFunction
+                             86 ;	---------------------------------
+                             87 ; Function Tick
+                             88 ; ---------------------------------
+   003B                      89 _Tick_start::
+   003B                      90 _Tick:
+   24B6 3E 03                91 	ld	a,#3
+   24B8 CF                   92 	rst	0x08
+                             93 ;time.c:13: TickCounter++;
+                             94 ;	genPlus
+                             95 ;	genPlusIncr
+   24B9 FD 21 2E 83          96 	ld	iy,#_TickCounter
+   24BD FD 34 00             97 	inc	0(iy)
+   24C0 C2 D2 24             98 	jp	nz,00103$
+   24C3 FD 34 01             99 	inc	1(iy)
+   24C6 C2 D2 24            100 	jp	nz,00103$
+   24C9 FD 34 02            101 	inc	2(iy)
+   24CC C2 D2 24            102 	jp	nz,00103$
+   24CF FD 34 03            103 	inc	3(iy)
+   0057                     104 00103$:
+                            105 ;	genLabel
+   0057                     106 00101$:
+                            107 ;	genEndFunction
+   24D2 3E 04               108 	ld	a,#4
+   24D4 CF                  109 	rst	0x08
+   24D5 C9                  110 	ret
+   005B                     111 _Tick_end::
+                            112 ;time.c:16: void Sleep(long Ticks) {
+                            113 ;	genLabel
+                            114 ;	genFunction
+                            115 ;	---------------------------------
+                            116 ; Function Sleep
+                            117 ; ---------------------------------
+   005B                     118 _Sleep_start::
+   005B                     119 _Sleep:
+   24D6 3E 03               120 	ld	a,#3
+   24D8 CF                  121 	rst	0x08
+   24D9 DD E5               122 	push	ix
+   24DB DD 21 00 00         123 	ld	ix,#0
+   24DF DD 39               124 	add	ix,sp
+   24E1 21 FC FF            125 	ld	hl,#-4
+   24E4 39                  126 	add	hl,sp
+   24E5 F9                  127 	ld	sp,hl
+                            128 ;time.c:18: Start=TickCounter;
+                            129 ;	genAssign
+   24E6 FD 21 2E 83         130 	ld	iy,#_TickCounter
+   24EA FD 4E 00            131 	ld	c,0(iy)
+   24ED FD 46 01            132 	ld	b,1(iy)
+   24F0 FD 5E 02            133 	ld	e,2(iy)
+   24F3 FD 56 03            134 	ld	d,3(iy)
+                            135 ;time.c:19: while(TickCounter-Start<Ticks);
+                            136 ;	genLabel
+   007B                     137 00101$:
+                            138 ;	genMinus
+                            139 ;	AOP_STK for _Sleep__1_0
+   24F6 FD 21 2E 83         140 	ld	iy,#_TickCounter
+   24FA FD 7E 00            141 	ld	a,0(iy)
+   24FD 91                  142 	sub	a,c
+   24FE DD 77 FC            143 	ld	-4(ix),a
+   2501 FD 7E 01            144 	ld	a,1(iy)
+   2504 98                  145 	sbc	a,b
+   2505 DD 77 FD            146 	ld	-3(ix),a
+   2508 FD 7E 02            147 	ld	a,2(iy)
+   250B 9B                  148 	sbc	a,e
+   250C DD 77 FE            149 	ld	-2(ix),a
+   250F FD 7E 03            150 	ld	a,3(iy)
+   2512 9A                  151 	sbc	a,d
+   2513 DD 77 FF            152 	ld	-1(ix),a
+                            153 ;	genCmpLt
+                            154 ;	AOP_STK for _Sleep__1_0
+                            155 ;	AOP_STK for 
+   2516 DD 7E FC            156 	ld	a,-4(ix)
+   2519 DD 96 04            157 	sub	a,4(ix)
+   251C DD 7E FD            158 	ld	a,-3(ix)
+   251F DD 9E 05            159 	sbc	a,5(ix)
+   2522 DD 7E FE            160 	ld	a,-2(ix)
+   2525 DD 9E 06            161 	sbc	a,6(ix)
+   2528 DD 7E FF            162 	ld	a,-1(ix)
+   252B DD 9E 07            163 	sbc	a,7(ix)
+   252E FA F6 24            164 	jp	m,00101$
+                            165 ;	genLabel
+   00B6                     166 00104$:
+                            167 ;	genEndFunction
+   2531 DD F9               168 	ld	sp,ix
+   2533 DD E1               169 	pop	ix
+   2535 3E 04               170 	ld	a,#4
+   2537 CF                  171 	rst	0x08
+   2538 C9                  172 	ret
+   00BE                     173 _Sleep_end::
+                            174 	.area _CODE

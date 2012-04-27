@@ -1,0 +1,13 @@
+--
+-m
+-j
+-x
+-i temp_test
+-b _CODE = 0x0000
+-b _DATA = 0x8000
+-k ../share/sdcc/lib/z80
+-k /usr/local/share/sdcc/lib/z80
+-l z80
+prova.c.o
+
+-e

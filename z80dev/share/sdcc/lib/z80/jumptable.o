@@ -1,0 +1,11 @@
+XL
+H 6 areas 1 global symbols
+M jumptab
+O -mz80
+A _CODE size 0 flags 0
+A _DATA size 1 flags 0
+S __JumpTable Def0000
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0

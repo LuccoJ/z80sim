@@ -1,0 +1,1523 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Fri Apr 27 12:30:18 2012
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module exceptions
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _Alert
+                             13 	.globl _GetRegister
+                             14 	.globl _RegValue
+                             15 	.globl _SavedIY
+                             16 	.globl _SavedIX
+                             17 	.globl _SavedPC
+                             18 	.globl _SystemLock
+                             19 	.globl _Halt
+                             20 	.globl _Break
+                             21 	.globl _SystemMonitor
+                             22 ;--------------------------------------------------------
+                             23 ;  ram data
+                             24 ;--------------------------------------------------------
+                             25 	.area _DATA
+                    0000     26 G$SystemLock$0$0==.
+   0000                      27 _SystemLock::
+   0000                      28 	.ds 1
+                    0001     29 G$SavedPC$0$0==.
+   0001                      30 _SavedPC::
+   0001                      31 	.ds 2
+                    0003     32 G$SavedIX$0$0==.
+   0003                      33 _SavedIX::
+   0003                      34 	.ds 2
+                    0005     35 G$SavedIY$0$0==.
+   0005                      36 _SavedIY::
+   0005                      37 	.ds 2
+                    0007     38 G$RegValue$0$0==.
+   0007                      39 _RegValue::
+   0007                      40 	.ds 2
+                             41 ;--------------------------------------------------------
+                             42 ; overlayable items in  ram 
+                             43 ;--------------------------------------------------------
+                             44 	.area _OVERLAY
+                             45 ;--------------------------------------------------------
+                             46 ; external initialized ram data
+                             47 ;--------------------------------------------------------
+                             48 ;--------------------------------------------------------
+                             49 ; global & static initialisations
+                             50 ;--------------------------------------------------------
+                             51 	.area _GSINIT
+                             52 	.area _GSFINAL
+                             53 	.area _GSINIT
+                             54 ;--------------------------------------------------------
+                             55 ; Home
+                             56 ;--------------------------------------------------------
+                             57 	.area _HOME
+                             58 	.area _CODE
+                             59 ;--------------------------------------------------------
+                             60 ; code
+                             61 ;--------------------------------------------------------
+                             62 	.area _CODE
+                             63 ;exceptions.c:18: unsigned int GetRegister(enum {PC, SP, A, BC, DE, HL, IX, IY} Reg) {
+                             64 ;	genLabel
+                             65 ;	genFunction
+                             66 ;	---------------------------------
+                             67 ; Function GetRegister
+                             68 ; ---------------------------------
+   0000                      69 _GetRegister_start::
+   0000                      70 _GetRegister:
+   0000 3E 03                71 	ld	a,#3
+   0002 CF                   72 	rst	0x08
+   0003 DD E5                73 	push	ix
+   0005 DD 21 00 00          74 	ld	ix,#0
+   0009 DD 39                75 	add	ix,sp
+                             76 ;exceptions.c:19: switch(Reg) {
+                             77 ;	genCmpLt
+                             78 ;	AOP_STK for 
+   000B DD 7E 04             79 	ld	a,4(ix)
+   000E D6 01                80 	sub	a,#0x01
+   0010 FAr7Fs00             81 	jp	m,00108$
+                             82 ;	genCmpGt
+                             83 ;	AOP_STK for 
+   0013 3E 07                84 	ld	a,#0x07
+   0015 DD 96 04             85 	sub	a,4(ix)
+   0018 FAr7Fs00             86 	jp	m,00108$
+                             87 ;	genMinus
+                             88 ;	AOP_STK for 
+   001B DD 7E 04             89 	ld	a,4(ix)
+   001E C6 FF                90 	add	a,#0xFF
+   0020 4F                   91 	ld	c,a
+                             92 ;	genJumpTab
+   0021 D5                   93 	push	de
+   0022 59                   94 	ld	e,c
+   0023 16 00                95 	ld	d,#0x00
+   0025 21r2Ds00             96 	ld	hl,#00114$
+   0028 19                   97 	add	hl,de
+   0029 19                   98 	add	hl,de
+   002A 19                   99 	add	hl,de
+   002B D1                  100 	pop	de
+   002C E9                  101 	jp	(hl)
+   002D                     102 00114$:
+   002D C3r42s00            103 	jp	00101$
+   0030 C3r4Bs00            104 	jp	00102$
+   0033 C3r53s00            105 	jp	00103$
+   0036 C3r5Cs00            106 	jp	00104$
+   0039 C3r65s00            107 	jp	00105$
+   003C C3r6Ds00            108 	jp	00106$
+   003F C3r76s00            109 	jp	00107$
+                            110 ;exceptions.c:25: _endasm;
+                            111 ;	genLabel
+   0042                     112 00101$:
+                            113 ;	genInline
+                            114 ;
+   0042 D9                  115 		               exx
+   0043 ED 73r07s00         116 		               ld (_RegValue),sp
+   0047 D9                  117 		               exx
+                            118 		               
+                            119 ;exceptions.c:26: break;
+                            120 ;	genGoto
+   0048 C3r8Bs00            121 	jp	00109$
+                            122 ;exceptions.c:32: _endasm;
+                            123 ;	genLabel
+   004B                     124 00102$:
+                            125 ;	genInline
+                            126 ;
+   004B 08                  127 		               ex af,af
+   004C 32r07s00            128 		               ld (_RegValue),a
+   004F 08                  129 		               ex af,af
+                            130 		               
+                            131 ;exceptions.c:33: break;
+                            132 ;	genGoto
+   0050 C3r8Bs00            133 	jp	00109$
+                            134 ;exceptions.c:39: _endasm;
+                            135 ;	genLabel
+   0053                     136 00103$:
+                            137 ;	genInline
+                            138 ;
+   0053 D9                  139 		               exx
+   0054 ED 53r07s00         140 		               ld (_RegValue),de
+   0058 D9                  141 		               exx
+                            142 		               
+                            143 ;exceptions.c:40: break;
+                            144 ;	genGoto
+   0059 C3r8Bs00            145 	jp	00109$
+                            146 ;exceptions.c:46: _endasm;
+                            147 ;	genLabel
+   005C                     148 00104$:
+                            149 ;	genInline
+                            150 ;
+   005C D9                  151 		               exx
+   005D ED 53r07s00         152 		               ld (_RegValue),de
+   0061 D9                  153 		               exx
+                            154 		               
+                            155 ;exceptions.c:47: break;
+                            156 ;	genGoto
+   0062 C3r8Bs00            157 	jp	00109$
+                            158 ;exceptions.c:53: _endasm;
+                            159 ;	genLabel
+   0065                     160 00105$:
+                            161 ;	genInline
+                            162 ;
+   0065 D9                  163 		               exx
+   0066 22r07s00            164 		               ld (_RegValue),hl
+   0069 D9                  165 		               exx
+                            166 		               
+                            167 ;exceptions.c:54: break;
+                            168 ;	genGoto
+   006A C3r8Bs00            169 	jp	00109$
+                            170 ;exceptions.c:60: _endasm;
+                            171 ;	genLabel
+   006D                     172 00106$:
+                            173 ;	genInline
+                            174 ;
+   006D D9                  175 		               exx
+   006E DD 22r07s00         176 		               ld (_RegValue),ix
+   0072 D9                  177 		               exx
+                            178 		               
+                            179 ;exceptions.c:61: break;
+                            180 ;	genGoto
+   0073 C3r8Bs00            181 	jp	00109$
+                            182 ;exceptions.c:67: _endasm;
+                            183 ;	genLabel
+   0076                     184 00107$:
+                            185 ;	genInline
+                            186 ;
+   0076 D9                  187 		               exx
+   0077 FD 22r07s00         188 		               ld (_RegValue),iy
+   007B D9                  189 		               exx
+                            190 		               
+                            191 ;exceptions.c:68: break;
+                            192 ;	genGoto
+   007C C3r8Bs00            193 	jp	00109$
+                            194 ;exceptions.c:70: RegValue=0;
+                            195 ;	genLabel
+   007F                     196 00108$:
+                            197 ;	genAssign
+   007F FD 21r07s00         198 	ld	iy,#_RegValue
+   0083 FD 36 00 00         199 	ld	0(iy),#0x00
+   0087 FD 36 01 00         200 	ld	1(iy),#0x00
+                            201 ;exceptions.c:71: }
+                            202 ;	genLabel
+   008B                     203 00109$:
+                            204 ;exceptions.c:76: _endasm;
+                            205 ;	genInline
+                            206 ;
+   008B 2Ar07s00            207 		       ld hl,(_RegValue)
+   008E DD E1               208 		       pop ix
+   0090 C9                  209 		       ret
+                            210 		       
+                            211 ;exceptions.c:77: return RegValue;
+                            212 ;	genRet
+                            213 ; Dump of IC_LEFT: type AOP_IY size 2
+   0091 2Ar07s00            214 	ld	hl,(_RegValue)
+                            215 ;	genLabel
+   0094                     216 00110$:
+                            217 ;	genEndFunction
+   0094 DD E1               218 	pop	ix
+   0096 3E 04               219 	ld	a,#4
+   0098 CF                  220 	rst	0x08
+   0099 C9                  221 	ret
+   009A                     222 _GetRegister_end::
+                            223 ;exceptions.c:81: void Alert(enum {alertHalt, alertBreak} Type, char* Message) {
+                            224 ;	genLabel
+                            225 ;	genFunction
+                            226 ;	---------------------------------
+                            227 ; Function Alert
+                            228 ; ---------------------------------
+   009A                     229 _Alert_start::
+   009A                     230 _Alert:
+   009A 3E 03               231 	ld	a,#3
+   009C CF                  232 	rst	0x08
+   009D DD E5               233 	push	ix
+   009F DD 21 00 00         234 	ld	ix,#0
+   00A3 DD 39               235 	add	ix,sp
+   00A5 21 F0 FF            236 	ld	hl,#-16
+   00A8 39                  237 	add	hl,sp
+   00A9 F9                  238 	ld	sp,hl
+                            239 ;exceptions.c:83: Pause();
+                            240 ;	genCall
+                            241 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   00AA CDr00s00            242 	call	_Pause
+                            243 ;exceptions.c:85: _SimPrintString("-------------------\n");
+                            244 ;	genIpush
+                            245 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   00AD 21r48s04            246 	ld	hl,#__str_0
+   00B0 E5                  247 	push	hl
+                            248 ;	genCall
+   00B1 CDr00s00            249 	call	__Z80SimPrintString
+   00B4 F1                  250 	pop	af
+                            251 ;exceptions.c:86: if(Type==alertBreak) {
+                            252 ;	genCmpEq
+                            253 ;	AOP_STK for 
+                            254 ; genCmpEq: left 1, right 1, result 1
+                            255 ;4
+   00B5 DD 7E 04            256 	ld	a,4(ix)
+   00B8 FE 01               257 	cp	a,#0x01
+   00BA C2rC2s00            258 	jp	nz,00117$
+   00BD 3E 01               259 	ld	a,#0x01
+   00BF C3rC3s00            260 	jp	00118$
+   00C2                     261 00117$:
+   00C2 AF                  262 	xor	a,a
+   00C3                     263 00118$:
+                            264 ;6
+   00C3 4F                  265 	ld	c,a
+                            266 ;	genIfx
+   00C4 AF                  267 	xor	a,a
+   00C5 B1                  268 	or	a,c
+   00C6 CAr06s01            269 	jp	z,00102$
+                            270 ;exceptions.c:87: _SimPrintString("BREAK: ");
+                            271 ;	genIpush
+                            272 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   00C9 C5                  273 	push	bc
+   00CA 21r5Ds04            274 	ld	hl,#__str_1
+   00CD E5                  275 	push	hl
+                            276 ;	genCall
+   00CE CDr00s00            277 	call	__Z80SimPrintString
+   00D1 F1                  278 	pop	af
+   00D2 C1                  279 	pop	bc
+                            280 ;exceptions.c:88: _SimPrintString(Message);
+                            281 ;	genIpush
+                            282 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   00D3 C5                  283 	push	bc
+                            284 ;	AOP_STK for 
+   00D4 DD 6E 05            285 	ld	l,5(ix)
+   00D7 DD 66 06            286 	ld	h,6(ix)
+   00DA E5                  287 	push	hl
+                            288 ;	genCall
+   00DB CDr00s00            289 	call	__Z80SimPrintString
+   00DE F1                  290 	pop	af
+   00DF C1                  291 	pop	bc
+                            292 ;exceptions.c:89: _SimPrintString("\n");
+                            293 ;	genIpush
+                            294 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   00E0 C5                  295 	push	bc
+   00E1 21r65s04            296 	ld	hl,#__str_2
+   00E4 E5                  297 	push	hl
+                            298 ;	genCall
+   00E5 CDr00s00            299 	call	__Z80SimPrintString
+   00E8 F1                  300 	pop	af
+   00E9 C1                  301 	pop	bc
+                            302 ;exceptions.c:90: _SimPrintString("-------------------\n");
+                            303 ;	genIpush
+                            304 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   00EA C5                  305 	push	bc
+   00EB 21r48s04            306 	ld	hl,#__str_0
+   00EE E5                  307 	push	hl
+                            308 ;	genCall
+   00EF CDr00s00            309 	call	__Z80SimPrintString
+   00F2 F1                  310 	pop	af
+   00F3 C1                  311 	pop	bc
+                            312 ;exceptions.c:91: _SimDumpRegs();
+                            313 ;	genCall
+                            314 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   00F4 C5                  315 	push	bc
+   00F5 CDr00s00            316 	call	__SimDumpRegs
+   00F8 C1                  317 	pop	bc
+                            318 ;exceptions.c:92: _SimPrintString("-------------------\n");
+                            319 ;	genIpush
+                            320 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   00F9 C5                  321 	push	bc
+   00FA 21r48s04            322 	ld	hl,#__str_0
+   00FD E5                  323 	push	hl
+                            324 ;	genCall
+   00FE CDr00s00            325 	call	__Z80SimPrintString
+   0101 F1                  326 	pop	af
+   0102 C1                  327 	pop	bc
+                            328 ;	genGoto
+   0103 C3r45s01            329 	jp	00103$
+                            330 ;	genLabel
+   0106                     331 00102$:
+                            332 ;exceptions.c:94: _SimPrintString("HALT: ");
+                            333 ;	genIpush
+                            334 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0106 C5                  335 	push	bc
+   0107 21r67s04            336 	ld	hl,#__str_3
+   010A E5                  337 	push	hl
+                            338 ;	genCall
+   010B CDr00s00            339 	call	__Z80SimPrintString
+   010E F1                  340 	pop	af
+   010F C1                  341 	pop	bc
+                            342 ;exceptions.c:95: _SimPrintString(Message);
+                            343 ;	genIpush
+                            344 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0110 C5                  345 	push	bc
+                            346 ;	AOP_STK for 
+   0111 DD 6E 05            347 	ld	l,5(ix)
+   0114 DD 66 06            348 	ld	h,6(ix)
+   0117 E5                  349 	push	hl
+                            350 ;	genCall
+   0118 CDr00s00            351 	call	__Z80SimPrintString
+   011B F1                  352 	pop	af
+   011C C1                  353 	pop	bc
+                            354 ;exceptions.c:96: _SimPrintString("\n");
+                            355 ;	genIpush
+                            356 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   011D C5                  357 	push	bc
+   011E 21r65s04            358 	ld	hl,#__str_2
+   0121 E5                  359 	push	hl
+                            360 ;	genCall
+   0122 CDr00s00            361 	call	__Z80SimPrintString
+   0125 F1                  362 	pop	af
+   0126 C1                  363 	pop	bc
+                            364 ;exceptions.c:97: _SimPrintString("-------------------\n");
+                            365 ;	genIpush
+                            366 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0127 C5                  367 	push	bc
+   0128 21r48s04            368 	ld	hl,#__str_0
+   012B E5                  369 	push	hl
+                            370 ;	genCall
+   012C CDr00s00            371 	call	__Z80SimPrintString
+   012F F1                  372 	pop	af
+   0130 C1                  373 	pop	bc
+                            374 ;exceptions.c:98: _SimDumpRegs();
+                            375 ;	genCall
+                            376 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0131 C5                  377 	push	bc
+   0132 CDr00s00            378 	call	__SimDumpRegs
+   0135 C1                  379 	pop	bc
+                            380 ;exceptions.c:99: _SimPrintString("-------------------\n");
+                            381 ;	genIpush
+                            382 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0136 C5                  383 	push	bc
+   0137 21r48s04            384 	ld	hl,#__str_0
+   013A E5                  385 	push	hl
+                            386 ;	genCall
+   013B CDr00s00            387 	call	__Z80SimPrintString
+   013E F1                  388 	pop	af
+   013F C1                  389 	pop	bc
+                            390 ;exceptions.c:100: _SimTerminate();
+                            391 ;	genCall
+                            392 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0140 C5                  393 	push	bc
+   0141 CDr00s00            394 	call	__Z80SimTerminate
+   0144 C1                  395 	pop	bc
+                            396 ;	genLabel
+   0145                     397 00103$:
+                            398 ;exceptions.c:104: PutString("\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4", 18, 0);
+                            399 ;	genIpush
+                            400 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0145 C5                  401 	push	bc
+   0146 21 12 00            402 	ld	hl,#0x0012
+   0149 E5                  403 	push	hl
+                            404 ;	genIpush
+   014A 21r6Es04            405 	ld	hl,#__str_4
+   014D E5                  406 	push	hl
+                            407 ;	genCall
+   014E CDr00s00            408 	call	_PutString
+   0151 F1                  409 	pop	af
+   0152 F1                  410 	pop	af
+   0153 C1                  411 	pop	bc
+                            412 ;exceptions.c:105: PutString("                                ", 19, 0);
+                            413 ;	genIpush
+                            414 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0154 C5                  415 	push	bc
+   0155 21 13 00            416 	ld	hl,#0x0013
+   0158 E5                  417 	push	hl
+                            418 ;	genIpush
+   0159 21r8Fs04            419 	ld	hl,#__str_5
+   015C E5                  420 	push	hl
+                            421 ;	genCall
+   015D CDr00s00            422 	call	_PutString
+   0160 F1                  423 	pop	af
+   0161 F1                  424 	pop	af
+   0162 C1                  425 	pop	bc
+                            426 ;exceptions.c:106: PutString("\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4", 20, 0);
+                            427 ;	genIpush
+                            428 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0163 C5                  429 	push	bc
+   0164 21 14 00            430 	ld	hl,#0x0014
+   0167 E5                  431 	push	hl
+                            432 ;	genIpush
+   0168 21r6Es04            433 	ld	hl,#__str_4
+   016B E5                  434 	push	hl
+                            435 ;	genCall
+   016C CDr00s00            436 	call	_PutString
+   016F F1                  437 	pop	af
+   0170 F1                  438 	pop	af
+   0171 C1                  439 	pop	bc
+                            440 ;exceptions.c:107: PutString("                                ", 21, 0);
+                            441 ;	genIpush
+                            442 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0172 C5                  443 	push	bc
+   0173 21 15 00            444 	ld	hl,#0x0015
+   0176 E5                  445 	push	hl
+                            446 ;	genIpush
+   0177 21r8Fs04            447 	ld	hl,#__str_5
+   017A E5                  448 	push	hl
+                            449 ;	genCall
+   017B CDr00s00            450 	call	_PutString
+   017E F1                  451 	pop	af
+   017F F1                  452 	pop	af
+   0180 C1                  453 	pop	bc
+                            454 ;exceptions.c:108: PutString("                                ", 22, 0);
+                            455 ;	genIpush
+                            456 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0181 C5                  457 	push	bc
+   0182 21 16 00            458 	ld	hl,#0x0016
+   0185 E5                  459 	push	hl
+                            460 ;	genIpush
+   0186 21r8Fs04            461 	ld	hl,#__str_5
+   0189 E5                  462 	push	hl
+                            463 ;	genCall
+   018A CDr00s00            464 	call	_PutString
+   018D F1                  465 	pop	af
+   018E F1                  466 	pop	af
+   018F C1                  467 	pop	bc
+                            468 ;exceptions.c:109: PutString("                                ", 23, 0);
+                            469 ;	genIpush
+                            470 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0190 C5                  471 	push	bc
+   0191 21 17 00            472 	ld	hl,#0x0017
+   0194 E5                  473 	push	hl
+                            474 ;	genIpush
+   0195 21r8Fs04            475 	ld	hl,#__str_5
+   0198 E5                  476 	push	hl
+                            477 ;	genCall
+   0199 CDr00s00            478 	call	_PutString
+   019C F1                  479 	pop	af
+   019D F1                  480 	pop	af
+   019E C1                  481 	pop	bc
+                            482 ;exceptions.c:110: SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 1);
+                            483 ;	genIpush
+                            484 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   019F C5                  485 	push	bc
+   01A0 21 13 01            486 	ld	hl,#0x0113
+   01A3 E5                  487 	push	hl
+                            488 ;	genIpush
+   01A4 3E B9               489 	ld	a,#0xB9
+   01A6 F5                  490 	push	af
+   01A7 33                  491 	inc	sp
+                            492 ;	genCall
+   01A8 CDr00s00            493 	call	_SetAttrib
+   01AB F1                  494 	pop	af
+   01AC 33                  495 	inc	sp
+   01AD C1                  496 	pop	bc
+                            497 ;exceptions.c:111: SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 2);
+                            498 ;	genIpush
+                            499 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   01AE C5                  500 	push	bc
+   01AF 21 13 02            501 	ld	hl,#0x0213
+   01B2 E5                  502 	push	hl
+                            503 ;	genIpush
+   01B3 3E B9               504 	ld	a,#0xB9
+   01B5 F5                  505 	push	af
+   01B6 33                  506 	inc	sp
+                            507 ;	genCall
+   01B7 CDr00s00            508 	call	_SetAttrib
+   01BA F1                  509 	pop	af
+   01BB 33                  510 	inc	sp
+   01BC C1                  511 	pop	bc
+                            512 ;exceptions.c:112: SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 3);
+                            513 ;	genIpush
+                            514 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   01BD C5                  515 	push	bc
+   01BE 21 13 03            516 	ld	hl,#0x0313
+   01C1 E5                  517 	push	hl
+                            518 ;	genIpush
+   01C2 3E B9               519 	ld	a,#0xB9
+   01C4 F5                  520 	push	af
+   01C5 33                  521 	inc	sp
+                            522 ;	genCall
+   01C6 CDr00s00            523 	call	_SetAttrib
+   01C9 F1                  524 	pop	af
+   01CA 33                  525 	inc	sp
+   01CB C1                  526 	pop	bc
+                            527 ;exceptions.c:113: SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 4);
+                            528 ;	genIpush
+                            529 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   01CC C5                  530 	push	bc
+   01CD 21 13 04            531 	ld	hl,#0x0413
+   01D0 E5                  532 	push	hl
+                            533 ;	genIpush
+   01D1 3E B9               534 	ld	a,#0xB9
+   01D3 F5                  535 	push	af
+   01D4 33                  536 	inc	sp
+                            537 ;	genCall
+   01D5 CDr00s00            538 	call	_SetAttrib
+   01D8 F1                  539 	pop	af
+   01D9 33                  540 	inc	sp
+   01DA C1                  541 	pop	bc
+                            542 ;exceptions.c:114: if(Type==alertBreak) {
+                            543 ;	genIfx
+   01DB AF                  544 	xor	a,a
+   01DC B1                  545 	or	a,c
+   01DD CAr0Ds02            546 	jp	z,00105$
+                            547 ;exceptions.c:115: SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 5);
+                            548 ;	genIpush
+                            549 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   01E0 21 13 05            550 	ld	hl,#0x0513
+   01E3 E5                  551 	push	hl
+                            552 ;	genIpush
+   01E4 3E B9               553 	ld	a,#0xB9
+   01E6 F5                  554 	push	af
+   01E7 33                  555 	inc	sp
+                            556 ;	genCall
+   01E8 CDr00s00            557 	call	_SetAttrib
+   01EB F1                  558 	pop	af
+   01EC 33                  559 	inc	sp
+                            560 ;exceptions.c:116: PutString(" BREAK ", 19, 0);
+                            561 ;	genIpush
+                            562 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   01ED 21 13 00            563 	ld	hl,#0x0013
+   01F0 E5                  564 	push	hl
+                            565 ;	genIpush
+   01F1 21rB0s04            566 	ld	hl,#__str_6
+   01F4 E5                  567 	push	hl
+                            568 ;	genCall
+   01F5 CDr00s00            569 	call	_PutString
+   01F8 F1                  570 	pop	af
+   01F9 F1                  571 	pop	af
+                            572 ;exceptions.c:117: PutString(Message, 19, 7);
+                            573 ;	genIpush
+                            574 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   01FA 21 13 07            575 	ld	hl,#0x0713
+   01FD E5                  576 	push	hl
+                            577 ;	genIpush
+                            578 ;	AOP_STK for 
+   01FE DD 6E 05            579 	ld	l,5(ix)
+   0201 DD 66 06            580 	ld	h,6(ix)
+   0204 E5                  581 	push	hl
+                            582 ;	genCall
+   0205 CDr00s00            583 	call	_PutString
+   0208 F1                  584 	pop	af
+   0209 F1                  585 	pop	af
+                            586 ;	genGoto
+   020A C3r2As02            587 	jp	00106$
+                            588 ;	genLabel
+   020D                     589 00105$:
+                            590 ;exceptions.c:119: PutString(" HALT ", 19, 0);
+                            591 ;	genIpush
+                            592 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   020D 21 13 00            593 	ld	hl,#0x0013
+   0210 E5                  594 	push	hl
+                            595 ;	genIpush
+   0211 21rB8s04            596 	ld	hl,#__str_7
+   0214 E5                  597 	push	hl
+                            598 ;	genCall
+   0215 CDr00s00            599 	call	_PutString
+   0218 F1                  600 	pop	af
+   0219 F1                  601 	pop	af
+                            602 ;exceptions.c:120: PutString(Message, 19, 6);
+                            603 ;	genIpush
+                            604 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   021A 21 13 06            605 	ld	hl,#0x0613
+   021D E5                  606 	push	hl
+                            607 ;	genIpush
+                            608 ;	AOP_STK for 
+   021E DD 6E 05            609 	ld	l,5(ix)
+   0221 DD 66 06            610 	ld	h,6(ix)
+   0224 E5                  611 	push	hl
+                            612 ;	genCall
+   0225 CDr00s00            613 	call	_PutString
+   0228 F1                  614 	pop	af
+   0229 F1                  615 	pop	af
+                            616 ;	genLabel
+   022A                     617 00106$:
+                            618 ;exceptions.c:123: PutString(" A", 21, 2);	WordToHex(GetRegister(A), Value); PutString(Value, 21, 5);
+                            619 ;	genIpush
+                            620 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   022A 21 15 02            621 	ld	hl,#0x0215
+   022D E5                  622 	push	hl
+                            623 ;	genIpush
+   022E 21rBFs04            624 	ld	hl,#__str_8
+   0231 E5                  625 	push	hl
+                            626 ;	genCall
+   0232 CDr00s00            627 	call	_PutString
+   0235 F1                  628 	pop	af
+   0236 F1                  629 	pop	af
+                            630 ;	genAddrOf
+   0237 21 00 00            631 	ld	hl,#0x0000
+   023A 39                  632 	add	hl,sp
+   023B 4D                  633 	ld	c,l
+   023C 44                  634 	ld	b,h
+                            635 ;	genIpush
+                            636 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   023D C5                  637 	push	bc
+   023E 3E 02               638 	ld	a,#0x02
+   0240 F5                  639 	push	af
+   0241 33                  640 	inc	sp
+                            641 ;	genCall
+   0242 CDr00s00            642 	call	_GetRegister
+   0245 54                  643 	ld	d,h
+   0246 5D                  644 	ld	e,l
+   0247 33                  645 	inc	sp
+   0248 C1                  646 	pop	bc
+                            647 ;	genIpush
+                            648 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0249 C5                  649 	push	bc
+   024A C5                  650 	push	bc
+                            651 ;	genIpush
+   024B D5                  652 	push	de
+                            653 ;	genCall
+   024C CDr00s00            654 	call	_WordToHex
+   024F F1                  655 	pop	af
+   0250 F1                  656 	pop	af
+   0251 C1                  657 	pop	bc
+                            658 ;	genIpush
+                            659 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0252 C5                  660 	push	bc
+   0253 21 15 05            661 	ld	hl,#0x0515
+   0256 E5                  662 	push	hl
+                            663 ;	genIpush
+   0257 C5                  664 	push	bc
+                            665 ;	genCall
+   0258 CDr00s00            666 	call	_PutString
+   025B F1                  667 	pop	af
+   025C F1                  668 	pop	af
+   025D C1                  669 	pop	bc
+                            670 ;exceptions.c:124: PutString("BC", 21, 12); WordToHex(GetRegister(BC), Value); PutString(Value, 21, 15);
+                            671 ;	genIpush
+                            672 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   025E C5                  673 	push	bc
+   025F 21 15 0C            674 	ld	hl,#0x0C15
+   0262 E5                  675 	push	hl
+                            676 ;	genIpush
+   0263 21rC2s04            677 	ld	hl,#__str_9
+   0266 E5                  678 	push	hl
+                            679 ;	genCall
+   0267 CDr00s00            680 	call	_PutString
+   026A F1                  681 	pop	af
+   026B F1                  682 	pop	af
+   026C C1                  683 	pop	bc
+                            684 ;	genIpush
+                            685 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   026D C5                  686 	push	bc
+   026E 3E 03               687 	ld	a,#0x03
+   0270 F5                  688 	push	af
+   0271 33                  689 	inc	sp
+                            690 ;	genCall
+   0272 CDr00s00            691 	call	_GetRegister
+   0275 54                  692 	ld	d,h
+   0276 5D                  693 	ld	e,l
+   0277 33                  694 	inc	sp
+   0278 C1                  695 	pop	bc
+                            696 ;	genIpush
+                            697 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0279 C5                  698 	push	bc
+   027A C5                  699 	push	bc
+                            700 ;	genIpush
+   027B D5                  701 	push	de
+                            702 ;	genCall
+   027C CDr00s00            703 	call	_WordToHex
+   027F F1                  704 	pop	af
+   0280 F1                  705 	pop	af
+   0281 C1                  706 	pop	bc
+                            707 ;	genIpush
+                            708 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0282 C5                  709 	push	bc
+   0283 21 15 0F            710 	ld	hl,#0x0F15
+   0286 E5                  711 	push	hl
+                            712 ;	genIpush
+   0287 C5                  713 	push	bc
+                            714 ;	genCall
+   0288 CDr00s00            715 	call	_PutString
+   028B F1                  716 	pop	af
+   028C F1                  717 	pop	af
+   028D C1                  718 	pop	bc
+                            719 ;exceptions.c:125: PutString("DE", 21, 22); WordToHex(GetRegister(DE), Value); PutString(Value, 21, 25);
+                            720 ;	genIpush
+                            721 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   028E C5                  722 	push	bc
+   028F 21 15 16            723 	ld	hl,#0x1615
+   0292 E5                  724 	push	hl
+                            725 ;	genIpush
+   0293 21rC5s04            726 	ld	hl,#__str_10
+   0296 E5                  727 	push	hl
+                            728 ;	genCall
+   0297 CDr00s00            729 	call	_PutString
+   029A F1                  730 	pop	af
+   029B F1                  731 	pop	af
+   029C C1                  732 	pop	bc
+                            733 ;	genIpush
+                            734 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   029D C5                  735 	push	bc
+   029E 3E 04               736 	ld	a,#0x04
+   02A0 F5                  737 	push	af
+   02A1 33                  738 	inc	sp
+                            739 ;	genCall
+   02A2 CDr00s00            740 	call	_GetRegister
+   02A5 54                  741 	ld	d,h
+   02A6 5D                  742 	ld	e,l
+   02A7 33                  743 	inc	sp
+   02A8 C1                  744 	pop	bc
+                            745 ;	genIpush
+                            746 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02A9 C5                  747 	push	bc
+   02AA C5                  748 	push	bc
+                            749 ;	genIpush
+   02AB D5                  750 	push	de
+                            751 ;	genCall
+   02AC CDr00s00            752 	call	_WordToHex
+   02AF F1                  753 	pop	af
+   02B0 F1                  754 	pop	af
+   02B1 C1                  755 	pop	bc
+                            756 ;	genIpush
+                            757 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02B2 C5                  758 	push	bc
+   02B3 21 15 19            759 	ld	hl,#0x1915
+   02B6 E5                  760 	push	hl
+                            761 ;	genIpush
+   02B7 C5                  762 	push	bc
+                            763 ;	genCall
+   02B8 CDr00s00            764 	call	_PutString
+   02BB F1                  765 	pop	af
+   02BC F1                  766 	pop	af
+   02BD C1                  767 	pop	bc
+                            768 ;exceptions.c:127: PutString("HL", 22, 2); WordToHex(GetRegister(HL), Value); PutString(Value, 22, 5);
+                            769 ;	genIpush
+                            770 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02BE C5                  771 	push	bc
+   02BF 21 16 02            772 	ld	hl,#0x0216
+   02C2 E5                  773 	push	hl
+                            774 ;	genIpush
+   02C3 21rC8s04            775 	ld	hl,#__str_11
+   02C6 E5                  776 	push	hl
+                            777 ;	genCall
+   02C7 CDr00s00            778 	call	_PutString
+   02CA F1                  779 	pop	af
+   02CB F1                  780 	pop	af
+   02CC C1                  781 	pop	bc
+                            782 ;	genIpush
+                            783 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02CD C5                  784 	push	bc
+   02CE 3E 05               785 	ld	a,#0x05
+   02D0 F5                  786 	push	af
+   02D1 33                  787 	inc	sp
+                            788 ;	genCall
+   02D2 CDr00s00            789 	call	_GetRegister
+   02D5 54                  790 	ld	d,h
+   02D6 5D                  791 	ld	e,l
+   02D7 33                  792 	inc	sp
+   02D8 C1                  793 	pop	bc
+                            794 ;	genIpush
+                            795 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02D9 C5                  796 	push	bc
+   02DA C5                  797 	push	bc
+                            798 ;	genIpush
+   02DB D5                  799 	push	de
+                            800 ;	genCall
+   02DC CDr00s00            801 	call	_WordToHex
+   02DF F1                  802 	pop	af
+   02E0 F1                  803 	pop	af
+   02E1 C1                  804 	pop	bc
+                            805 ;	genIpush
+                            806 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02E2 C5                  807 	push	bc
+   02E3 21 16 05            808 	ld	hl,#0x0516
+   02E6 E5                  809 	push	hl
+                            810 ;	genIpush
+   02E7 C5                  811 	push	bc
+                            812 ;	genCall
+   02E8 CDr00s00            813 	call	_PutString
+   02EB F1                  814 	pop	af
+   02EC F1                  815 	pop	af
+   02ED C1                  816 	pop	bc
+                            817 ;exceptions.c:128: PutString("IX", 22, 12); WordToHex(SavedIX, Value); PutString(Value, 22, 15);
+                            818 ;	genIpush
+                            819 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02EE C5                  820 	push	bc
+   02EF 21 16 0C            821 	ld	hl,#0x0C16
+   02F2 E5                  822 	push	hl
+                            823 ;	genIpush
+   02F3 21rCBs04            824 	ld	hl,#__str_12
+   02F6 E5                  825 	push	hl
+                            826 ;	genCall
+   02F7 CDr00s00            827 	call	_PutString
+   02FA F1                  828 	pop	af
+   02FB F1                  829 	pop	af
+   02FC C1                  830 	pop	bc
+                            831 ;	genIpush
+                            832 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   02FD C5                  833 	push	bc
+   02FE C5                  834 	push	bc
+                            835 ;	genIpush
+   02FF 2Ar03s00            836 	ld	hl,(_SavedIX)
+   0302 E5                  837 	push	hl
+                            838 ;	genCall
+   0303 CDr00s00            839 	call	_WordToHex
+   0306 F1                  840 	pop	af
+   0307 F1                  841 	pop	af
+   0308 C1                  842 	pop	bc
+                            843 ;	genIpush
+                            844 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0309 C5                  845 	push	bc
+   030A 21 16 0F            846 	ld	hl,#0x0F16
+   030D E5                  847 	push	hl
+                            848 ;	genIpush
+   030E C5                  849 	push	bc
+                            850 ;	genCall
+   030F CDr00s00            851 	call	_PutString
+   0312 F1                  852 	pop	af
+   0313 F1                  853 	pop	af
+   0314 C1                  854 	pop	bc
+                            855 ;exceptions.c:129: PutString("IY", 22, 22); WordToHex(SavedIY, Value); PutString(Value, 22, 25);
+                            856 ;	genIpush
+                            857 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0315 C5                  858 	push	bc
+   0316 21 16 16            859 	ld	hl,#0x1616
+   0319 E5                  860 	push	hl
+                            861 ;	genIpush
+   031A 21rCEs04            862 	ld	hl,#__str_13
+   031D E5                  863 	push	hl
+                            864 ;	genCall
+   031E CDr00s00            865 	call	_PutString
+   0321 F1                  866 	pop	af
+   0322 F1                  867 	pop	af
+   0323 C1                  868 	pop	bc
+                            869 ;	genIpush
+                            870 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0324 C5                  871 	push	bc
+   0325 C5                  872 	push	bc
+                            873 ;	genIpush
+   0326 2Ar05s00            874 	ld	hl,(_SavedIY)
+   0329 E5                  875 	push	hl
+                            876 ;	genCall
+   032A CDr00s00            877 	call	_WordToHex
+   032D F1                  878 	pop	af
+   032E F1                  879 	pop	af
+   032F C1                  880 	pop	bc
+                            881 ;	genIpush
+                            882 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0330 C5                  883 	push	bc
+   0331 21 16 19            884 	ld	hl,#0x1916
+   0334 E5                  885 	push	hl
+                            886 ;	genIpush
+   0335 C5                  887 	push	bc
+                            888 ;	genCall
+   0336 CDr00s00            889 	call	_PutString
+   0339 F1                  890 	pop	af
+   033A F1                  891 	pop	af
+   033B C1                  892 	pop	bc
+                            893 ;exceptions.c:131: PutString("SP", 23, 2); WordToHex(GetRegister(SP), Value); PutString(Value, 23, 5);
+                            894 ;	genIpush
+                            895 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   033C C5                  896 	push	bc
+   033D 21 17 02            897 	ld	hl,#0x0217
+   0340 E5                  898 	push	hl
+                            899 ;	genIpush
+   0341 21rD1s04            900 	ld	hl,#__str_14
+   0344 E5                  901 	push	hl
+                            902 ;	genCall
+   0345 CDr00s00            903 	call	_PutString
+   0348 F1                  904 	pop	af
+   0349 F1                  905 	pop	af
+   034A C1                  906 	pop	bc
+                            907 ;	genIpush
+                            908 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   034B C5                  909 	push	bc
+   034C 3E 01               910 	ld	a,#0x01
+   034E F5                  911 	push	af
+   034F 33                  912 	inc	sp
+                            913 ;	genCall
+   0350 CDr00s00            914 	call	_GetRegister
+   0353 54                  915 	ld	d,h
+   0354 5D                  916 	ld	e,l
+   0355 33                  917 	inc	sp
+   0356 C1                  918 	pop	bc
+                            919 ;	genIpush
+                            920 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0357 C5                  921 	push	bc
+   0358 C5                  922 	push	bc
+                            923 ;	genIpush
+   0359 D5                  924 	push	de
+                            925 ;	genCall
+   035A CDr00s00            926 	call	_WordToHex
+   035D F1                  927 	pop	af
+   035E F1                  928 	pop	af
+   035F C1                  929 	pop	bc
+                            930 ;	genIpush
+                            931 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0360 C5                  932 	push	bc
+   0361 21 17 05            933 	ld	hl,#0x0517
+   0364 E5                  934 	push	hl
+                            935 ;	genIpush
+   0365 C5                  936 	push	bc
+                            937 ;	genCall
+   0366 CDr00s00            938 	call	_PutString
+   0369 F1                  939 	pop	af
+   036A F1                  940 	pop	af
+   036B C1                  941 	pop	bc
+                            942 ;exceptions.c:132: PutString("PC", 23, 12); WordToHex(SavedPC, Value); PutString(Value, 23, 15);
+                            943 ;	genIpush
+                            944 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   036C C5                  945 	push	bc
+   036D 21 17 0C            946 	ld	hl,#0x0C17
+   0370 E5                  947 	push	hl
+                            948 ;	genIpush
+   0371 21rD4s04            949 	ld	hl,#__str_15
+   0374 E5                  950 	push	hl
+                            951 ;	genCall
+   0375 CDr00s00            952 	call	_PutString
+   0378 F1                  953 	pop	af
+   0379 F1                  954 	pop	af
+   037A C1                  955 	pop	bc
+                            956 ;	genIpush
+                            957 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   037B C5                  958 	push	bc
+   037C C5                  959 	push	bc
+                            960 ;	genIpush
+   037D 2Ar01s00            961 	ld	hl,(_SavedPC)
+   0380 E5                  962 	push	hl
+                            963 ;	genCall
+   0381 CDr00s00            964 	call	_WordToHex
+   0384 F1                  965 	pop	af
+   0385 F1                  966 	pop	af
+   0386 C1                  967 	pop	bc
+                            968 ;	genIpush
+                            969 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0387 21 17 0F            970 	ld	hl,#0x0F17
+   038A E5                  971 	push	hl
+                            972 ;	genIpush
+   038B C5                  973 	push	bc
+                            974 ;	genCall
+   038C CDr00s00            975 	call	_PutString
+   038F F1                  976 	pop	af
+   0390 F1                  977 	pop	af
+                            978 ;exceptions.c:134: Beep();
+                            979 ;	genCall
+                            980 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0391 CDr00s00            981 	call	_Beep
+                            982 ;exceptions.c:136: Resume();
+                            983 ;	genCall
+                            984 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0394 CDr00s00            985 	call	_Resume
+                            986 ;exceptions.c:138: Sleep(350);
+                            987 ;	genIpush
+                            988 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0397 21 00 00            989 	ld	hl,#0x0000
+   039A E5                  990 	push	hl
+   039B 21 5E 01            991 	ld	hl,#0x015E
+   039E E5                  992 	push	hl
+                            993 ;	genCall
+   039F CDr00s00            994 	call	_Sleep
+   03A2 F1                  995 	pop	af
+   03A3 F1                  996 	pop	af
+                            997 ;exceptions.c:139: if(Type==alertHalt) for(;;);
+                            998 ;	genCmpEq
+                            999 ;	AOP_STK for 
+                           1000 ; genCmpEq: left 1, right 1, result 0
+   03A4 DD 7E 04           1001 	ld	a,4(ix)
+   03A7 B7                 1002 	or	a,a
+   03A8 CArAEs03           1003 	jp	z,00120$
+   03AB                    1004 00119$:
+   03AB C3rB1s03           1005 	jp	00108$
+   03AE                    1006 00120$:
+                           1007 ;	genLabel
+   03AE                    1008 00110$:
+                           1009 ;	genGoto
+   03AE C3rAEs03           1010 	jp	00110$
+                           1011 ;	genLabel
+   03B1                    1012 00108$:
+                           1013 ;exceptions.c:140: PutString("                                ", 18, 0);
+                           1014 ;	genIpush
+                           1015 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03B1 21 12 00           1016 	ld	hl,#0x0012
+   03B4 E5                 1017 	push	hl
+                           1018 ;	genIpush
+   03B5 21r8Fs04           1019 	ld	hl,#__str_5
+   03B8 E5                 1020 	push	hl
+                           1021 ;	genCall
+   03B9 CDr00s00           1022 	call	_PutString
+   03BC F1                 1023 	pop	af
+   03BD F1                 1024 	pop	af
+                           1025 ;exceptions.c:141: PutString("                                ", 19, 0);
+                           1026 ;	genIpush
+                           1027 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03BE 21 13 00           1028 	ld	hl,#0x0013
+   03C1 E5                 1029 	push	hl
+                           1030 ;	genIpush
+   03C2 21r8Fs04           1031 	ld	hl,#__str_5
+   03C5 E5                 1032 	push	hl
+                           1033 ;	genCall
+   03C6 CDr00s00           1034 	call	_PutString
+   03C9 F1                 1035 	pop	af
+   03CA F1                 1036 	pop	af
+                           1037 ;exceptions.c:142: PutString("                                ", 20, 0);
+                           1038 ;	genIpush
+                           1039 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03CB 21 14 00           1040 	ld	hl,#0x0014
+   03CE E5                 1041 	push	hl
+                           1042 ;	genIpush
+   03CF 21r8Fs04           1043 	ld	hl,#__str_5
+   03D2 E5                 1044 	push	hl
+                           1045 ;	genCall
+   03D3 CDr00s00           1046 	call	_PutString
+   03D6 F1                 1047 	pop	af
+   03D7 F1                 1048 	pop	af
+                           1049 ;exceptions.c:143: PutString("                                ", 21, 0);
+                           1050 ;	genIpush
+                           1051 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03D8 21 15 00           1052 	ld	hl,#0x0015
+   03DB E5                 1053 	push	hl
+                           1054 ;	genIpush
+   03DC 21r8Fs04           1055 	ld	hl,#__str_5
+   03DF E5                 1056 	push	hl
+                           1057 ;	genCall
+   03E0 CDr00s00           1058 	call	_PutString
+   03E3 F1                 1059 	pop	af
+   03E4 F1                 1060 	pop	af
+                           1061 ;exceptions.c:144: PutString("                                ", 22, 0);
+                           1062 ;	genIpush
+                           1063 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03E5 21 16 00           1064 	ld	hl,#0x0016
+   03E8 E5                 1065 	push	hl
+                           1066 ;	genIpush
+   03E9 21r8Fs04           1067 	ld	hl,#__str_5
+   03EC E5                 1068 	push	hl
+                           1069 ;	genCall
+   03ED CDr00s00           1070 	call	_PutString
+   03F0 F1                 1071 	pop	af
+   03F1 F1                 1072 	pop	af
+                           1073 ;exceptions.c:145: PutString("                                ", 23, 0);
+                           1074 ;	genIpush
+                           1075 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03F2 21 17 00           1076 	ld	hl,#0x0017
+   03F5 E5                 1077 	push	hl
+                           1078 ;	genIpush
+   03F6 21r8Fs04           1079 	ld	hl,#__str_5
+   03F9 E5                 1080 	push	hl
+                           1081 ;	genCall
+   03FA CDr00s00           1082 	call	_PutString
+   03FD F1                 1083 	pop	af
+   03FE F1                 1084 	pop	af
+                           1085 ;exceptions.c:146: SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 1);
+                           1086 ;	genIpush
+                           1087 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   03FF 21 13 01           1088 	ld	hl,#0x0113
+   0402 E5                 1089 	push	hl
+                           1090 ;	genIpush
+   0403 3E 39              1091 	ld	a,#0x39
+   0405 F5                 1092 	push	af
+   0406 33                 1093 	inc	sp
+                           1094 ;	genCall
+   0407 CDr00s00           1095 	call	_SetAttrib
+   040A F1                 1096 	pop	af
+   040B 33                 1097 	inc	sp
+                           1098 ;exceptions.c:147: SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 2);
+                           1099 ;	genIpush
+                           1100 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   040C 21 13 02           1101 	ld	hl,#0x0213
+   040F E5                 1102 	push	hl
+                           1103 ;	genIpush
+   0410 3E 39              1104 	ld	a,#0x39
+   0412 F5                 1105 	push	af
+   0413 33                 1106 	inc	sp
+                           1107 ;	genCall
+   0414 CDr00s00           1108 	call	_SetAttrib
+   0417 F1                 1109 	pop	af
+   0418 33                 1110 	inc	sp
+                           1111 ;exceptions.c:148: SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 3);
+                           1112 ;	genIpush
+                           1113 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0419 21 13 03           1114 	ld	hl,#0x0313
+   041C E5                 1115 	push	hl
+                           1116 ;	genIpush
+   041D 3E 39              1117 	ld	a,#0x39
+   041F F5                 1118 	push	af
+   0420 33                 1119 	inc	sp
+                           1120 ;	genCall
+   0421 CDr00s00           1121 	call	_SetAttrib
+   0424 F1                 1122 	pop	af
+   0425 33                 1123 	inc	sp
+                           1124 ;exceptions.c:149: SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 4);
+                           1125 ;	genIpush
+                           1126 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0426 21 13 04           1127 	ld	hl,#0x0413
+   0429 E5                 1128 	push	hl
+                           1129 ;	genIpush
+   042A 3E 39              1130 	ld	a,#0x39
+   042C F5                 1131 	push	af
+   042D 33                 1132 	inc	sp
+                           1133 ;	genCall
+   042E CDr00s00           1134 	call	_SetAttrib
+   0431 F1                 1135 	pop	af
+   0432 33                 1136 	inc	sp
+                           1137 ;exceptions.c:150: SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 5);
+                           1138 ;	genIpush
+                           1139 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0433 21 13 05           1140 	ld	hl,#0x0513
+   0436 E5                 1141 	push	hl
+                           1142 ;	genIpush
+   0437 3E 39              1143 	ld	a,#0x39
+   0439 F5                 1144 	push	af
+   043A 33                 1145 	inc	sp
+                           1146 ;	genCall
+   043B CDr00s00           1147 	call	_SetAttrib
+   043E F1                 1148 	pop	af
+   043F 33                 1149 	inc	sp
+                           1150 ;	genLabel
+   0440                    1151 00112$:
+                           1152 ;	genEndFunction
+   0440 DD F9              1153 	ld	sp,ix
+   0442 DD E1              1154 	pop	ix
+   0444 3E 04              1155 	ld	a,#4
+   0446 CF                 1156 	rst	0x08
+   0447 C9                 1157 	ret
+   0448                    1158 _Alert_end::
+                    0448   1159 Fexceptions$_str_0$0$0 == .
+   0448                    1160 __str_0:
+   0448 2D 2D 2D 2D 2D 2D  1161 	.ascii "-------------------"
+        2D 2D 2D 2D 2D 2D
+        2D 2D 2D 2D 2D 2D
+        2D
+   045B 0A                 1162 	.db 0x0A
+   045C 00                 1163 	.db 0x00
+                    045D   1164 Fexceptions$_str_1$0$0 == .
+   045D                    1165 __str_1:
+   045D 42 52 45 41 4B 3A  1166 	.ascii "BREAK: "
+        20
+   0464 00                 1167 	.db 0x00
+                    0465   1168 Fexceptions$_str_2$0$0 == .
+   0465                    1169 __str_2:
+   0465 0A                 1170 	.db 0x0A
+   0466 00                 1171 	.db 0x00
+                    0467   1172 Fexceptions$_str_3$0$0 == .
+   0467                    1173 __str_3:
+   0467 48 41 4C 54 3A 20  1174 	.ascii "HALT: "
+   046D 00                 1175 	.db 0x00
+                    046E   1176 Fexceptions$_str_4$0$0 == .
+   046E                    1177 __str_4:
+   046E C4                 1178 	.db 0xC4
+   046F C4                 1179 	.db 0xC4
+   0470 C4                 1180 	.db 0xC4
+   0471 C4                 1181 	.db 0xC4
+   0472 C4                 1182 	.db 0xC4
+   0473 C4                 1183 	.db 0xC4
+   0474 C4                 1184 	.db 0xC4
+   0475 C4                 1185 	.db 0xC4
+   0476 C4                 1186 	.db 0xC4
+   0477 C4                 1187 	.db 0xC4
+   0478 C4                 1188 	.db 0xC4
+   0479 C4                 1189 	.db 0xC4
+   047A C4                 1190 	.db 0xC4
+   047B C4                 1191 	.db 0xC4
+   047C C4                 1192 	.db 0xC4
+   047D C4                 1193 	.db 0xC4
+   047E C4                 1194 	.db 0xC4
+   047F C4                 1195 	.db 0xC4
+   0480 C4                 1196 	.db 0xC4
+   0481 C4                 1197 	.db 0xC4
+   0482 C4                 1198 	.db 0xC4
+   0483 C4                 1199 	.db 0xC4
+   0484 C4                 1200 	.db 0xC4
+   0485 C4                 1201 	.db 0xC4
+   0486 C4                 1202 	.db 0xC4
+   0487 C4                 1203 	.db 0xC4
+   0488 C4                 1204 	.db 0xC4
+   0489 C4                 1205 	.db 0xC4
+   048A C4                 1206 	.db 0xC4
+   048B C4                 1207 	.db 0xC4
+   048C C4                 1208 	.db 0xC4
+   048D C4                 1209 	.db 0xC4
+   048E 00                 1210 	.db 0x00
+                    048F   1211 Fexceptions$_str_5$0$0 == .
+   048F                    1212 __str_5:
+   048F 20 20 20 20 20 20  1213 	.ascii "                                "
+        20 20 20 20 20 20
+        20 20 20 20 20 20
+        20 20 20 20 20 20
+        20 20 20 20 20 20
+        20 20
+   04AF 00                 1214 	.db 0x00
+                    04B0   1215 Fexceptions$_str_6$0$0 == .
+   04B0                    1216 __str_6:
+   04B0 20 42 52 45 41 4B  1217 	.ascii " BREAK "
+        20
+   04B7 00                 1218 	.db 0x00
+                    04B8   1219 Fexceptions$_str_7$0$0 == .
+   04B8                    1220 __str_7:
+   04B8 20 48 41 4C 54 20  1221 	.ascii " HALT "
+   04BE 00                 1222 	.db 0x00
+                    04BF   1223 Fexceptions$_str_8$0$0 == .
+   04BF                    1224 __str_8:
+   04BF 20 41              1225 	.ascii " A"
+   04C1 00                 1226 	.db 0x00
+                    04C2   1227 Fexceptions$_str_9$0$0 == .
+   04C2                    1228 __str_9:
+   04C2 42 43              1229 	.ascii "BC"
+   04C4 00                 1230 	.db 0x00
+                    04C5   1231 Fexceptions$_str_10$0$0 == .
+   04C5                    1232 __str_10:
+   04C5 44 45              1233 	.ascii "DE"
+   04C7 00                 1234 	.db 0x00
+                    04C8   1235 Fexceptions$_str_11$0$0 == .
+   04C8                    1236 __str_11:
+   04C8 48 4C              1237 	.ascii "HL"
+   04CA 00                 1238 	.db 0x00
+                    04CB   1239 Fexceptions$_str_12$0$0 == .
+   04CB                    1240 __str_12:
+   04CB 49 58              1241 	.ascii "IX"
+   04CD 00                 1242 	.db 0x00
+                    04CE   1243 Fexceptions$_str_13$0$0 == .
+   04CE                    1244 __str_13:
+   04CE 49 59              1245 	.ascii "IY"
+   04D0 00                 1246 	.db 0x00
+                    04D1   1247 Fexceptions$_str_14$0$0 == .
+   04D1                    1248 __str_14:
+   04D1 53 50              1249 	.ascii "SP"
+   04D3 00                 1250 	.db 0x00
+                    04D4   1251 Fexceptions$_str_15$0$0 == .
+   04D4                    1252 __str_15:
+   04D4 50 43              1253 	.ascii "PC"
+   04D6 00                 1254 	.db 0x00
+                           1255 ;exceptions.c:153: void Halt(char* ErrorMessage) {
+                           1256 ;	genLabel
+                           1257 ;	genFunction
+                           1258 ;	---------------------------------
+                           1259 ; Function Halt
+                           1260 ; ---------------------------------
+   04D7                    1261 _Halt_start::
+   04D7                    1262 _Halt:
+   04D7 3E 03              1263 	ld	a,#3
+   04D9 CF                 1264 	rst	0x08
+   04DA DD E5              1265 	push	ix
+   04DC DD 21 00 00        1266 	ld	ix,#0
+   04E0 DD 39              1267 	add	ix,sp
+                           1268 ;exceptions.c:155: Alert(alertHalt, ErrorMessage);
+                           1269 ;	genIpush
+                           1270 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+                           1271 ;	AOP_STK for 
+   04E2 DD 6E 04           1272 	ld	l,4(ix)
+   04E5 DD 66 05           1273 	ld	h,5(ix)
+   04E8 E5                 1274 	push	hl
+                           1275 ;	genIpush
+   04E9 3E 00              1276 	ld	a,#0x00
+   04EB F5                 1277 	push	af
+   04EC 33                 1278 	inc	sp
+                           1279 ;	genCall
+   04ED CDr9As00           1280 	call	_Alert
+   04F0 F1                 1281 	pop	af
+   04F1 33                 1282 	inc	sp
+                           1283 ;	genLabel
+   04F2                    1284 00101$:
+                           1285 ;	genEndFunction
+   04F2 DD E1              1286 	pop	ix
+   04F4 3E 04              1287 	ld	a,#4
+   04F6 CF                 1288 	rst	0x08
+   04F7 C9                 1289 	ret
+   04F8                    1290 _Halt_end::
+                           1291 ;exceptions.c:158: void Break(char* Message) {
+                           1292 ;	genLabel
+                           1293 ;	genFunction
+                           1294 ;	---------------------------------
+                           1295 ; Function Break
+                           1296 ; ---------------------------------
+   04F8                    1297 _Break_start::
+   04F8                    1298 _Break:
+   04F8 3E 03              1299 	ld	a,#3
+   04FA CF                 1300 	rst	0x08
+   04FB DD E5              1301 	push	ix
+   04FD DD 21 00 00        1302 	ld	ix,#0
+   0501 DD 39              1303 	add	ix,sp
+                           1304 ;exceptions.c:159: LockObtain(SystemLock);
+                           1305 ;	genIpush
+                           1306 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0503 3Ar00s00           1307 	ld	a,(_SystemLock)
+   0506 F5                 1308 	push	af
+   0507 33                 1309 	inc	sp
+                           1310 ;	genCall
+   0508 CDr00s00           1311 	call	_LockObtain
+   050B 33                 1312 	inc	sp
+                           1313 ;exceptions.c:170: _endasm;
+                           1314 ;	genInline
+                           1315 ;
+   050C FD 22r05s00        1316 		       ld (_SavedIY),iy
+   0510 C1                 1317 		       pop bc
+   0511 22r03s00           1318 		       ld (_SavedIX),hl
+   0514 E1                 1319 		       pop hl
+   0515 D1                 1320 		       pop de
+   0516 ED 53r01s00        1321 		       ld (_SavedPC),de
+   051A D5                 1322 		       push de
+   051B E5                 1323 		       push hl
+   051C C5                 1324 		       push bc
+                           1325 		       
+                           1326 ;exceptions.c:171: ExchangeRegs();
+                           1327 ;	genCall
+                           1328 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   051D CDr00s00           1329 	call	_ExchangeRegs
+                           1330 ;exceptions.c:172: Alert(alertBreak, Message);
+                           1331 ;	genIpush
+                           1332 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+                           1333 ;	AOP_STK for 
+   0520 DD 6E 04           1334 	ld	l,4(ix)
+   0523 DD 66 05           1335 	ld	h,5(ix)
+   0526 E5                 1336 	push	hl
+                           1337 ;	genIpush
+   0527 3E 01              1338 	ld	a,#0x01
+   0529 F5                 1339 	push	af
+   052A 33                 1340 	inc	sp
+                           1341 ;	genCall
+   052B CDr9As00           1342 	call	_Alert
+   052E F1                 1343 	pop	af
+   052F 33                 1344 	inc	sp
+                           1345 ;exceptions.c:173: ExchangeRegs();
+                           1346 ;	genCall
+                           1347 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0530 CDr00s00           1348 	call	_ExchangeRegs
+                           1349 ;exceptions.c:174: LockRelease(SystemLock);
+                           1350 ;	genIpush
+                           1351 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0533 3Ar00s00           1352 	ld	a,(_SystemLock)
+   0536 F5                 1353 	push	af
+   0537 33                 1354 	inc	sp
+                           1355 ;	genCall
+   0538 CDr00s00           1356 	call	_LockRelease
+   053B 33                 1357 	inc	sp
+                           1358 ;	genLabel
+   053C                    1359 00101$:
+                           1360 ;	genEndFunction
+   053C DD E1              1361 	pop	ix
+   053E 3E 04              1362 	ld	a,#4
+   0540 CF                 1363 	rst	0x08
+   0541 C9                 1364 	ret
+   0542                    1365 _Break_end::
+                           1366 ;exceptions.c:177: void SystemMonitor() {
+                           1367 ;	genLabel
+                           1368 ;	genFunction
+                           1369 ;	---------------------------------
+                           1370 ; Function SystemMonitor
+                           1371 ; ---------------------------------
+   0542                    1372 _SystemMonitor_start::
+   0542                    1373 _SystemMonitor:
+   0542 3E 03              1374 	ld	a,#3
+   0544 CF                 1375 	rst	0x08
+   0545 DD E5              1376 	push	ix
+   0547 DD 21 00 00        1377 	ld	ix,#0
+   054B DD 39              1378 	add	ix,sp
+   054D 21 00 FF           1379 	ld	hl,#-256
+   0550 39                 1380 	add	hl,sp
+   0551 F9                 1381 	ld	sp,hl
+                           1382 ;exceptions.c:179: ConsoleWrite("SYSTEM MONITOR\n");
+                           1383 ;	genIpush
+                           1384 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0552 21rA5s05           1385 	ld	hl,#__str_16
+   0555 E5                 1386 	push	hl
+                           1387 ;	genCall
+   0556 CDr00s00           1388 	call	_ConsoleWrite
+   0559 F1                 1389 	pop	af
+                           1390 ;exceptions.c:180: do {
+                           1391 ;	genLabel
+   055A                    1392 00105$:
+                           1393 ;exceptions.c:181: ConsoleWrite(") ");
+                           1394 ;	genIpush
+                           1395 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   055A 21rB5s05           1396 	ld	hl,#__str_17
+   055D E5                 1397 	push	hl
+                           1398 ;	genCall
+   055E CDr00s00           1399 	call	_ConsoleWrite
+   0561 F1                 1400 	pop	af
+                           1401 ;exceptions.c:182: ConsoleReadLine(CommandLine);
+                           1402 ;	genAddrOf
+   0562 21 00 00           1403 	ld	hl,#0x0000
+   0565 39                 1404 	add	hl,sp
+   0566 4D                 1405 	ld	c,l
+   0567 44                 1406 	ld	b,h
+                           1407 ;	genIpush
+                           1408 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0568 C5                 1409 	push	bc
+   0569 C5                 1410 	push	bc
+                           1411 ;	genCall
+   056A CDr00s00           1412 	call	_ConsoleReadLine
+   056D F1                 1413 	pop	af
+   056E C1                 1414 	pop	bc
+                           1415 ;exceptions.c:183: if(!IsMultitasking()) Halt("PAUSE WITHOUT RESUME");
+                           1416 ;	genCall
+                           1417 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   056F C5                 1418 	push	bc
+   0570 CDr00s00           1419 	call	_IsMultitasking
+   0573 C1                 1420 	pop	bc
+                           1421 ;	genIfx
+   0574 AF                 1422 	xor	a,a
+   0575 B5                 1423 	or	a,l
+   0576 C2r83s05           1424 	jp	nz,00102$
+                           1425 ;	genIpush
+                           1426 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0579 C5                 1427 	push	bc
+   057A 21rB8s05           1428 	ld	hl,#__str_18
+   057D E5                 1429 	push	hl
+                           1430 ;	genCall
+   057E CDrD7s04           1431 	call	_Halt
+   0581 F1                 1432 	pop	af
+   0582 C1                 1433 	pop	bc
+                           1434 ;	genLabel
+   0583                    1435 00102$:
+                           1436 ;exceptions.c:184: if(SameString("HELP", CommandLine)) {
+                           1437 ;	genIpush
+                           1438 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0583 C5                 1439 	push	bc
+                           1440 ;	genIpush
+   0584 21rCDs05           1441 	ld	hl,#__str_19
+   0587 E5                 1442 	push	hl
+                           1443 ;	genCall
+   0588 CDr00s00           1444 	call	_SameString
+   058B F1                 1445 	pop	af
+   058C F1                 1446 	pop	af
+                           1447 ;	genIfx
+   058D AF                 1448 	xor	a,a
+   058E B5                 1449 	or	a,l
+   058F CAr5As05           1450 	jp	z,00105$
+                           1451 ;exceptions.c:185: ConsoleWrite("THIS IS THE SYSTEM MONITOR OF\nLJL OS. THERE IS NO HELP SYSTEM\nAT THE MOMENT.\n");
+                           1452 ;	genIpush
+                           1453 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0592 21rD2s05           1454 	ld	hl,#__str_20
+   0595 E5                 1455 	push	hl
+                           1456 ;	genCall
+   0596 CDr00s00           1457 	call	_ConsoleWrite
+   0599 F1                 1458 	pop	af
+                           1459 ;exceptions.c:187: } while(1);
+                           1460 ;	genGoto
+   059A C3r5As05           1461 	jp	00105$
+                           1462 ;	genLabel
+   059D                    1463 00108$:
+                           1464 ;	genEndFunction
+   059D DD F9              1465 	ld	sp,ix
+   059F DD E1              1466 	pop	ix
+   05A1 3E 04              1467 	ld	a,#4
+   05A3 CF                 1468 	rst	0x08
+   05A4 C9                 1469 	ret
+   05A5                    1470 _SystemMonitor_end::
+                    05A5   1471 Fexceptions$_str_16$0$0 == .
+   05A5                    1472 __str_16:
+   05A5 53 59 53 54 45 4D  1473 	.ascii "SYSTEM MONITOR"
+        20 4D 4F 4E 49 54
+        4F 52
+   05B3 0A                 1474 	.db 0x0A
+   05B4 00                 1475 	.db 0x00
+                    05B5   1476 Fexceptions$_str_17$0$0 == .
+   05B5                    1477 __str_17:
+   05B5 29 20              1478 	.ascii ") "
+   05B7 00                 1479 	.db 0x00
+                    05B8   1480 Fexceptions$_str_18$0$0 == .
+   05B8                    1481 __str_18:
+   05B8 50 41 55 53 45 20  1482 	.ascii "PAUSE WITHOUT RESUME"
+        57 49 54 48 4F 55
+        54 20 52 45 53 55
+        4D 45
+   05CC 00                 1483 	.db 0x00
+                    05CD   1484 Fexceptions$_str_19$0$0 == .
+   05CD                    1485 __str_19:
+   05CD 48 45 4C 50        1486 	.ascii "HELP"
+   05D1 00                 1487 	.db 0x00
+                    05D2   1488 Fexceptions$_str_20$0$0 == .
+   05D2                    1489 __str_20:
+   05D2 54 48 49 53 20 49  1490 	.ascii "THIS IS THE SYSTEM MONITOR OF"
+        53 20 54 48 45 20
+        53 59 53 54 45 4D
+        20 4D 4F 4E 49 54
+        4F 52 20 4F 46
+   05EF 0A                 1491 	.db 0x0A
+   05F0 4C 4A 4C 20 4F 53  1492 	.ascii "LJL OS. THERE IS NO HELP SYSTE"
+        2E 20 54 48 45 52
+        45 20 49 53 20 4E
+        4F 20 48 45 4C 50
+        20 53 59 53 54 45
+   060E 4D                 1493 	.ascii "M"
+   060F 0A                 1494 	.db 0x0A
+   0610 41 54 20 54 48 45  1495 	.ascii "AT THE MOMENT."
+        20 4D 4F 4D 45 4E
+        54 2E
+   061E 0A                 1496 	.db 0x0A
+   061F 00                 1497 	.db 0x00
+                           1498 	.area _CODE

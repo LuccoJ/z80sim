@@ -1,0 +1,22 @@
+XL
+H 6 areas 4 global symbols
+M puts
+O -mz80
+S _putchar Ref0000
+A _CODE size 38 flags 0
+S _puts_end Def0038
+S _puts Def0000
+S _puts_start Def0000
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 DD E5 DD 21 00 00 DD 39 DD 4E 04 DD 46 05
+R 00 00 00 00
+T 0E 00 11 00 00 0A 6F AF B5 CA 28 00 03 C5 D5 7D
+R 00 00 00 00 00 0A 00 00
+T 1C 00 F5 33 CD 00 00 33 D1 C1 13 C3 11 00 D5 3E
+R 00 00 00 00 02 05 00 00 00 0C 00 00
+T 2A 00 0A F5 33 CD 00 00 33 D1 6B 62 23 DD E1 C9
+R 00 00 00 00 02 06 00 00

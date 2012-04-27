@@ -1,0 +1,29 @@
+XL
+H 6 areas 7 global symbols
+M _ispunct
+O -mz80
+S _isdigit Ref0000
+S _islower Ref0000
+S _isupper Ref0000
+S _isprint Ref0000
+A _CODE size 52 flags 0
+S _ispunct Def0000
+S _ispunct_start Def0000
+S _ispunct_end Def0052
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 DD E5 DD 21 00 00 DD 39 DD 7E 04 F5 33 CD
+R 00 00 00 00
+T 0E 00 00 00 33 AF B5 CA 4D 00 DD 7E 04 F5 33 CD
+R 00 00 00 00 02 02 03 00 00 08 00 00
+T 1C 00 00 00 33 AF B5 C2 4D 00 DD 7E 04 F5 33 CD
+R 00 00 00 00 02 02 01 00 00 08 00 00
+T 2A 00 00 00 33 AF B5 C2 4D 00 DD 7E 04 FE 20 CA
+R 00 00 00 00 02 02 02 00 00 08 00 00
+T 38 00 4D 00 DD 7E 04 F5 33 CD 00 00 33 AF B5 C2
+R 00 00 00 00 00 02 00 00 02 0A 00 00
+T 46 00 4D 00 2E 01 C3 4F 00 2E 00 DD E1 C9
+R 00 00 00 00 00 02 00 00 00 07 00 00

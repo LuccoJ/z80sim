@@ -1,0 +1,183 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Sun Oct  5 22:44:33 2003
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module profile
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _test
+                             13 	.globl _SimulatorTerminate
+                             14 	.globl _SimulatorWriteCharacter
+                             15 	.globl _SimulatorWriteString
+                             16 	.globl _SimulatorEnterProfile
+                             17 	.globl _SimulatorExitProfile
+                             18 ;--------------------------------------------------------
+                             19 ;  ram data
+                             20 ;--------------------------------------------------------
+                             21 	.area _DATA
+   0000                      22 _test::
+   0000                      23 	.ds 1
+                             24 ;--------------------------------------------------------
+                             25 ; overlayable items in  ram 
+                             26 ;--------------------------------------------------------
+                             27 	.area _OVERLAY
+                             28 ;--------------------------------------------------------
+                             29 ; external initialized ram data
+                             30 ;--------------------------------------------------------
+                             31 ;--------------------------------------------------------
+                             32 ; global & static initialisations
+                             33 ;--------------------------------------------------------
+                             34 	.area _GSINIT
+                             35 	.area _GSFINAL
+                             36 	.area _GSINIT
+                             37 ;--------------------------------------------------------
+                             38 ; Home
+                             39 ;--------------------------------------------------------
+                             40 	.area _HOME
+                             41 	.area _CODE
+                             42 ;--------------------------------------------------------
+                             43 ; code
+                             44 ;--------------------------------------------------------
+                             45 	.area _CODE
+                             46 ;profile.c:5: void SimulatorTerminate() {
+                             47 ;	genLabel
+                             48 ;	genFunction
+                             49 ;	---------------------------------
+                             50 ; Function SimulatorTerminate
+                             51 ; ---------------------------------
+   0000                      52 _SimulatorTerminate_start::
+   0000                      53 _SimulatorTerminate:
+                             54 ;profile.c:9: _endasm;
+                             55 ;	genInline
+                             56 	
+   0000 3E 00                57 		       ld a,#0
+   0002 CF                   58 		       rst 0x08
+                             59 		       
+                             60 ;	genLabel
+   0003                      61 00101$:
+                             62 ;	genEndFunction
+   0003 C9                   63 	ret
+   0004                      64 _SimulatorTerminate_end::
+                             65 ;profile.c:12: void SimulatorWriteCharacter(char Character) {
+                             66 ;	genLabel
+                             67 ;	genFunction
+                             68 ;	---------------------------------
+                             69 ; Function SimulatorWriteCharacter
+                             70 ; ---------------------------------
+   0004                      71 _SimulatorWriteCharacter_start::
+   0004                      72 _SimulatorWriteCharacter:
+   0004 DD E5                73 	push	ix
+   0006 DD 21 00 00          74 	ld	ix,#0
+   000A DD 39                75 	add	ix,sp
+                             76 ;profile.c:21: _endasm;
+                             77 ;	genInline
+                             78 ;
+   000C DD 7E 04             79 		       ld a,4(ix)
+   000F E5                   80 		       push hl
+   0010 6F                   81 		       ld l,a
+   0011 3E 01                82 		       ld a,#1
+   0013 CF                   83 		       rst 0x08
+   0014 E1                   84 		       pop hl
+                             85 		       
+                             86 ;	genLabel
+   0015                      87 00101$:
+                             88 ;	genEndFunction
+   0015 DD E1                89 	pop	ix
+   0017 C9                   90 	ret
+   0018                      91 _SimulatorWriteCharacter_end::
+                             92 ;profile.c:24: void SimulatorWriteString(char* String) {
+                             93 ;	genLabel
+                             94 ;	genFunction
+                             95 ;	---------------------------------
+                             96 ; Function SimulatorWriteString
+                             97 ; ---------------------------------
+   0018                      98 _SimulatorWriteString_start::
+   0018                      99 _SimulatorWriteString:
+   0018 DD E5               100 	push	ix
+   001A DD 21 00 00         101 	ld	ix,#0
+   001E DD 39               102 	add	ix,sp
+                            103 ;profile.c:27: while(String[i]!='\0') {
+                            104 ;	genAssign
+   0020 01 00 00            105 	ld	bc,#0x0000
+                            106 ;	genLabel
+   0023                     107 00101$:
+                            108 ;	genPlus
+                            109 ;	AOP_STK for 
+                            110 ;	Can't optimise plus by inc, falling back to the normal way
+   0023 DD 6E 04            111 	ld	l,4(ix)
+   0026 DD 66 05            112 	ld	h,5(ix)
+   0029 09                  113 	add	hl,bc
+                            114 ;	genPointerGet
+   002A 6E                  115 	ld	l,(hl)
+                            116 ;	genCmpEq
+                            117 ; genCmpEq: left 1, right 1, result 0
+   002B 7D                  118 	ld	a,l
+   002C B7                  119 	or	a,a
+   002D CAr3Ds00            120 	jp	z,00104$
+   0030                     121 00108$:
+                            122 ;profile.c:28: SimulatorWriteCharacter(String[i]);
+                            123 ;	genIpush
+                            124 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 1 deSending: 0
+   0030 C5                  125 	push	bc
+   0031 7D                  126 	ld	a,l
+   0032 F5                  127 	push	af
+   0033 33                  128 	inc	sp
+                            129 ;	genCall
+   0034 CDr04s00            130 	call	_SimulatorWriteCharacter
+   0037 33                  131 	inc	sp
+   0038 C1                  132 	pop	bc
+                            133 ;profile.c:29: i++;
+                            134 ;	genPlus
+                            135 ;	genPlusIncr
+   0039 03                  136 	inc	bc
+                            137 ;	genGoto
+   003A C3r23s00            138 	jp	00101$
+                            139 ;	genLabel
+   003D                     140 00104$:
+                            141 ;	genEndFunction
+   003D DD E1               142 	pop	ix
+   003F C9                  143 	ret
+   0040                     144 _SimulatorWriteString_end::
+                            145 ;profile.c:33: void SimulatorEnterProfile() {
+                            146 ;	genLabel
+                            147 ;	genFunction
+                            148 ;	---------------------------------
+                            149 ; Function SimulatorEnterProfile
+                            150 ; ---------------------------------
+   0040                     151 _SimulatorEnterProfile_start::
+   0040                     152 _SimulatorEnterProfile:
+                            153 ;profile.c:37: _endasm;
+                            154 ;	genInline
+                            155 	
+   0040 3E 03               156 		       ld a,#3
+   0042 CF                  157 		       rst 0x08
+                            158 		       
+                            159 ;	genLabel
+   0043                     160 00101$:
+                            161 ;	genEndFunction
+   0043 C9                  162 	ret
+   0044                     163 _SimulatorEnterProfile_end::
+                            164 ;profile.c:40: void SimulatorExitProfile() {
+                            165 ;	genLabel
+                            166 ;	genFunction
+                            167 ;	---------------------------------
+                            168 ; Function SimulatorExitProfile
+                            169 ; ---------------------------------
+   0044                     170 _SimulatorExitProfile_start::
+   0044                     171 _SimulatorExitProfile:
+                            172 ;profile.c:44: _endasm;
+                            173 ;	genInline
+                            174 	
+   0044 3E 04               175 		       ld a,#4
+   0046 CF                  176 		       rst 0x08
+                            177 		       
+                            178 ;	genLabel
+   0047                     179 00101$:
+                            180 ;	genEndFunction
+   0047 C9                  181 	ret
+   0048                     182 _SimulatorExitProfile_end::
+                            183 	.area _CODE

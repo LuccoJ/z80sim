@@ -1,0 +1,23 @@
+XL
+H 6 areas 3 global symbols
+M _isxdigit
+O -mz80
+A _CODE size 42 flags 0
+S _isxdigit Def0000
+S _isxdigit_start Def0000
+S _isxdigit_end Def0042
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 DD E5 DD 21 00 00 DD 39 DD 7E 04 D6 30 DA
+R 00 00 00 00
+T 0E 00 18 00 3E 39 DD 96 04 D2 38 00 DD 7E 04 D6
+R 00 00 00 00 00 02 00 00 00 0A 00 00
+T 1C 00 61 DA 28 00 3E 66 DD 96 04 D2 38 00 DD 7E
+R 00 00 00 00 00 04 00 00 00 0C 00 00
+T 2A 00 04 D6 41 DA 3D 00 3E 46 DD 96 04 DA 3D 00
+R 00 00 00 00 00 06 00 00 00 0E 00 00
+T 38 00 2E 01 C3 3F 00 2E 00 DD E1 C9
+R 00 00 00 00 00 05 00 00

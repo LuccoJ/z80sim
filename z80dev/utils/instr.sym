@@ -1,0 +1,18 @@
+; no$gmb format .sym file
+; Generated automagically by ASxxxx linker V01.75 (SDK 3.0.0)
+; Area: .  .ABS.
+00:0200 s__CODE
+00:8000 s__DATA
+00:8000 s__GSFINAL
+00:8000 s__HOME
+00:8000 s__OVERLAY
+00:8000 s__GSINIT
+; Area: _CODE
+00:0200 _main
+00:0200 _main_start
+00:020A _main_end
+; Area: _DATA
+; Area: _OVERLAY
+; Area: _GSINIT
+; Area: _GSFINAL
+; Area: _HOME

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+rm *.o
+rm *.map
+rm *.sym
+rm *.ihx
+rm *.bin
+rm *.lst
+rm *.asm
+rm *.lnk
+

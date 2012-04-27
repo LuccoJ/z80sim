@@ -1,0 +1,37 @@
+XL
+H 8 areas 4 global symbols
+M crt0
+S _main Ref0000
+A _CODE size A flags 0
+S __clock Def0000
+S _exit Def0004
+A _HEADER size 10C flags C
+A _HOME size 0 flags 0
+A _GSINIT size 0 flags 0
+S gsinit Def0000
+A _GSFINAL size 1 flags 0
+A _DATA size 0 flags 0
+A _BSS size 0 flags 0
+A _HEAP size 0 flags 0
+T 00 00 C3 00 01
+R 00 00 01 00 00 03 01 00
+T 08 00 ED 4D
+R 00 00 01 00
+T 10 00 ED 4D
+R 00 00 01 00
+T 18 00 ED 4D
+R 00 00 01 00
+T 20 00 ED 4D
+R 00 00 01 00
+T 28 00 ED 4D
+R 00 00 01 00
+T 30 00 ED 4D
+R 00 00 01 00
+T 38 00 ED 4D
+R 00 00 01 00
+T 00 01 31 FF FF CD 00 00 CD 00 00 C3 04 00
+R 00 00 01 00 00 06 03 00 02 09 00 00 00 0C 00 00
+T 00 00 3E 02 CF C9 3E 00 CF 76 18 FD
+R 00 00 00 00
+T 00 00 C9
+R 00 00 04 00

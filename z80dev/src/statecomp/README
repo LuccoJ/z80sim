@@ -1,0 +1,144 @@
+LICENSE
+-------
+
+StateComp - A discrete state log comparator
+Copyright (C) 2003 Lorenzo J. Lucchini
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version. This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details. You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+
+SYNTAX
+------
+
+The syntax for the StateComp program is:
+	statecomp [--from <n>] <log1> <log2> [<options>]
+<log1>, <log2> and <options> must be paths to existing files in the file
+system.
+<n> is the frame number at which scanning should start.
+
+
+INPUT
+-----
+
+StateComp is a program that scans through a pair of ASCII files, called
+'state logs', each containing a list of numbered 'frames'; StateComp stops
+scanning when it encounters two same-numbered frames that differ in the two
+log files.
+Frames are defined in a state log in the following format:
+	Frame 'n' Begin
+		'frame-specification'
+	End
+'n' is the identifying number of the frame, and it must always be bigger
+than the 'n' of the previous frame in the log; 'frame-specification' is the
+information that may or may not match the corresponding 'frame-specification'
+in the log we're comparing against.
+
+'frame-specification' is a collection of variables names and values in the
+following format:
+	'var1-name' <'var1-value'>
+	'var2-name' <'var2-value'>
+	...
+	'varn-name' <'varn-value'>
+Any number of variables from 0 to 63, with their respective values, can be
+present in a frame specification.
+The value of a variable can be one of the following:
+- the token TRUE or FALSE
+- an integer number the size of a C 'long', in decimal or hexadecimal (if
+prefixed with '0x') format
+- any string of characters, at most 63 characters long
+
+Two frames are said to be 'matching' when at least one among the following
+conditions is met:
+- All the variables that are defined in both frames have the same numeric,
+string or boolean value (those variables that are only defined in one of the
+two frames, if any, are ignored)
+- All the variables that are defined in both frames but whose values do not
+match have been states 'non-relevant' by the user (the specific variables
+that are deemed non-relevant can depend on values of other variables)
+
+When none of these conditions are met, frames are said to not match. The
+first pair of frames that do not match in the two logs analyzed is called a
+'diverging pair', and logs are said to 'diverge' at frame number 'n', where n
+is the frame number of the diverging pair.
+
+An 'options file' specifies variables that should be 'ignored' when certain
+conditions are met. A variable that should be ignored in the context of a
+frame, as specified in the options file, is non-relevant. Every variable in
+the frame that does not meet the criteria for non-relevance is 'relevant'.
+
+Every line in the options file must be in one of the following formats:
+1)	If [Eq|NonEq] 'condition-var' 'value' Ignore 'var'
+2)	If 'condition-var' Ignore 'var'
+3)	If !'condition-var' Ignore 'var'
+4)	Ignore 'var'
+5)	Remember 'var'
+
+Format 1 indicates that 'var' should be ignored when the value of
+'condition-var' equals (Eq) or does not equal (NonEq) the value 'value'.
+Formats 2 and 3 indicate that 'var' should be ignored when the value of
+'condition-var' equals TRUE (for format 2) or FALSE (for format 3).
+Format 4 indicates that 'var' should always be ignored.
+Format 5 indicates that the value 'var' had in log 1 at the frame before the
+diverging pair should be kept in memory and printed.
+
+
+OUTPUT
+------
+
+StateComp first skips initial frames in both logs until it encounters the
+frame with the number specified in the command line, if one was specified.
+Before starting this operation, it outputs a message to inform of this.
+
+Then StateComp starts comparing frames after informing the user with an output
+message.
+
+If StateComp finds a diverging pair, it informs of this occurrence and
+outputs:
+- the names and values of all variables found in the diverging pair, each in
+one of the following formats:
+	1) 'var-name' <'value'>1,2  (if the variable appears with the same value in
+both frames of the pair)
+	2) 'var-name' <'value1'>1 <'value2'>2  (if the value of the variable is
+'value1' in log 1 and 'value2' in log 2)
+	3) 'var-name' <'value'>1  (if the variable only appears in log 1)
+	4) 'var-name' <'value'>2  (if the variable only appears in log 2)
+- the names and values of the relevant variables that don't match, in the
+following format:
+	'var-name' <'value1'> (log 1)  -  <'value2'> (log 2)
+- the name and value in log 1 of each variable that appeared after a
+'Remember' command in the options file, in the following format:
+	'var-name' <'value'>
+
+
+MOTIVATION
+----------
+
+StateComp was developed to analyze the behavior of two different simulators
+of the Zilog Z80 processor (Z80Sim, by the author, and rrz80, by (!!!FIXME)
+unknown).
+
+Z80Sim can produce (and rrz80 has been modified to produce) a log of the
+internal state of the processor after every simulated instruction, in state
+log format, where each frame defines the state of the processor after an
+instruction.
+
+StateComp allows the author to spot almost any difference in behavior between
+rrz80 and Z80Sim, in order to find and correct bugs in Z80Sim; in addition, it
+is able to ignore differences that the author deemed unimportant, such as the
+undocumented states of some processor registers (for example, flags 3 and 5 in
+the F register or the Z80, and other flags that are left in an undocumented
+state after some instructions).
+
+While StateComp was specifically developed to compare state logs produced by
+simulators of microprocessors, it should be suitable for analyzing the
+behavior of any program whose evolution in time is strictly discrete, and
+whose internal state can at any time be summarized by the values of a
+relatively small number of variables.

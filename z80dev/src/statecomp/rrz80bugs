@@ -1,0 +1,25 @@
+At frame 77687 states diverge
+        PC         <0x15cd>1,2          SP         <0xfff5>1,2
+        A          <0x00>1,2            fS         <0>1,2
+        fZ         <0>1,2               f5         <0>1,2
+        fH         <1>1,2               f3         <0>1,2
+        fP         <0>1,2               fN         <0>1 <1>2
+        fC         <0>1,2               HL         <0x4700>1,2
+        IX         <0xfff7>1,2          IY         <0x8008>1,2
+        BC         <0x0708>1,2          DE         <0x0000>1,2
+        MAR        <0x8008>1,2          MDR        <0x01>1,2
+        Store      <TRUE>1,2            Stack      <0x001f>1,2
+        Mnemonic   <inc de>1
+Relevant differences:
+        fN <0> (log 1) - <1> (log 2)
+At previous frame (77686):
+        Mnemonic   <inc (iy)>
+        IX         <0xfff7>
+        A          <0x00>
+        fC         <0>
+        BC         <0x0708>
+        MAR        <0x15c9>
+        MDR        <0x80>
+
+Flag N should always be set to 0 after an inc_byte, according to my manual.
+Perhaps rrz80 leaves it like it was previously?

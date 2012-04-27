@@ -1,0 +1,8 @@
+XL
+H 1 areas 3 global symbols
+A _CODE size E flags 0
+S _putchar Def0000
+S _putchar_rr_s Def0000
+S _putchar_rr_dbs Def0009
+T 00 00 21 02 00 39 6E 3E 01 CF C9 6B 3E 01 CF C9
+R 00 00 00 00

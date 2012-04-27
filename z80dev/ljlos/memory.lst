@@ -1,0 +1,308 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 2.9.0 #5416 (Feb  3 2010) (UNIX)
+                              4 ; This file was generated Fri Apr 27 12:42:17 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module memory
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _MemoryInited
+                             13 	.globl _NextFreeBlock
+                             14 	.globl _MemoryInit
+                             15 	.globl _MemoryCopy
+                             16 	.globl _MemoryAllocate
+                             17 	.globl _MemoryFree
+                             18 ;--------------------------------------------------------
+                             19 ; special function registers
+                             20 ;--------------------------------------------------------
+                             21 ;--------------------------------------------------------
+                             22 ;  ram data
+                             23 ;--------------------------------------------------------
+                             24 	.area _DATA
+                    0000     25 G$NextFreeBlock$0$0==.
+   0000                      26 _NextFreeBlock::
+   0000                      27 	.ds 2
+                    0002     28 G$MemoryInited$0$0==.
+   0002                      29 _MemoryInited::
+   0002                      30 	.ds 1
+                             31 ;--------------------------------------------------------
+                             32 ; overlayable items in  ram 
+                             33 ;--------------------------------------------------------
+                             34 	.area _OVERLAY
+                             35 ;--------------------------------------------------------
+                             36 ; external initialized ram data
+                             37 ;--------------------------------------------------------
+                             38 ;--------------------------------------------------------
+                             39 ; global & static initialisations
+                             40 ;--------------------------------------------------------
+                             41 	.area _HOME
+                             42 	.area _GSINIT
+                             43 	.area _GSFINAL
+                             44 	.area _GSINIT
+                             45 ;--------------------------------------------------------
+                             46 ; Home
+                             47 ;--------------------------------------------------------
+                             48 	.area _HOME
+                             49 	.area _HOME
+                             50 ;--------------------------------------------------------
+                             51 ; code
+                             52 ;--------------------------------------------------------
+                             53 	.area _CODE
+                    0000     54 	G$MemoryInit$0$0	= .
+                             55 	.globl	G$MemoryInit$0$0
+                    0000     56 	C$memory.c$10$0$0	= .
+                             57 	.globl	C$memory.c$10$0$0
+                             58 ;memory.c:10: bool MemoryInited; void MemoryInit() {
+                             59 ;	---------------------------------
+                             60 ; Function MemoryInit
+                             61 ; ---------------------------------
+   0000                      62 _MemoryInit_start::
+   0000                      63 _MemoryInit:
+   0000 3E 03                64 	ld	a,#3
+   0002 CF                   65 	rst	0x08
+                    0003     66 	C$memory.c$11$1$1	= .
+                             67 	.globl	C$memory.c$11$1$1
+                             68 ;memory.c:11: if(!MemoryInited) {
+   0003 AF                   69 	xor	a,a
+   0004 21r02s00             70 	ld	hl,#_MemoryInited + 0
+   0007 B6                   71 	or	a,(hl)
+   0008 20 24                72 	jr	NZ,00103$
+                    000A     73 	C$memory.c$12$2$2	= .
+                             74 	.globl	C$memory.c$12$2$2
+                             75 ;memory.c:12: NextFreeBlock=(char*)0xe000;
+   000A 21r00s00             76 	ld	hl,#_NextFreeBlock + 0
+   000D 36 00                77 	ld	(hl), #0x00
+   000F 21r01s00             78 	ld	hl,#_NextFreeBlock + 1
+   0012 36 E0                79 	ld	(hl), #0xE0
+                    0014     80 	C$memory.c$13$2$2	= .
+                             81 	.globl	C$memory.c$13$2$2
+                             82 ;memory.c:13: MemoryInited=TRUE;
+   0014 21r02s00             83 	ld	hl,#_MemoryInited + 0
+   0017 36 01                84 	ld	(hl), #0x01
+                    0019     85 	C$memory.c$14$2$2	= .
+                             86 	.globl	C$memory.c$14$2$2
+                             87 ;memory.c:14: _SimRWProtect((void*)0x8600, 0xffd0);
+   0019 21 D0 FF             88 	ld	hl,#0xFFD0
+   001C E5                   89 	push	hl
+   001D 21 00 86             90 	ld	hl,#0x8600
+   0020 E5                   91 	push	hl
+   0021 CDr00s00             92 	call	__Z80SimRWProtect
+   0024 F1                   93 	pop	af
+   0025 F1                   94 	pop	af
+                    0026     95 	C$memory.c$15$2$2	= .
+                             96 	.globl	C$memory.c$15$2$2
+                             97 ;memory.c:15: _SimPrintString("Memory initialized\n");
+   0026 21r32s00             98 	ld	hl,#__str_0
+   0029 E5                   99 	push	hl
+   002A CDr00s00            100 	call	__Z80SimPrintString
+   002D F1                  101 	pop	af
+   002E                     102 00103$:
+   002E 3E 04               103 	ld	a,#4
+   0030 CF                  104 	rst	0x08
+                    0031    105 	C$memory.c$17$2$1	= .
+                            106 	.globl	C$memory.c$17$2$1
+                    0031    107 	XG$MemoryInit$0$0	= .
+                            108 	.globl	XG$MemoryInit$0$0
+   0031 C9                  109 	ret
+   0032                     110 _MemoryInit_end::
+                    0032    111 Fmemory$_str_0$0$0 == .
+   0032                     112 __str_0:
+   0032 4D 65 6D 6F 72 79   113 	.ascii "Memory initialized"
+        20 69 6E 69 74 69
+        61 6C 69 7A 65 64
+   0044 0A                  114 	.db 0x0A
+   0045 00                  115 	.db 0x00
+                    0046    116 	G$MemoryCopy$0$0	= .
+                            117 	.globl	G$MemoryCopy$0$0
+                    0046    118 	C$memory.c$19$2$1	= .
+                            119 	.globl	C$memory.c$19$2$1
+                            120 ;memory.c:19: void MemoryCopy(void* Destination, void* Source, unsigned int Length) {
+                            121 ;	---------------------------------
+                            122 ; Function MemoryCopy
+                            123 ; ---------------------------------
+   0046                     124 _MemoryCopy_start::
+   0046                     125 _MemoryCopy:
+   0046 3E 03               126 	ld	a,#3
+   0048 CF                  127 	rst	0x08
+   0049 DD E5               128 	push	ix
+   004B DD 21 00 00         129 	ld	ix,#0
+   004F DD 39               130 	add	ix,sp
+   0051 21 FA FF            131 	ld	hl,#-6
+   0054 39                  132 	add	hl,sp
+   0055 F9                  133 	ld	sp,hl
+                    0056    134 	C$memory.c$21$2$2	= .
+                            135 	.globl	C$memory.c$21$2$2
+                            136 ;memory.c:21: for(i=0; i<Length; i++) {
+   0056 DD 4E 04            137 	ld	c,4 (ix)
+   0059 DD 46 05            138 	ld	b,5 (ix)
+   005C DD 7E 06            139 	ld	a,6 (ix)
+   005F DD 77 FC            140 	ld	-4 (ix),a
+   0062 DD 7E 07            141 	ld	a,7 (ix)
+   0065 DD 77 FD            142 	ld	-3 (ix),a
+   0068 DD 36 FE 00         143 	ld	-2 (ix),#0x00
+   006C DD 36 FF 00         144 	ld	-1 (ix),#0x00
+   0070                     145 00101$:
+   0070 DD 7E FE            146 	ld	a,-2 (ix)
+   0073 DD 96 08            147 	sub	a,8 (ix)
+   0076 DD 7E FF            148 	ld	a,-1 (ix)
+   0079 DD 9E 09            149 	sbc	a,9 (ix)
+   007C 30 2E               150 	jr	NC,00105$
+                    007E    151 	C$memory.c$22$2$2	= .
+                            152 	.globl	C$memory.c$22$2$2
+                            153 ;memory.c:22: *((char*)Destination+i)=*((char*)Source+i);
+   007E 79                  154 	ld	a,c
+   007F DD 86 FE            155 	add	a,-2 (ix)
+   0082 DD 77 FA            156 	ld	-6 (ix),a
+   0085 78                  157 	ld	a,b
+   0086 DD 8E FF            158 	adc	a,-1 (ix)
+   0089 DD 77 FB            159 	ld	-5 (ix),a
+   008C DD 7E FC            160 	ld	a,-4 (ix)
+   008F DD 86 FE            161 	add	a,-2 (ix)
+   0092 5F                  162 	ld	e,a
+   0093 DD 7E FD            163 	ld	a,-3 (ix)
+   0096 DD 8E FF            164 	adc	a,-1 (ix)
+   0099 57                  165 	ld	d,a
+   009A 1A                  166 	ld	a,(de)
+   009B DD 6E FA            167 	ld	l,-6 (ix)
+   009E DD 66 FB            168 	ld	h,-5 (ix)
+   00A1 77                  169 	ld	(hl),a
+                    00A2    170 	C$memory.c$21$1$1	= .
+                            171 	.globl	C$memory.c$21$1$1
+                            172 ;memory.c:21: for(i=0; i<Length; i++) {
+   00A2 DD 34 FE            173 	inc	-2 (ix)
+   00A5 20 03               174 	jr	NZ,00110$
+   00A7 DD 34 FF            175 	inc	-1 (ix)
+   00AA                     176 00110$:
+   00AA 18 C4               177 	jr	00101$
+   00AC                     178 00105$:
+   00AC DD F9               179 	ld	sp,ix
+   00AE DD E1               180 	pop	ix
+   00B0 3E 04               181 	ld	a,#4
+   00B2 CF                  182 	rst	0x08
+                    00B3    183 	C$memory.c$24$1$1	= .
+                            184 	.globl	C$memory.c$24$1$1
+                    00B3    185 	XG$MemoryCopy$0$0	= .
+                            186 	.globl	XG$MemoryCopy$0$0
+   00B3 C9                  187 	ret
+   00B4                     188 _MemoryCopy_end::
+                    00B4    189 	G$MemoryAllocate$0$0	= .
+                            190 	.globl	G$MemoryAllocate$0$0
+                    00B4    191 	C$memory.c$26$1$1	= .
+                            192 	.globl	C$memory.c$26$1$1
+                            193 ;memory.c:26: void* MemoryAllocate(unsigned int Bytes, memType Type) {
+                            194 ;	---------------------------------
+                            195 ; Function MemoryAllocate
+                            196 ; ---------------------------------
+   00B4                     197 _MemoryAllocate_start::
+   00B4                     198 _MemoryAllocate:
+   00B4 3E 03               199 	ld	a,#3
+   00B6 CF                  200 	rst	0x08
+   00B7 DD E5               201 	push	ix
+   00B9 DD 21 00 00         202 	ld	ix,#0
+   00BD DD 39               203 	add	ix,sp
+                    00BF    204 	C$memory.c$28$1$1	= .
+                            205 	.globl	C$memory.c$28$1$1
+                            206 ;memory.c:28: if(NextFreeBlock<(char*)0x9000) Halt("OUT OF MEMORY");
+   00BF 3Ar00s00            207 	ld	a,(#_NextFreeBlock+0)
+   00C2 D6 00               208 	sub	a,#0x00
+   00C4 3Ar01s00            209 	ld	a,(#_NextFreeBlock+1)
+   00C7 DE 90               210 	sbc	a,#0x90
+   00C9 F2rD4s00            211 	jp	P,00102$
+   00CC 21r08s01            212 	ld	hl,#__str_1
+   00CF E5                  213 	push	hl
+   00D0 CDr00s00            214 	call	_Halt
+   00D3 F1                  215 	pop	af
+   00D4                     216 00102$:
+                    00D4    217 	C$memory.c$29$1$1	= .
+                            218 	.globl	C$memory.c$29$1$1
+                            219 ;memory.c:29: Pointer=NextFreeBlock;
+   00D4 ED 4Br00s00         220 	ld	bc,(_NextFreeBlock)
+                    00D8    221 	C$memory.c$30$1$1	= .
+                            222 	.globl	C$memory.c$30$1$1
+                            223 ;memory.c:30: NextFreeBlock=NextFreeBlock-Bytes;
+   00D8 DD 5E 04            224 	ld	e,4 (ix)
+   00DB DD 56 05            225 	ld	d,5 (ix)
+   00DE 21r00s00            226 	ld	hl,#_NextFreeBlock
+   00E1 7E                  227 	ld	a,(hl)
+   00E2 93                  228 	sub	a,e
+   00E3 77                  229 	ld	(hl),a
+   00E4 23                  230 	inc	hl
+   00E5 7E                  231 	ld	a,(hl)
+   00E6 9A                  232 	sbc	a,d
+   00E7 77                  233 	ld	(hl),a
+                    00E8    234 	C$memory.c$31$1$1	= .
+                            235 	.globl	C$memory.c$31$1$1
+                            236 ;memory.c:31: _SimUnprotect(NextFreeBlock, Pointer);
+   00E8 ED 5Br00s00         237 	ld	de,(_NextFreeBlock)
+   00EC C5                  238 	push	bc
+   00ED C5                  239 	push	bc
+   00EE D5                  240 	push	de
+   00EF CDr00s00            241 	call	__Z80SimUnprotect
+   00F2 F1                  242 	pop	af
+   00F3 F1                  243 	pop	af
+   00F4 C1                  244 	pop	bc
+                    00F5    245 	C$memory.c$32$1$1	= .
+                            246 	.globl	C$memory.c$32$1$1
+                            247 ;memory.c:32: if(Type==memSTACK) {
+   00F5 AF                  248 	xor	a,a
+   00F6 DD B6 06            249 	or	a,6 (ix)
+   00F9 20 04               250 	jr	NZ,00104$
+                    00FB    251 	C$memory.c$33$2$2	= .
+                            252 	.globl	C$memory.c$33$2$2
+                            253 ;memory.c:33: return (void*)Pointer;
+   00FB 69                  254 	ld	l,c
+   00FC 60                  255 	ld	h,b
+   00FD 18 03               256 	jr	00106$
+   00FF                     257 00104$:
+                    00FF    258 	C$memory.c$35$2$3	= .
+                            259 	.globl	C$memory.c$35$2$3
+                            260 ;memory.c:35: return (void*)NextFreeBlock;
+   00FF 2Ar00s00            261 	ld	hl,(_NextFreeBlock)
+   0102                     262 00106$:
+   0102 DD E1               263 	pop	ix
+   0104 3E 04               264 	ld	a,#4
+   0106 CF                  265 	rst	0x08
+                    0107    266 	C$memory.c$37$1$1	= .
+                            267 	.globl	C$memory.c$37$1$1
+                    0107    268 	XG$MemoryAllocate$0$0	= .
+                            269 	.globl	XG$MemoryAllocate$0$0
+   0107 C9                  270 	ret
+   0108                     271 _MemoryAllocate_end::
+                    0108    272 Fmemory$_str_1$0$0 == .
+   0108                     273 __str_1:
+   0108 4F 55 54 20 4F 46   274 	.ascii "OUT OF MEMORY"
+        20 4D 45 4D 4F 52
+        59
+   0115 00                  275 	.db 0x00
+                    0116    276 	G$MemoryFree$0$0	= .
+                            277 	.globl	G$MemoryFree$0$0
+                    0116    278 	C$memory.c$39$1$1	= .
+                            279 	.globl	C$memory.c$39$1$1
+                            280 ;memory.c:39: void MemoryFree(void* Pointer) {
+                            281 ;	---------------------------------
+                            282 ; Function MemoryFree
+                            283 ; ---------------------------------
+   0116                     284 _MemoryFree_start::
+   0116                     285 _MemoryFree:
+   0116 3E 03               286 	ld	a,#3
+   0118 CF                  287 	rst	0x08
+   0119 DD E5               288 	push	ix
+   011B DD 21 00 00         289 	ld	ix,#0
+   011F DD 39               290 	add	ix,sp
+                    0121    291 	C$memory.c$41$1$1	= .
+                            292 	.globl	C$memory.c$41$1$1
+                            293 ;memory.c:41: Pointer;
+   0121 DD E1               294 	pop	ix
+   0123 3E 04               295 	ld	a,#4
+   0125 CF                  296 	rst	0x08
+                    0126    297 	C$memory.c$42$1$1	= .
+                            298 	.globl	C$memory.c$42$1$1
+                    0126    299 	XG$MemoryFree$0$0	= .
+                            300 	.globl	XG$MemoryFree$0$0
+   0126 C9                  301 	ret
+   0127                     302 _MemoryFree_end::
+                            303 	.area _CODE
+                            304 	.area _CABS

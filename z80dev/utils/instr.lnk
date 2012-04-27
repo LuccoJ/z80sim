@@ -1,0 +1,12 @@
+--
+-m
+-j
+-x
+-i instr
+-b _CODE = 0x0200
+-b _DATA = 0x8000
+-k /usr/local/share/sdcc/lib/z80
+-l z80
+instr.o
+
+-e

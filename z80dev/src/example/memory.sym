@@ -1,0 +1,61 @@
+; no$gmb format .sym file
+; Generated automagically by ASxxxx linker V01.75 (SDK 3.0.0)
+; Area: .  .ABS.
+00:0000 s__CODE
+00:0000 __InterruptService
+00:0000 __SystemRequest
+00:8000 s__DATA
+00:8102 s__GSFINAL
+00:8102 s__HOME
+00:8102 s__OVERLAY
+00:8102 s__GSINIT
+; Area: _CODE
+00:0000 _ROMSystemInit
+00:0000 _ROMSystemInit_start
+00:003D _ROMSystemInit_end
+00:003D __Z80SimProtectedCodeBegins_sta
+00:0044 _main
+00:0044 _main_start
+00:0044 __Z80SimProtectedCodeBegins_end
+00:00C4 Fmemory$_str_0$0$0
+00:00C4 _main_end
+00:00EA Fmemory$_str_1$0$0
+00:00FA Fmemory$_str_2$0$0
+00:0116 Fmemory$_str_3$0$0
+00:014D Fmemory$_str_4$0$0
+00:0159 __Z80SimProtectedCodeEnds_start
+00:0160 __Z80SimProtectedCodeEnds_end
+00:0160 __Z80SimTerminate
+00:0160 __Z80SimTerminate_start
+00:0164 __Z80SimTerminate_end
+00:0164 __Z80SimReturn
+00:0164 __Z80SimReturn_start
+00:0168 __Z80SimPrintCharacter
+00:0168 __Z80SimPrintCharacter_start
+00:0168 __Z80SimReturn_end
+00:017C __Z80SimPrintCharacter_end
+00:017C __Z80SimPrintString
+00:017C __Z80SimPrintString_start
+00:01A4 __Z80SimPrintString_end
+00:01A4 __Z80SimPrintWord
+00:01A4 __Z80SimPrintWord_start
+00:01BC __Z80SimEnterProfile_start
+00:01BC __Z80SimPrintWord_end
+00:01BC __Z80SimEnterProfile
+00:01C2 __Z80SimEnterProfile_end
+00:01C2 __Z80SimExitProfile
+00:01C2 __Z80SimExitProfile_start
+00:01C8 __Z80SimDumpRegs
+00:01C8 __Z80SimDumpRegs_start
+00:01C8 __Z80SimExitProfile_end
+00:01CE __Z80SimWriteProtect
+00:01CE __Z80SimWriteProtect_start
+00:01CE __Z80SimDumpRegs_end
+00:01EE __Z80SimWriteProtect_end
+; Area: _DATA
+00:8000 G$MyGlobalVar$0$0
+00:8000 _MyGlobalVar
+; Area: _OVERLAY
+; Area: _GSINIT
+; Area: _GSFINAL
+; Area: _HOME

@@ -1,0 +1,16 @@
+M:memory
+S:Lmain$MyLocalVar$1$1({258}ST__00010000:S),B,1,-258
+S:Lmain$i$1$1({4}SL:S),R,0,0,[]
+T:Fmemory$__00010000[({0}S:S$Foo$0$0({256}DA256,SC:S),Z,0,0)({256}S:S$Count$0$0({2}SI:S),Z,0,0)]
+S:G$MyGlobalVar$0$0({258}ST__00010000:S),E,0,0
+S:G$_Z80SimTerminate$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimPrintCharacter$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimPrintString$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimPrintWord$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimEnterProfile$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimExitProfile$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimWriteProtect$0$0({2}DF,SV:S),C,0,0
+S:G$_Z80SimWriteProtectCode$0$0({2}DF,SV:S),C,0,0
+S:G$CodeStart$0$0({2}DF,SV:S),C,0,0
+S:G$CodeEnd$0$0({2}DF,SV:S),C,0,0
+S:G$main$0$0({2}DF,SV:S),C,0,258

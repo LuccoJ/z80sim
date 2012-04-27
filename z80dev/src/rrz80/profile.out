@@ -1,0 +1,3 @@
+; Function total-ticks total-calls ticks-per-call total-percent
+_ROMSystemInit 24 1 24 68.57
+; 35 t-states

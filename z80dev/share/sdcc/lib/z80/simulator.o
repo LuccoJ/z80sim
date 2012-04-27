@@ -1,0 +1,80 @@
+XL
+H 6 areas 24 global symbols
+M profile
+O -mz80
+A _CODE size EE flags 0
+S __Z80SimPrintString_end Def0044
+S __Z80SimPrintCharacter Def0008
+S __Z80SimEnterProfile_start Def005C
+S __Z80SimReadProtect Def008E
+S __Z80SimTerminate_end Def0004
+S __Z80SimReturn Def0004
+S __Z80SimUnprotect Def00CE
+S __Z80SimEnterProfile_end Def0062
+S __Z80SimPrintCharacter_start Def0008
+S __Z80SimDumpRegs Def0068
+S __Z80SimPrintWord Def0044
+S __Z80SimReadProtect_start Def008E
+S __Z80SimRWProtect Def00AE
+S __Z80SimExitProfile Def0062
+S __Z80SimWriteProtect Def006E
+S __Z80SimReturn_start Def0004
+S __Z80SimPrintCharacter_end Def001C
+S __Z80SimUnprotect_start Def00CE
+S __Z80SimReadProtect_end Def00AE
+S __Z80SimDumpRegs_start Def0068
+S __Z80SimPrintWord_start Def0044
+S __Z80SimReturn_end Def0008
+S __Z80SimRWProtect_start Def00AE
+S __Z80SimExitProfile_start Def0062
+S __Z80SimWriteProtect_start Def006E
+S __Z80SimUnprotect_end Def00EE
+S __Z80SimDumpRegs_end Def006E
+S __Z80SimPrintWord_end Def005C
+S __Z80SimRWProtect_end Def00CE
+S __Z80SimExitProfile_end Def0068
+S __Z80SimWriteProtect_end Def008E
+S __Z80SimPrintString Def001C
+S __Z80SimTerminate Def0000
+S __Z80SimEnterProfile Def005C
+S __Z80SimPrintString_start Def001C
+S __Z80SimTerminate_start Def0000
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 3E 00 CF C9 3E 04 CF C9 DD E5 DD 21 00 00
+R 00 00 00 00
+T 0E 00 DD 39 DD 7E 04 E5 6F 3E 01 CF E1 DD E1 C9
+R 00 00 00 00
+T 1C 00 DD E5 DD 21 00 00 DD 39 01 00 00 DD 6E 04
+R 00 00 00 00
+T 2A 00 DD 66 05 09 6E 7D B7 CA 41 00 C5 7D F5 33
+R 00 00 00 00 00 0A 00 00
+T 38 00 CD 08 00 33 C1 03 C3 27 00 DD E1 C9 DD E5
+R 00 00 00 00 00 03 00 00 00 09 00 00
+T 46 00 DD 21 00 00 DD 39 F5 E5 DD 6E 04 DD 66 05
+R 00 00 00 00
+T 54 00 3E 07 CF E1 F1 DD E1 C9 F5 3E 03 CF F1 C9
+R 00 00 00 00
+T 62 00 F5 3E 04 CF F1 C9 F5 3E 06 CF F1 C9 DD E5
+R 00 00 00 00
+T 70 00 DD 21 00 00 DD 39 F5 E5 D5 3E 08 DD 6E 04
+R 00 00 00 00
+T 7E 00 DD 66 05 DD 5E 06 DD 56 07 CF D1 E1 F1 DD
+R 00 00 00 00
+T 8C 00 E1 C9 DD E5 DD 21 00 00 DD 39 F5 E5 D5 3E
+R 00 00 00 00
+T 9A 00 09 DD 6E 04 DD 66 05 DD 5E 06 DD 56 07 CF
+R 00 00 00 00
+T A8 00 D1 E1 F1 DD E1 C9 DD E5 DD 21 00 00 DD 39
+R 00 00 00 00
+T B6 00 F5 E5 D5 3E 0A DD 6E 04 DD 66 05 DD 5E 06
+R 00 00 00 00
+T C4 00 DD 56 07 CF D1 E1 F1 DD E1 C9 DD E5 DD 21
+R 00 00 00 00
+T D2 00 00 00 DD 39 F5 E5 D5 3E 0B DD 6E 04 DD 66
+R 00 00 00 00
+T E0 00 05 DD 5E 06 DD 56 07 CF D1 E1 F1 DD E1 C9
+R 00 00 00 00

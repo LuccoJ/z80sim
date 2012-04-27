@@ -1,0 +1,266 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : FreeWare ANSI-C Compiler
+                              3 ; Version 2.3.5 Sat Nov 29 23:14:22 2003
+                              4 
+                              5 ;--------------------------------------------------------
+                              6 	.module memory
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 	.globl _MyGlobalVar
+                             14 ;--------------------------------------------------------
+                             15 ;  ram data
+                             16 ;--------------------------------------------------------
+                             17 	.area _DATA
+                    0000     18 G$MyGlobalVar$0$0==.
+   0000                      19 _MyGlobalVar::
+   0000                      20 	.ds 258
+                             21 ;--------------------------------------------------------
+                             22 ; overlayable items in  ram 
+                             23 ;--------------------------------------------------------
+                             24 	.area _OVERLAY
+                             25 ;--------------------------------------------------------
+                             26 ; external initialized ram data
+                             27 ;--------------------------------------------------------
+                             28 ;--------------------------------------------------------
+                             29 ; global & static initialisations
+                             30 ;--------------------------------------------------------
+                             31 	.area _GSINIT
+                             32 	.area _GSFINAL
+                             33 	.area _GSINIT
+                             34 ;--------------------------------------------------------
+                             35 ; Home
+                             36 ;--------------------------------------------------------
+                             37 	.area _HOME
+                             38 	.area _CODE
+                             39 ;--------------------------------------------------------
+                             40 ; code
+                             41 ;--------------------------------------------------------
+                             42 	.area _CODE
+                             43 ;memory.c:20: _SimProtectedCodeBegins
+                             44 ;	genLabel
+                             45 ;	genFunction
+                             46 ;	---------------------------------
+                             47 ; Function _Z80SimProtectedCodeBegins
+                             48 ; ---------------------------------
+   0000                      49 __Z80SimProtectedCodeBegins_start::
+   0000                      50 __Z80SimProtectedCodeBegins:
+   0000 3E 03                51 	ld	a,#3
+   0002 CF                   52 	rst	0x08
+                             53 ;	genLabel
+   0003                      54 00101$:
+                             55 ;	genEndFunction
+   0003 3E 04                56 	ld	a,#4
+   0005 CF                   57 	rst	0x08
+   0006 C9                   58 	ret
+   0007                      59 __Z80SimProtectedCodeBegins_end::
+                             60 ;memory.c:22: void main() {
+                             61 ;	genLabel
+                             62 ;	genFunction
+                             63 ;	---------------------------------
+                             64 ; Function main
+                             65 ; ---------------------------------
+   0007                      66 _main_start::
+   0007                      67 _main:
+   0007 3E 03                68 	ld	a,#3
+   0009 CF                   69 	rst	0x08
+   000A DD E5                70 	push	ix
+   000C DD 21 00 00          71 	ld	ix,#0
+   0010 DD 39                72 	add	ix,sp
+   0012 21 FE FE             73 	ld	hl,#-258
+   0015 39                   74 	add	hl,sp
+   0016 F9                   75 	ld	sp,hl
+                             76 ;memory.c:25: _SimPrintString("Z80Sim memory protection demo by LjL\n");
+                             77 ;	genIpush
+                             78 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0017 21r87s00             79 	ld	hl,#__str_0
+   001A E5                   80 	push	hl
+                             81 ;	genCall
+   001B CDr00s00             82 	call	__Z80SimPrintString
+   001E F1                   83 	pop	af
+                             84 ;memory.c:26: _SimPrintString("Protecting ...\n");
+                             85 ;	genIpush
+                             86 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   001F 21rADs00             87 	ld	hl,#__str_1
+   0022 E5                   88 	push	hl
+                             89 ;	genCall
+   0023 CDr00s00             90 	call	__Z80SimPrintString
+   0026 F1                   91 	pop	af
+                             92 ;memory.c:27: _SimWriteProtectVar(MyGlobalVar);
+                             93 ;	genCast
+   0027 2Er00                94 	ld	l,#<_MyGlobalVar
+   0029 26s00                95 	ld	h,#>_MyGlobalVar
+                             96 ;	genPlus
+                             97 ;	genPlusIncr
+   002B 01 02 01             98 	ld	bc,#0x0102
+   002E 09                   99 	add	hl,bc
+                            100 ;	genCast
+                            101 ; Removed redundent load
+                            102 ; Removed redundent load
+                            103 ;	genIpush
+                            104 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   002F E5                  105 	push	hl
+                            106 ;	genIpush
+   0030 21r00s00            107 	ld	hl,#_MyGlobalVar
+   0033 E5                  108 	push	hl
+                            109 ;	genCall
+   0034 CDr00s00            110 	call	__Z80SimWriteProtect
+   0037 F1                  111 	pop	af
+   0038 F1                  112 	pop	af
+                            113 ;memory.c:28: _SimPrintString("Protecting program code...\n");
+                            114 ;	genIpush
+                            115 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0039 21rBDs00            116 	ld	hl,#__str_2
+   003C E5                  117 	push	hl
+                            118 ;	genCall
+   003D CDr00s00            119 	call	__Z80SimPrintString
+   0040 F1                  120 	pop	af
+                            121 ;memory.c:29: _SimWriteProtectVar(MyLocalVar);
+                            122 ;	genAddrOf
+   0041 21 00 00            123 	ld	hl,#0x0000
+   0044 39                  124 	add	hl,sp
+                            125 ;	genCast
+   0045 4D                  126 	ld	c,l
+   0046 44                  127 	ld	b,h
+                            128 ;	genPlus
+                            129 ;	genPlusIncr
+   0047 11 02 01            130 	ld	de,#0x0102
+   004A 19                  131 	add	hl,de
+                            132 ;	genCast
+                            133 ; Removed redundent load
+                            134 ; Removed redundent load
+                            135 ;	genIpush
+                            136 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   004B E5                  137 	push	hl
+                            138 ;	genIpush
+   004C C5                  139 	push	bc
+                            140 ;	genCall
+   004D CDr00s00            141 	call	__Z80SimWriteProtect
+   0050 F1                  142 	pop	af
+   0051 F1                  143 	pop	af
+                            144 ;memory.c:30: _SimProtectCode();
+                            145 ;	genAssign
+   0052 21r1Cs01            146 	ld	hl,#__Z80SimProtectedCodeEnds
+                            147 ;	genAssign
+   0055 01r00s00            148 	ld	bc,#__Z80SimProtectedCodeBegins
+                            149 ;	genIpush
+                            150 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   0058 E5                  151 	push	hl
+                            152 ;	genIpush
+   0059 C5                  153 	push	bc
+                            154 ;	genCall
+   005A CDr00s00            155 	call	__Z80SimWriteProtect
+   005D F1                  156 	pop	af
+   005E F1                  157 	pop	af
+                            158 ;memory.c:31: _SimPrintString("Attempting to write 0xDEAD to every word of memory...\n");
+                            159 ;	genIpush
+                            160 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   005F 21rD9s00            161 	ld	hl,#__str_3
+   0062 E5                  162 	push	hl
+                            163 ;	genCall
+   0063 CDr00s00            164 	call	__Z80SimPrintString
+   0066 F1                  165 	pop	af
+                            166 ;memory.c:32: _SimPrintWord((unsigned int)&MyGlobalVar+sizeof(MyGlobalVar));
+                            167 ;	genCast
+   0067 2Er00               168 	ld	l,#<_MyGlobalVar
+   0069 26s00               169 	ld	h,#>_MyGlobalVar
+                            170 ;	genPlus
+                            171 ;	genPlusIncr
+   006B 01 02 01            172 	ld	bc,#0x0102
+   006E 09                  173 	add	hl,bc
+                            174 ;	genIpush
+                            175 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
+   006F E5                  176 	push	hl
+                            177 ;	genCall
+   0070 CDr00s00            178 	call	__Z80SimPrintWord
+   0073 F1                  179 	pop	af
+                            180 ;memory.c:33: i=0; do {
+                            181 ;	genAssign
+   0074 21 00 00            182 	ld	hl,#0x0000
+                            183 ;	genLabel
+   0077                     184 00101$:
+                            185 ;memory.c:34: *(unsigned int*)i=0xDEAD;
+                            186 ;	genAssign (pointer)
+                            187 ;	isBitvar = 0
+   0077 36 AD               188 	ld	(hl),#0xAD
+   0079 23                  189 	inc	hl
+   007A 36 DE               190 	ld	(hl),#0xDE
+                            191 ;memory.c:35: } while(i<=0xFFFF);
+                            192 ;	genGoto
+   007C C3r77s00            193 	jp	00101$
+                            194 ;memory.c:36: _SimPrintString("Completed.\n");
+                            195 ;	genLabel
+   007F                     196 00104$:
+                            197 ;	genEndFunction
+   007F DD F9               198 	ld	sp,ix
+   0081 DD E1               199 	pop	ix
+   0083 3E 04               200 	ld	a,#4
+   0085 CF                  201 	rst	0x08
+   0086 C9                  202 	ret
+   0087                     203 _main_end::
+                    0087    204 Fmemory$_str_0$0$0 == .
+   0087                     205 __str_0:
+   0087 5A 38 30 53 69 6D   206 	.ascii "Z80Sim memory protection demo by LjL"
+        20 6D 65 6D 6F 72
+        79 20 70 72 6F 74
+        65 63 74 69 6F 6E
+        20 64 65 6D 6F 20
+        62 79 20 4C 6A 4C
+   00AB 0A                  207 	.db 0x0A
+   00AC 00                  208 	.db 0x00
+                    00AD    209 Fmemory$_str_1$0$0 == .
+   00AD                     210 __str_1:
+   00AD 50 72 6F 74 65 63   211 	.ascii "Protecting ..."
+        74 69 6E 67 20 2E
+        2E 2E
+   00BB 0A                  212 	.db 0x0A
+   00BC 00                  213 	.db 0x00
+                    00BD    214 Fmemory$_str_2$0$0 == .
+   00BD                     215 __str_2:
+   00BD 50 72 6F 74 65 63   216 	.ascii "Protecting program code..."
+        74 69 6E 67 20 70
+        72 6F 67 72 61 6D
+        20 63 6F 64 65 2E
+        2E 2E
+   00D7 0A                  217 	.db 0x0A
+   00D8 00                  218 	.db 0x00
+                    00D9    219 Fmemory$_str_3$0$0 == .
+   00D9                     220 __str_3:
+   00D9 41 74 74 65 6D 70   221 	.ascii "Attempting to write 0xDEAD to every word of memory..."
+        74 69 6E 67 20 74
+        6F 20 77 72 69 74
+        65 20 30 78 44 45
+        41 44 20 74 6F 20
+        65 76 65 72 79 20
+        77 6F 72 64 20 6F
+        66 20 6D 65 6D 6F
+        72 79 2E 2E 2E
+   010E 0A                  222 	.db 0x0A
+   010F 00                  223 	.db 0x00
+                    0110    224 Fmemory$_str_4$0$0 == .
+   0110                     225 __str_4:
+   0110 43 6F 6D 70 6C 65   226 	.ascii "Completed."
+        74 65 64 2E
+   011A 0A                  227 	.db 0x0A
+   011B 00                  228 	.db 0x00
+                            229 ;memory.c:39: _SimProtectedCodeEnds
+                            230 ;	genLabel
+                            231 ;	genFunction
+                            232 ;	---------------------------------
+                            233 ; Function _Z80SimProtectedCodeEnds
+                            234 ; ---------------------------------
+   011C                     235 __Z80SimProtectedCodeEnds_start::
+   011C                     236 __Z80SimProtectedCodeEnds:
+   011C 3E 03               237 	ld	a,#3
+   011E CF                  238 	rst	0x08
+                            239 ;	genLabel
+   011F                     240 00101$:
+                            241 ;	genEndFunction
+   011F 3E 04               242 	ld	a,#4
+   0121 CF                  243 	rst	0x08
+   0122 C9                  244 	ret
+   0123                     245 __Z80SimProtectedCodeEnds_end::
+                            246 	.area _CODE

@@ -1,0 +1,14 @@
+If !Store Ignore MDR
+If !Store Ignore MAR
+If Eq SP <0xffff> Ignore Stack
+Ignore f3
+Ignore f5
+Ignore fH
+Ignore Stack
+Remember Mnemonic
+Remember IX
+Remember A
+Remember fC
+Remember BC
+Remember MAR
+Remember MDR

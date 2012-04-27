@@ -1,0 +1,26 @@
+XL
+H 6 areas 6 global symbols
+M pad
+O -mz80
+S _main Ref0000
+S __InterruptService Ref0000
+S __SystemRequest Ref0000
+A _CODE size 3D flags 0
+S _ROMSystemInit Def0000
+S _ROMSystemInit_start Def0000
+S _ROMSystemInit_end Def003D
+A _DATA size 0 flags 0
+A _OVERLAY size 0 flags 0
+A _GSINIT size 0 flags 0
+A _GSFINAL size 0 flags 0
+A _HOME size 0 flags 0
+T 00 00 F3 C3 00 00 00 00 00 00 C9 00 00 00 00 00
+R 00 00 00 00 02 04 00 00
+T 0E 00 00 00 C9 00 00 00 00 00 00 00 C9 00 00 00
+R 00 00 00 00
+T 1C 00 00 00 00 00 C9 00 00 00 00 00 00 00 C9 00
+R 00 00 00 00
+T 2A 00 00 00 00 00 00 00 C3 00 00 00 00 00 00 00
+R 00 00 00 00 02 09 02 00
+T 38 00 F3 C3 00 00 C9
+R 00 00 00 00 02 04 01 00

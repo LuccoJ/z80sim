@@ -1,0 +1,48 @@
+NAME
+	CZX - ZX Spectrum C building environment
+
+SYNOPSIS
+	czx [--ihx] [--bin] [--rom] [--sym] [--map] [--profile] [--z80labels] -o projectname infile.c...
+
+DESCRIPTION
+	When you invoke CZX, it normally does preprocessing, compilation, assembly and linking. Then the output consists of object
+	files output by the linker.
+
+OPTIONS
+	--ihx
+	    Produce an Intel Hexadecimal format object file (projectname.ihx)
+
+	--bin
+	    Produce a raw binary object file (projectname.bin)
+
+	--rom
+	    Produce a ZX Spectrum ROM image (projectname.rom), or an image of bank 0 for those using a Spectrum 128k
+
+	--sym
+	    Produce a symbol table (projectname.sym) suitable for the profiler
+
+	--z80labels
+	    Produce a symbol table (labels.asm) suitable for the debugger included in the WinZ80 Spectrum emulator
+
+	--map
+	    Produce a map of all symbols used (projectname.map)
+
+	--profile
+	    Include special Z80 instructions in the object file that the profiler uses to know where functions begin and end
+
+	-o projectname
+	    Specify the name for the final binary object
+
+	infile.c
+	    Specify the names of the C source files to be compiled and linked
+
+AUTHOR
+	Lorenzo J. Lucchini (ljlbox@tiscalinet.it)
+
+COPYRIGHT
+	Copyright (c) 2003 Lorenzo J. Lucchini
+
+        Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Ver-
+        sion 1.2 or any later version published by the Free Software Foundation; with the Invariant Sections being ``GNU General Public
+        License'' and ``Funding Free Software'', the Front-Cover texts being (a) (see below), and with the Back-Cover Texts being (b) (see
+        below).  A copy of the license is included in the gfdl(7) man page.

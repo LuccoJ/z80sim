@@ -1,0 +1,794 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 2.9.0 #5416 (Feb  3 2010) (UNIX)
+                              4 ; This file was generated Fri Apr 27 12:42:17 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module console
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _ScrollUp
+                             13 	.globl _CursorUndraw
+                             14 	.globl _CursorDraw
+                             15 	.globl _ConsoleInited
+                             16 	.globl _ConsoleLock
+                             17 	.globl _CursorColumn
+                             18 	.globl _CursorRow
+                             19 	.globl _Column
+                             20 	.globl _Row
+                             21 	.globl _SystemLock
+                             22 	.globl _ConsoleInit
+                             23 	.globl _ConsoleWrite
+                             24 	.globl _ConsoleReadLine
+                             25 ;--------------------------------------------------------
+                             26 ; special function registers
+                             27 ;--------------------------------------------------------
+                             28 ;--------------------------------------------------------
+                             29 ;  ram data
+                             30 ;--------------------------------------------------------
+                             31 	.area _DATA
+                    0000     32 G$SystemLock$0$0==.
+   0000                      33 _SystemLock::
+   0000                      34 	.ds 1
+                    0001     35 G$Row$0$0==.
+   0001                      36 _Row::
+   0001                      37 	.ds 1
+                    0002     38 G$Column$0$0==.
+   0002                      39 _Column::
+   0002                      40 	.ds 1
+                    0003     41 G$CursorRow$0$0==.
+   0003                      42 _CursorRow::
+   0003                      43 	.ds 1
+                    0004     44 G$CursorColumn$0$0==.
+   0004                      45 _CursorColumn::
+   0004                      46 	.ds 1
+                    0005     47 G$ConsoleLock$0$0==.
+   0005                      48 _ConsoleLock::
+   0005                      49 	.ds 1
+                    0006     50 G$ConsoleInited$0$0==.
+   0006                      51 _ConsoleInited::
+   0006                      52 	.ds 1
+                             53 ;--------------------------------------------------------
+                             54 ; overlayable items in  ram 
+                             55 ;--------------------------------------------------------
+                             56 	.area _OVERLAY
+                             57 ;--------------------------------------------------------
+                             58 ; external initialized ram data
+                             59 ;--------------------------------------------------------
+                             60 ;--------------------------------------------------------
+                             61 ; global & static initialisations
+                             62 ;--------------------------------------------------------
+                             63 	.area _HOME
+                             64 	.area _GSINIT
+                             65 	.area _GSFINAL
+                             66 	.area _GSINIT
+                             67 ;--------------------------------------------------------
+                             68 ; Home
+                             69 ;--------------------------------------------------------
+                             70 	.area _HOME
+                             71 	.area _HOME
+                             72 ;--------------------------------------------------------
+                             73 ; code
+                             74 ;--------------------------------------------------------
+                             75 	.area _CODE
+                    0000     76 	G$ConsoleInit$0$0	= .
+                             77 	.globl	G$ConsoleInit$0$0
+                    0000     78 	C$console.c$18$0$0	= .
+                             79 	.globl	C$console.c$18$0$0
+                             80 ;console.c:18: bool ConsoleInited; void ConsoleInit() {
+                             81 ;	---------------------------------
+                             82 ; Function ConsoleInit
+                             83 ; ---------------------------------
+   0000                      84 _ConsoleInit_start::
+   0000                      85 _ConsoleInit:
+   0000 3E 03                86 	ld	a,#3
+   0002 CF                   87 	rst	0x08
+                    0003     88 	C$console.c$19$1$1	= .
+                             89 	.globl	C$console.c$19$1$1
+                             90 ;console.c:19: if(!ConsoleInited) {
+   0003 AF                   91 	xor	a,a
+   0004 21r06s00             92 	ld	hl,#_ConsoleInited + 0
+   0007 B6                   93 	or	a,(hl)
+   0008 20 4F                94 	jr	NZ,00103$
+                    000A     95 	C$console.c$20$2$2	= .
+                             96 	.globl	C$console.c$20$2$2
+                             97 ;console.c:20: LocksInit();
+   000A CDr00s00             98 	call	_LocksInit
+                    000D     99 	C$console.c$21$2$2	= .
+                            100 	.globl	C$console.c$21$2$2
+                            101 ;console.c:21: ScreenClear(0, 7);
+   000D 21 00 07            102 	ld	hl,#0x0700
+   0010 E5                  103 	push	hl
+   0011 CDr00s00            104 	call	_ScreenClear
+   0014 F1                  105 	pop	af
+                    0015    106 	C$console.c$22$2$2	= .
+                            107 	.globl	C$console.c$22$2$2
+                            108 ;console.c:22: Row=0; Column=0;
+   0015 21r01s00            109 	ld	hl,#_Row + 0
+   0018 36 00               110 	ld	(hl), #0x00
+   001A 21r02s00            111 	ld	hl,#_Column + 0
+   001D 36 00               112 	ld	(hl), #0x00
+                    001F    113 	C$console.c$23$2$2	= .
+                            114 	.globl	C$console.c$23$2$2
+                            115 ;console.c:23: CursorRow=0; CursorColumn=0;
+   001F 21r03s00            116 	ld	hl,#_CursorRow + 0
+   0022 36 00               117 	ld	(hl), #0x00
+   0024 21r04s00            118 	ld	hl,#_CursorColumn + 0
+   0027 36 00               119 	ld	(hl), #0x00
+                    0029    120 	C$console.c$24$2$2	= .
+                            121 	.globl	C$console.c$24$2$2
+                            122 ;console.c:24: ConsoleLock=LockCreate();
+   0029 CDr00s00            123 	call	_LockCreate
+   002C 4D                  124 	ld	c,l
+   002D 21r05s00            125 	ld	hl,#_ConsoleLock + 0
+   0030 71                  126 	ld	(hl), c
+                    0031    127 	C$console.c$25$2$2	= .
+                            128 	.globl	C$console.c$25$2$2
+                            129 ;console.c:25: ConsoleWrite("(C) 2003 LORENZO J. LUCCHINI\n\n\n");
+   0031 21r5Ds00            130 	ld	hl,#__str_0
+   0034 E5                  131 	push	hl
+   0035 CDr52s02            132 	call	_ConsoleWrite
+   0038 F1                  133 	pop	af
+                    0039    134 	C$console.c$26$2$2	= .
+                            135 	.globl	C$console.c$26$2$2
+                            136 ;console.c:26: ConsoleInited=TRUE;
+   0039 21r06s00            137 	ld	hl,#_ConsoleInited + 0
+   003C 36 01               138 	ld	(hl), #0x01
+                    003E    139 	C$console.c$27$2$2	= .
+                            140 	.globl	C$console.c$27$2$2
+                            141 ;console.c:27: _SimPrintString("Console initialized, lock number ");
+   003E 21r7Ds00            142 	ld	hl,#__str_1
+   0041 E5                  143 	push	hl
+   0042 CDr00s00            144 	call	__Z80SimPrintString
+   0045 F1                  145 	pop	af
+                    0046    146 	C$console.c$28$2$2	= .
+                            147 	.globl	C$console.c$28$2$2
+                            148 ;console.c:28: _SimPrintWord((unsigned int)ConsoleLock);
+   0046 21r05s00            149 	ld	hl,#_ConsoleLock + 0
+   0049 4E                  150 	ld	c,(hl)
+   004A 06 00               151 	ld	b,#0x00
+   004C C5                  152 	push	bc
+   004D CDr00s00            153 	call	__Z80SimPrintWord
+   0050 F1                  154 	pop	af
+                    0051    155 	C$console.c$29$2$2	= .
+                            156 	.globl	C$console.c$29$2$2
+                            157 ;console.c:29: _SimPrintString("\n");
+   0051 21r9Fs00            158 	ld	hl,#__str_2
+   0054 E5                  159 	push	hl
+   0055 CDr00s00            160 	call	__Z80SimPrintString
+   0058 F1                  161 	pop	af
+   0059                     162 00103$:
+   0059 3E 04               163 	ld	a,#4
+   005B CF                  164 	rst	0x08
+                    005C    165 	C$console.c$31$2$1	= .
+                            166 	.globl	C$console.c$31$2$1
+                    005C    167 	XG$ConsoleInit$0$0	= .
+                            168 	.globl	XG$ConsoleInit$0$0
+   005C C9                  169 	ret
+   005D                     170 _ConsoleInit_end::
+                    005D    171 Fconsole$_str_0$0$0 == .
+   005D                     172 __str_0:
+   005D 28 43 29 20 32 30   173 	.ascii "(C) 2003 LORENZO J. LUCCHINI"
+        30 33 20 4C 4F 52
+        45 4E 5A 4F 20 4A
+        2E 20 4C 55 43 43
+        48 49 4E 49
+   0079 0A                  174 	.db 0x0A
+   007A 0A                  175 	.db 0x0A
+   007B 0A                  176 	.db 0x0A
+   007C 00                  177 	.db 0x00
+                    007D    178 Fconsole$_str_1$0$0 == .
+   007D                     179 __str_1:
+   007D 43 6F 6E 73 6F 6C   180 	.ascii "Console initialized, lock number "
+        65 20 69 6E 69 74
+        69 61 6C 69 7A 65
+        64 2C 20 6C 6F 63
+        6B 20 6E 75 6D 62
+        65 72 20
+   009E 00                  181 	.db 0x00
+                    009F    182 Fconsole$_str_2$0$0 == .
+   009F                     183 __str_2:
+   009F 0A                  184 	.db 0x0A
+   00A0 00                  185 	.db 0x00
+                    00A1    186 	G$CursorDraw$0$0	= .
+                            187 	.globl	G$CursorDraw$0$0
+                    00A1    188 	C$console.c$33$2$1	= .
+                            189 	.globl	C$console.c$33$2$1
+                            190 ;console.c:33: void CursorDraw(short Row, short Column) {
+                            191 ;	---------------------------------
+                            192 ; Function CursorDraw
+                            193 ; ---------------------------------
+   00A1                     194 _CursorDraw_start::
+   00A1                     195 _CursorDraw:
+   00A1 3E 03               196 	ld	a,#3
+   00A3 CF                  197 	rst	0x08
+   00A4 DD E5               198 	push	ix
+   00A6 DD 21 00 00         199 	ld	ix,#0
+   00AA DD 39               200 	add	ix,sp
+                    00AC    201 	C$console.c$35$1$1	= .
+                            202 	.globl	C$console.c$35$1$1
+                            203 ;console.c:35: PutCharacter(' ', Row, Column);
+   00AC DD 66 05            204 	ld	h,5 (ix)
+   00AF DD 6E 04            205 	ld	l,4 (ix)
+   00B2 E5                  206 	push	hl
+   00B3 3E 20               207 	ld	a,#0x20
+   00B5 F5                  208 	push	af
+   00B6 33                  209 	inc	sp
+   00B7 CDr00s00            210 	call	_PutCharacter
+   00BA F1                  211 	pop	af
+   00BB 33                  212 	inc	sp
+                    00BC    213 	C$console.c$36$1$1	= .
+                            214 	.globl	C$console.c$36$1$1
+                            215 ;console.c:36: SetAttrib((1<<7)|(1<<3)|(7<<0), Row, Column);
+   00BC DD 66 05            216 	ld	h,5 (ix)
+   00BF DD 6E 04            217 	ld	l,4 (ix)
+   00C2 E5                  218 	push	hl
+   00C3 3E 8F               219 	ld	a,#0x8F
+   00C5 F5                  220 	push	af
+   00C6 33                  221 	inc	sp
+   00C7 CDr00s00            222 	call	_SetAttrib
+   00CA F1                  223 	pop	af
+   00CB 33                  224 	inc	sp
+   00CC DD E1               225 	pop	ix
+   00CE 3E 04               226 	ld	a,#4
+   00D0 CF                  227 	rst	0x08
+                    00D1    228 	C$console.c$37$1$1	= .
+                            229 	.globl	C$console.c$37$1$1
+                    00D1    230 	XG$CursorDraw$0$0	= .
+                            231 	.globl	XG$CursorDraw$0$0
+   00D1 C9                  232 	ret
+   00D2                     233 _CursorDraw_end::
+                    00D2    234 	G$CursorUndraw$0$0	= .
+                            235 	.globl	G$CursorUndraw$0$0
+                    00D2    236 	C$console.c$39$1$1	= .
+                            237 	.globl	C$console.c$39$1$1
+                            238 ;console.c:39: void CursorUndraw() {
+                            239 ;	---------------------------------
+                            240 ; Function CursorUndraw
+                            241 ; ---------------------------------
+   00D2                     242 _CursorUndraw_start::
+   00D2                     243 _CursorUndraw:
+   00D2 3E 03               244 	ld	a,#3
+   00D4 CF                  245 	rst	0x08
+                    00D5    246 	C$console.c$40$1$1	= .
+                            247 	.globl	C$console.c$40$1$1
+                            248 ;console.c:40: SetAttrib(0, CursorRow, CursorColumn);
+   00D5 3Ar04s00            249 	ld	a,(_CursorColumn)
+   00D8 F5                  250 	push	af
+   00D9 33                  251 	inc	sp
+   00DA 3Ar03s00            252 	ld	a,(_CursorRow)
+   00DD F5                  253 	push	af
+   00DE 33                  254 	inc	sp
+   00DF 3E 00               255 	ld	a,#0x00
+   00E1 F5                  256 	push	af
+   00E2 33                  257 	inc	sp
+   00E3 CDr00s00            258 	call	_SetAttrib
+   00E6 F1                  259 	pop	af
+   00E7 33                  260 	inc	sp
+   00E8 3E 04               261 	ld	a,#4
+   00EA CF                  262 	rst	0x08
+                    00EB    263 	C$console.c$41$1$1	= .
+                            264 	.globl	C$console.c$41$1$1
+                    00EB    265 	XG$CursorUndraw$0$0	= .
+                            266 	.globl	XG$CursorUndraw$0$0
+   00EB C9                  267 	ret
+   00EC                     268 _CursorUndraw_end::
+                    00EC    269 	G$ScrollUp$0$0	= .
+                            270 	.globl	G$ScrollUp$0$0
+                    00EC    271 	C$console.c$229$1$1	= .
+                            272 	.globl	C$console.c$229$1$1
+                            273 ;console.c:229: void ScrollUp() {
+                            274 ;	---------------------------------
+                            275 ; Function ScrollUp
+                            276 ; ---------------------------------
+   00EC                     277 _ScrollUp_start::
+   00EC                     278 _ScrollUp:
+   00EC 3E 03               279 	ld	a,#3
+   00EE CF                  280 	rst	0x08
+   00EF DD E5               281 	push	ix
+   00F1 DD 21 00 00         282 	ld	ix,#0
+   00F5 DD 39               283 	add	ix,sp
+   00F7 21 F7 FF            284 	ld	hl,#-9
+   00FA 39                  285 	add	hl,sp
+   00FB F9                  286 	ld	sp,hl
+                    00FC    287 	C$console.c$233$1$1	= .
+                            288 	.globl	C$console.c$233$1$1
+                            289 ;console.c:233: for(l=0; l<6114; l+=2048) {
+   00FC DD 36 FA 00         290 	ld	-6 (ix),#0x00
+   0100 DD 36 FB 00         291 	ld	-5 (ix),#0x00
+   0104                     292 00121$:
+   0104 DD 7E FA            293 	ld	a,-6 (ix)
+   0107 D6 E2               294 	sub	a,#0xE2
+   0109 DD 7E FB            295 	ld	a,-5 (ix)
+   010C DE 17               296 	sbc	a,#0x17
+   010E D2r4As02            297 	jp	NC,00125$
+                    0111    298 	C$console.c$234$1$1	= .
+                            299 	.globl	C$console.c$234$1$1
+                            300 ;console.c:234: for(k=0; k<224; k+=32) {
+   0111 DD 36 FC 00         301 	ld	-4 (ix),#0x00
+   0115 DD 36 FD 00         302 	ld	-3 (ix),#0x00
+   0119                     303 00109$:
+   0119 DD 7E FC            304 	ld	a,-4 (ix)
+   011C D6 E0               305 	sub	a,#0xE0
+   011E DD 7E FD            306 	ld	a,-3 (ix)
+   0121 DE 00               307 	sbc	a,#0x00
+   0123 D2rB9s01            308 	jp	NC,00112$
+                    0126    309 	C$console.c$235$1$1	= .
+                            310 	.globl	C$console.c$235$1$1
+                            311 ;console.c:235: for(j=0; j<2048; j+=256) {
+   0126 DD 36 FE 00         312 	ld	-2 (ix),#0x00
+   012A DD 36 FF 00         313 	ld	-1 (ix),#0x00
+   012E                     314 00105$:
+   012E DD 7E FE            315 	ld	a,-2 (ix)
+   0131 D6 00               316 	sub	a,#0x00
+   0133 DD 7E FF            317 	ld	a,-1 (ix)
+   0136 DE 08               318 	sbc	a,#0x08
+   0138 D2rA6s01            319 	jp	NC,00111$
+                    013B    320 	C$console.c$236$4$4	= .
+                            321 	.globl	C$console.c$236$4$4
+                            322 ;console.c:236: Sum=j+k+l;
+   013B DD 7E FE            323 	ld	a,-2 (ix)
+   013E DD 86 FC            324 	add	a,-4 (ix)
+   0141 5F                  325 	ld	e,a
+   0142 DD 7E FF            326 	ld	a,-1 (ix)
+   0145 DD 8E FD            327 	adc	a,-3 (ix)
+   0148 57                  328 	ld	d,a
+   0149 7B                  329 	ld	a,e
+   014A DD 86 FA            330 	add	a,-6 (ix)
+   014D 5F                  331 	ld	e,a
+   014E 7A                  332 	ld	a,d
+   014F DD 8E FB            333 	adc	a,-5 (ix)
+   0152 57                  334 	ld	d,a
+   0153 DD 73 F7            335 	ld	-9 (ix),e
+   0156 DD 72 F8            336 	ld	-8 (ix),d
+                    0159    337 	C$console.c$237$1$1	= .
+                            338 	.globl	C$console.c$237$1$1
+                            339 ;console.c:237: for(i=0; i<32; i++) {
+   0159 DD 36 F9 00         340 	ld	-7 (ix),#0x00
+   015D                     341 00101$:
+   015D DD 7E F9            342 	ld	a,-7 (ix)
+   0160 D6 20               343 	sub	a,#0x20
+   0162 30 2F               344 	jr	NC,00107$
+                    0164    345 	C$console.c$238$5$5	= .
+                            346 	.globl	C$console.c$238$5$5
+                            347 ;console.c:238: ScreenMemory[i+Sum]=ScreenMemory[32+i+Sum];
+   0164 DD 56 F9            348 	ld	d,-7 (ix)
+   0167 0E 00               349 	ld	c,#0x00
+   0169 7A                  350 	ld	a,d
+   016A DD 86 F7            351 	add	a,-9 (ix)
+   016D 47                  352 	ld	b,a
+   016E 79                  353 	ld	a,c
+   016F DD 8E F8            354 	adc	a,-8 (ix)
+   0172 C6 40               355 	add	a,#0x40
+   0174 5F                  356 	ld	e,a
+   0175 7A                  357 	ld	a,d
+   0176 C6 20               358 	add	a,#0x20
+   0178 57                  359 	ld	d,a
+   0179 79                  360 	ld	a,c
+   017A CE 00               361 	adc	a,#0x00
+   017C 4F                  362 	ld	c,a
+   017D 7A                  363 	ld	a,d
+   017E DD 86 F7            364 	add	a,-9 (ix)
+   0181 57                  365 	ld	d,a
+   0182 79                  366 	ld	a,c
+   0183 DD 8E F8            367 	adc	a,-8 (ix)
+   0186 C6 40               368 	add	a,#0x40
+   0188 6A                  369 	ld	l,d
+   0189 67                  370 	ld	h,a
+   018A 7E                  371 	ld	a,(hl)
+   018B 68                  372 	ld	l,b
+   018C 63                  373 	ld	h,e
+   018D 77                  374 	ld	(hl),a
+                    018E    375 	C$console.c$237$4$4	= .
+                            376 	.globl	C$console.c$237$4$4
+                            377 ;console.c:237: for(i=0; i<32; i++) {
+   018E DD 34 F9            378 	inc	-7 (ix)
+   0191 18 CA               379 	jr	00101$
+   0193                     380 00107$:
+                    0193    381 	C$console.c$235$3$3	= .
+                            382 	.globl	C$console.c$235$3$3
+                            383 ;console.c:235: for(j=0; j<2048; j+=256) {
+   0193 DD 7E FE            384 	ld	a,-2 (ix)
+   0196 C6 00               385 	add	a,#0x00
+   0198 DD 77 FE            386 	ld	-2 (ix),a
+   019B DD 7E FF            387 	ld	a,-1 (ix)
+   019E CE 01               388 	adc	a,#0x01
+   01A0 DD 77 FF            389 	ld	-1 (ix),a
+   01A3 C3r2Es01            390 	jp	00105$
+   01A6                     391 00111$:
+                    01A6    392 	C$console.c$234$2$2	= .
+                            393 	.globl	C$console.c$234$2$2
+                            394 ;console.c:234: for(k=0; k<224; k+=32) {
+   01A6 DD 7E FC            395 	ld	a,-4 (ix)
+   01A9 C6 20               396 	add	a,#0x20
+   01AB DD 77 FC            397 	ld	-4 (ix),a
+   01AE DD 7E FD            398 	ld	a,-3 (ix)
+   01B1 CE 00               399 	adc	a,#0x00
+   01B3 DD 77 FD            400 	ld	-3 (ix),a
+   01B6 C3r19s01            401 	jp	00109$
+   01B9                     402 00112$:
+                    01B9    403 	C$console.c$242$1$1	= .
+                            404 	.globl	C$console.c$242$1$1
+                            405 ;console.c:242: for(j=0; j<2048; j+=256) {
+   01B9 DD 36 FE 00         406 	ld	-2 (ix),#0x00
+   01BD DD 36 FF 00         407 	ld	-1 (ix),#0x00
+   01C1                     408 00117$:
+   01C1 DD 7E FE            409 	ld	a,-2 (ix)
+   01C4 D6 00               410 	sub	a,#0x00
+   01C6 DD 7E FF            411 	ld	a,-1 (ix)
+   01C9 DE 08               412 	sbc	a,#0x08
+   01CB D2r37s02            413 	jp	NC,00123$
+                    01CE    414 	C$console.c$243$1$1	= .
+                            415 	.globl	C$console.c$243$1$1
+                            416 ;console.c:243: for(i=0; i<32; i++) {
+   01CE DD 36 F9 00         417 	ld	-7 (ix),#0x00
+   01D2                     418 00113$:
+   01D2 DD 7E F9            419 	ld	a,-7 (ix)
+   01D5 D6 20               420 	sub	a,#0x20
+   01D7 D2r24s02            421 	jp	NC,00119$
+                    01DA    422 	C$console.c$244$4$7	= .
+                            423 	.globl	C$console.c$244$4$7
+                            424 ;console.c:244: ScreenMemory[i+j+224+l]=ScreenMemory[32+i+j+0+l+2048];
+   01DA DD 5E F9            425 	ld	e,-7 (ix)
+   01DD 16 00               426 	ld	d,#0x00
+   01DF 7B                  427 	ld	a,e
+   01E0 DD 86 FE            428 	add	a,-2 (ix)
+   01E3 4F                  429 	ld	c,a
+   01E4 7A                  430 	ld	a,d
+   01E5 DD 8E FF            431 	adc	a,-1 (ix)
+   01E8 47                  432 	ld	b,a
+   01E9 21 E0 00            433 	ld	hl,#0x00E0
+   01EC 09                  434 	add	hl,bc
+   01ED 4D                  435 	ld	c,l
+   01EE 44                  436 	ld	b,h
+   01EF 79                  437 	ld	a,c
+   01F0 DD 86 FA            438 	add	a,-6 (ix)
+   01F3 4F                  439 	ld	c,a
+   01F4 78                  440 	ld	a,b
+   01F5 DD 8E FB            441 	adc	a,-5 (ix)
+   01F8 47                  442 	ld	b,a
+   01F9 21 00 40            443 	ld	hl,#0x4000
+   01FC 09                  444 	add	hl,bc
+   01FD 4D                  445 	ld	c,l
+   01FE 44                  446 	ld	b,h
+   01FF 21 20 08            447 	ld	hl,#0x0820
+   0202 19                  448 	add	hl,de
+   0203 EB                  449 	ex	de,hl
+   0204 7B                  450 	ld	a,e
+   0205 DD 86 FA            451 	add	a,-6 (ix)
+   0208 5F                  452 	ld	e,a
+   0209 7A                  453 	ld	a,d
+   020A DD 8E FB            454 	adc	a,-5 (ix)
+   020D 57                  455 	ld	d,a
+   020E DD 7E FE            456 	ld	a,-2 (ix)
+   0211 83                  457 	add	a,e
+   0212 5F                  458 	ld	e,a
+   0213 DD 7E FF            459 	ld	a,-1 (ix)
+   0216 8A                  460 	adc	a,d
+   0217 57                  461 	ld	d,a
+   0218 21 00 40            462 	ld	hl,#0x4000
+   021B 19                  463 	add	hl,de
+   021C 7E                  464 	ld	a,(hl)
+   021D 02                  465 	ld	(bc),a
+                    021E    466 	C$console.c$243$3$6	= .
+                            467 	.globl	C$console.c$243$3$6
+                            468 ;console.c:243: for(i=0; i<32; i++) {
+   021E DD 34 F9            469 	inc	-7 (ix)
+   0221 C3rD2s01            470 	jp	00113$
+   0224                     471 00119$:
+                    0224    472 	C$console.c$242$2$2	= .
+                            473 	.globl	C$console.c$242$2$2
+                            474 ;console.c:242: for(j=0; j<2048; j+=256) {
+   0224 DD 7E FE            475 	ld	a,-2 (ix)
+   0227 C6 00               476 	add	a,#0x00
+   0229 DD 77 FE            477 	ld	-2 (ix),a
+   022C DD 7E FF            478 	ld	a,-1 (ix)
+   022F CE 01               479 	adc	a,#0x01
+   0231 DD 77 FF            480 	ld	-1 (ix),a
+   0234 C3rC1s01            481 	jp	00117$
+   0237                     482 00123$:
+                    0237    483 	C$console.c$233$1$1	= .
+                            484 	.globl	C$console.c$233$1$1
+                            485 ;console.c:233: for(l=0; l<6114; l+=2048) {
+   0237 DD 7E FA            486 	ld	a,-6 (ix)
+   023A C6 00               487 	add	a,#0x00
+   023C DD 77 FA            488 	ld	-6 (ix),a
+   023F DD 7E FB            489 	ld	a,-5 (ix)
+   0242 CE 08               490 	adc	a,#0x08
+   0244 DD 77 FB            491 	ld	-5 (ix),a
+   0247 C3r04s01            492 	jp	00121$
+   024A                     493 00125$:
+   024A DD F9               494 	ld	sp,ix
+   024C DD E1               495 	pop	ix
+   024E 3E 04               496 	ld	a,#4
+   0250 CF                  497 	rst	0x08
+                    0251    498 	C$console.c$248$1$1	= .
+                            499 	.globl	C$console.c$248$1$1
+                    0251    500 	XG$ScrollUp$0$0	= .
+                            501 	.globl	XG$ScrollUp$0$0
+   0251 C9                  502 	ret
+   0252                     503 _ScrollUp_end::
+                    0252    504 	G$ConsoleWrite$0$0	= .
+                            505 	.globl	G$ConsoleWrite$0$0
+                    0252    506 	C$console.c$250$1$1	= .
+                            507 	.globl	C$console.c$250$1$1
+                            508 ;console.c:250: void ConsoleWrite(char* String) {
+                            509 ;	---------------------------------
+                            510 ; Function ConsoleWrite
+                            511 ; ---------------------------------
+   0252                     512 _ConsoleWrite_start::
+   0252                     513 _ConsoleWrite:
+   0252 3E 03               514 	ld	a,#3
+   0254 CF                  515 	rst	0x08
+   0255 DD E5               516 	push	ix
+   0257 DD 21 00 00         517 	ld	ix,#0
+   025B DD 39               518 	add	ix,sp
+   025D F5                  519 	push	af
+                    025E    520 	C$console.c$253$1$1	= .
+                            521 	.globl	C$console.c$253$1$1
+                            522 ;console.c:253: LockObtain(ConsoleLock);
+   025E 3Ar05s00            523 	ld	a,(_ConsoleLock)
+   0261 F5                  524 	push	af
+   0262 33                  525 	inc	sp
+   0263 CDr00s00            526 	call	_LockObtain
+   0266 33                  527 	inc	sp
+                    0267    528 	C$console.c$255$1$1	= .
+                            529 	.globl	C$console.c$255$1$1
+                            530 ;console.c:255: Length=StringLength(String);
+   0267 DD 6E 04            531 	ld	l,4 (ix)
+   026A DD 66 05            532 	ld	h,5 (ix)
+   026D E5                  533 	push	hl
+   026E CDr00s00            534 	call	_StringLength
+   0271 F1                  535 	pop	af
+   0272 44                  536 	ld	b,h
+   0273 4D                  537 	ld	c,l
+   0274 DD 71 FE            538 	ld	-2 (ix),c
+   0277 DD 70 FF            539 	ld	-1 (ix),b
+                    027A    540 	C$console.c$256$1$1	= .
+                            541 	.globl	C$console.c$256$1$1
+                            542 ;console.c:256: for(i=0; i<Length; i++) {
+   027A 11 00 00            543 	ld	de,#0x0000
+   027D                     544 00109$:
+   027D 7B                  545 	ld	a,e
+   027E DD 96 FE            546 	sub	a,-2 (ix)
+   0281 7A                  547 	ld	a,d
+   0282 DD 9E FF            548 	sbc	a,-1 (ix)
+   0285 F2rF3s02            549 	jp	P,00112$
+                    0288    550 	C$console.c$257$2$2	= .
+                            551 	.globl	C$console.c$257$2$2
+                            552 ;console.c:257: if(Row>23) {
+   0288 3E 17               553 	ld	a,#0x17
+   028A FD 21r01s00         554 	ld	iy,#_Row
+   028E FD 96 00            555 	sub	a,0 (iy)
+   0291 F2r9Es02            556 	jp	P,00102$
+                    0294    557 	C$console.c$258$3$3	= .
+                            558 	.globl	C$console.c$258$3$3
+                            559 ;console.c:258: Row=23;
+   0294 21r01s00            560 	ld	hl,#_Row + 0
+   0297 36 17               561 	ld	(hl), #0x17
+                    0299    562 	C$console.c$259$3$3	= .
+                            563 	.globl	C$console.c$259$3$3
+                            564 ;console.c:259: ScrollUp();
+   0299 D5                  565 	push	de
+   029A CDrECs00            566 	call	_ScrollUp
+   029D D1                  567 	pop	de
+   029E                     568 00102$:
+                    029E    569 	C$console.c$261$2$2	= .
+                            570 	.globl	C$console.c$261$2$2
+                            571 ;console.c:261: if(String[i]=='\n') {
+   029E DD 7E 04            572 	ld	a,4 (ix)
+   02A1 83                  573 	add	a,e
+   02A2 4F                  574 	ld	c,a
+   02A3 DD 7E 05            575 	ld	a,5 (ix)
+   02A6 8A                  576 	adc	a,d
+   02A7 47                  577 	ld	b,a
+   02A8 0A                  578 	ld	a,(bc)
+   02A9 4F                  579 	ld	c,a
+   02AA D6 0A               580 	sub	a,#0x0A
+   02AC 20 11               581 	jr	NZ,00107$
+                    02AE    582 	C$console.c$262$3$4	= .
+                            583 	.globl	C$console.c$262$3$4
+                            584 ;console.c:262: Row++;
+   02AE FD 21r01s00         585 	ld	iy,#_Row
+   02B2 FD 34 00            586 	inc	0 (iy)
+                    02B5    587 	C$console.c$263$3$4	= .
+                            588 	.globl	C$console.c$263$3$4
+                            589 ;console.c:263: Column=0;
+   02B5 FD 21r02s00         590 	ld	iy,#_Column
+   02B9 FD 36 00 00         591 	ld	0 (iy),#0x00
+   02BD 18 30               592 	jr	00111$
+   02BF                     593 00107$:
+                    02BF    594 	C$console.c$265$3$5	= .
+                            595 	.globl	C$console.c$265$3$5
+                            596 ;console.c:265: PutCharacter(String[i], Row, Column);
+   02BF D5                  597 	push	de
+   02C0 3Ar02s00            598 	ld	a,(_Column)
+   02C3 F5                  599 	push	af
+   02C4 33                  600 	inc	sp
+   02C5 3Ar01s00            601 	ld	a,(_Row)
+   02C8 47                  602 	ld	b,a
+   02C9 C5                  603 	push	bc
+   02CA CDr00s00            604 	call	_PutCharacter
+   02CD F1                  605 	pop	af
+   02CE 33                  606 	inc	sp
+   02CF D1                  607 	pop	de
+                    02D0    608 	C$console.c$266$3$5	= .
+                            609 	.globl	C$console.c$266$3$5
+                            610 ;console.c:266: if(Column==31) {
+   02D0 3Ar02s00            611 	ld	a,(#_Column+0)
+   02D3 D6 1F               612 	sub	a,#0x1F
+   02D5 20 11               613 	jr	NZ,00104$
+                    02D7    614 	C$console.c$267$4$6	= .
+                            615 	.globl	C$console.c$267$4$6
+                            616 ;console.c:267: Row++;
+   02D7 FD 21r01s00         617 	ld	iy,#_Row
+   02DB FD 34 00            618 	inc	0 (iy)
+                    02DE    619 	C$console.c$268$4$6	= .
+                            620 	.globl	C$console.c$268$4$6
+                            621 ;console.c:268: Column=0;
+   02DE FD 21r02s00         622 	ld	iy,#_Column
+   02E2 FD 36 00 00         623 	ld	0 (iy),#0x00
+   02E6 18 07               624 	jr	00111$
+   02E8                     625 00104$:
+                    02E8    626 	C$console.c$269$3$5	= .
+                            627 	.globl	C$console.c$269$3$5
+                            628 ;console.c:269: } else Column++;
+   02E8 FD 21r02s00         629 	ld	iy,#_Column
+   02EC FD 34 00            630 	inc	0 (iy)
+   02EF                     631 00111$:
+                    02EF    632 	C$console.c$256$1$1	= .
+                            633 	.globl	C$console.c$256$1$1
+                            634 ;console.c:256: for(i=0; i<Length; i++) {
+   02EF 13                  635 	inc	de
+   02F0 C3r7Ds02            636 	jp	00109$
+   02F3                     637 00112$:
+                    02F3    638 	C$console.c$273$1$1	= .
+                            639 	.globl	C$console.c$273$1$1
+                            640 ;console.c:273: LockRelease(ConsoleLock);
+   02F3 3Ar05s00            641 	ld	a,(_ConsoleLock)
+   02F6 F5                  642 	push	af
+   02F7 33                  643 	inc	sp
+   02F8 CDr00s00            644 	call	_LockRelease
+   02FB 33                  645 	inc	sp
+                    02FC    646 	C$console.c$274$1$1	= .
+                            647 	.globl	C$console.c$274$1$1
+                            648 ;console.c:274: _SimPrintString(String);
+   02FC DD 6E 04            649 	ld	l,4 (ix)
+   02FF DD 66 05            650 	ld	h,5 (ix)
+   0302 E5                  651 	push	hl
+   0303 CDr00s00            652 	call	__Z80SimPrintString
+   0306 F1                  653 	pop	af
+   0307 DD F9               654 	ld	sp,ix
+   0309 DD E1               655 	pop	ix
+   030B 3E 04               656 	ld	a,#4
+   030D CF                  657 	rst	0x08
+                    030E    658 	C$console.c$275$1$1	= .
+                            659 	.globl	C$console.c$275$1$1
+                    030E    660 	XG$ConsoleWrite$0$0	= .
+                            661 	.globl	XG$ConsoleWrite$0$0
+   030E C9                  662 	ret
+   030F                     663 _ConsoleWrite_end::
+                    030F    664 	G$ConsoleReadLine$0$0	= .
+                            665 	.globl	G$ConsoleReadLine$0$0
+                    030F    666 	C$console.c$277$1$1	= .
+                            667 	.globl	C$console.c$277$1$1
+                            668 ;console.c:277: unsigned short ConsoleReadLine(char* String) {
+                            669 ;	---------------------------------
+                            670 ; Function ConsoleReadLine
+                            671 ; ---------------------------------
+   030F                     672 _ConsoleReadLine_start::
+   030F                     673 _ConsoleReadLine:
+   030F 3E 03               674 	ld	a,#3
+   0311 CF                  675 	rst	0x08
+   0312 DD E5               676 	push	ix
+   0314 DD 21 00 00         677 	ld	ix,#0
+   0318 DD 39               678 	add	ix,sp
+   031A F5                  679 	push	af
+   031B 3B                  680 	dec	sp
+                    031C    681 	C$console.c$280$1$1	= .
+                            682 	.globl	C$console.c$280$1$1
+                            683 ;console.c:280: Character[1]='\0';
+   031C 21 00 00            684 	ld	hl,#0x0000
+   031F 39                  685 	add	hl,sp
+   0320 4D                  686 	ld	c,l
+   0321 44                  687 	ld	b,h
+   0322 59                  688 	ld	e,c
+   0323 50                  689 	ld	d,b
+   0324 13                  690 	inc	de
+   0325 3E 00               691 	ld	a,#0x00
+   0327 12                  692 	ld	(de),a
+                    0328    693 	C$console.c$282$1$1	= .
+                            694 	.globl	C$console.c$282$1$1
+                            695 ;console.c:282: ConsoleWrite("#");
+   0328 C5                  696 	push	bc
+   0329 21r7Es03            697 	ld	hl,#__str_3
+   032C E5                  698 	push	hl
+   032D CDr52s02            699 	call	_ConsoleWrite
+   0330 F1                  700 	pop	af
+   0331 C1                  701 	pop	bc
+                    0332    702 	C$console.c$283$1$1	= .
+                            703 	.globl	C$console.c$283$1$1
+                            704 ;console.c:283: do {
+   0332 DD 36 FF 00         705 	ld	-1 (ix),#0x00
+   0336                     706 00104$:
+                    0336    707 	C$console.c$284$2$2	= .
+                            708 	.globl	C$console.c$284$2$2
+                            709 ;console.c:284: Character[0]=GetKeypress();
+   0336 C5                  710 	push	bc
+   0337 CDr00s00            711 	call	_GetKeypress
+   033A 55                  712 	ld	d,l
+   033B C1                  713 	pop	bc
+   033C 7A                  714 	ld	a,d
+   033D 02                  715 	ld	(bc),a
+                    033E    716 	C$console.c$285$2$2	= .
+                            717 	.globl	C$console.c$285$2$2
+                            718 ;console.c:285: if(Character[0]!='\0') {
+   033E AF                  719 	xor	a,a
+   033F B2                  720 	or	a,d
+   0340 28 19               721 	jr	Z,00105$
+                    0342    722 	C$console.c$286$3$3	= .
+                            723 	.globl	C$console.c$286$3$3
+                            724 ;console.c:286: ConsoleWrite(Character);
+   0342 C5                  725 	push	bc
+   0343 C5                  726 	push	bc
+   0344 CDr52s02            727 	call	_ConsoleWrite
+   0347 F1                  728 	pop	af
+   0348 C1                  729 	pop	bc
+                    0349    730 	C$console.c$287$3$3	= .
+                            731 	.globl	C$console.c$287$3$3
+                            732 ;console.c:287: String[i]=Character[0];
+   0349 DD 7E 04            733 	ld	a,4 (ix)
+   034C DD 86 FF            734 	add	a,-1 (ix)
+   034F 5F                  735 	ld	e,a
+   0350 DD 7E 05            736 	ld	a,5 (ix)
+   0353 CE 00               737 	adc	a,#0x00
+   0355 57                  738 	ld	d,a
+   0356 0A                  739 	ld	a,(bc)
+   0357 12                  740 	ld	(de),a
+                    0358    741 	C$console.c$288$3$3	= .
+                            742 	.globl	C$console.c$288$3$3
+                            743 ;console.c:288: i++;
+   0358 DD 34 FF            744 	inc	-1 (ix)
+   035B                     745 00105$:
+                    035B    746 	C$console.c$290$1$1	= .
+                            747 	.globl	C$console.c$290$1$1
+                            748 ;console.c:290: } while(Character[0]!='\n' && i<256);
+   035B 0A                  749 	ld	a,(bc)
+   035C D6 0A               750 	sub	a,#0x0A
+   035E 20 D6               751 	jr	NZ,00104$
+                    0360    752 	C$console.c$291$1$1	= .
+                            753 	.globl	C$console.c$291$1$1
+                            754 ;console.c:291: String[i-1]='\0';
+   0360 DD 4E FF            755 	ld	c,-1 (ix)
+   0363 06 00               756 	ld	b,#0x00
+   0365 0B                  757 	dec	bc
+   0366 DD 7E 04            758 	ld	a,4 (ix)
+   0369 81                  759 	add	a,c
+   036A 4F                  760 	ld	c,a
+   036B DD 7E 05            761 	ld	a,5 (ix)
+   036E 88                  762 	adc	a,b
+   036F 47                  763 	ld	b,a
+   0370 3E 00               764 	ld	a,#0x00
+   0372 02                  765 	ld	(bc),a
+                    0373    766 	C$console.c$292$1$1	= .
+                            767 	.globl	C$console.c$292$1$1
+                            768 ;console.c:292: return i;
+   0373 DD 6E FF            769 	ld	l,-1 (ix)
+   0376 DD F9               770 	ld	sp,ix
+   0378 DD E1               771 	pop	ix
+   037A 3E 04               772 	ld	a,#4
+   037C CF                  773 	rst	0x08
+                    037D    774 	C$console.c$293$1$1	= .
+                            775 	.globl	C$console.c$293$1$1
+                    037D    776 	XG$ConsoleReadLine$0$0	= .
+                            777 	.globl	XG$ConsoleReadLine$0$0
+   037D C9                  778 	ret
+   037E                     779 _ConsoleReadLine_end::
+                    037E    780 Fconsole$_str_3$0$0 == .
+   037E                     781 __str_3:
+   037E 23                  782 	.ascii "#"
+   037F 00                  783 	.db 0x00
+                            784 	.area _CODE
+                            785 	.area _CABS

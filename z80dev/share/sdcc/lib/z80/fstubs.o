@@ -1,0 +1,7 @@
+XL
+H 1 areas 2 global symbols
+S ___slong2fs Ref0000
+A _CODE size 3 flags 0
+S ___slong2fs_rrx_s Def0000
+T 00 00 C3 00 00
+R 00 00 00 00 02 03 00 00

@@ -1,0 +1,570 @@
+Sources
+	0 console.rst
+	1 exceptions.rst
+	2 f80.rst
+	3 keyboard.rst
+	4 locks.rst
+	5 main.rst
+	6 memory.rst
+	7 scheduling.rst
+	8 screen.rst
+	9 sound.rst
+	10 strings.rst
+	11 tape.rst
+	12 time.rst
+EndSources
+0x1181 S 0 18 bool ConsoleInited; void ConsoleInit() {
+0x1184 S 0 19 if(!ConsoleInited) {
+0x118f S 0 20 LocksInit();
+0x119a S 0 22 Row=0; Column=0;
+0x11aa S 0 23 CursorRow=0; CursorColumn=0;
+0x11ba S 0 24 ConsoleLock=LockCreate();
+0x11c5 S 0 25 ConsoleWrite("(C) 2003 LORENZO J. LUCCHINI\n\n\n");
+0x11cd S 0 26 ConsoleInited=TRUE;
+0x11d5 S 0 28 SimulatorWriteString("Console initialized, lock number ");
+0x11dd S 0 29 SimulatorWriteWord((unsigned int)ConsoleLock);
+0x11eb S 0 30 SimulatorWriteString("\n");
+0x123b S 0 35 void CursorDraw(short Row, short Column) {
+0x1246 S 0 37 PutCharacter(' ', Row, Column);
+0x1259 S 0 38 SetAttrib((1<<7)|(1<<3)|(7<<0), Row, Column);
+0x1272 S 0 41 void CursorUndraw() {
+0x1275 S 0 42 SetAttrib(0, CursorRow, CursorColumn);
+0x128c S 0 231 void ScrollUp() {
+0x129c S 0 235 for(l=0; l<6114; l+=2048) {
+0x12b1 S 0 236 for(k=0; k<224; k+=32) {
+0x12ca S 0 237 for(j=0; j<2048; j+=256) {
+0x12e3 S 0 238 Sum=j+k+l;
+0x1313 S 0 239 for(i=0; i<32; i++) {
+0x1323 S 0 240 ScreenMemory[i+Sum]=ScreenMemory[32+i+Sum];
+0x137e S 0 239 for(i=0; i<32; i++) {
+0x1384 S 0 237 for(j=0; j<2048; j+=256) {
+0x1397 S 0 236 for(k=0; k<224; k+=32) {
+0x13aa S 0 244 for(j=0; j<2048; j+=256) {
+0x13c3 S 0 245 for(i=0; i<32; i++) {
+0x13d3 S 0 246 ScreenMemory[i+j+224+l]=ScreenMemory[32+i+j+0+l+2048];
+0x1472 S 0 245 for(i=0; i<32; i++) {
+0x1478 S 0 244 for(j=0; j<2048; j+=256) {
+0x148b S 0 235 for(l=0; l<6114; l+=2048) {
+0x14a6 S 0 252 void ConsoleWrite(char* String) {
+0x14b6 S 0 255 LockObtain(ConsoleLock);
+0x14bf S 0 257 Length=StringLength(String);
+0x14d0 S 0 258 for(i=0; i<Length; i++) {
+0x14de S 0 259 if(Row>23) {
+0x14ea S 0 260 Row=23;
+0x14f3 S 0 263 if(String[i]=='\n') {
+0x1504 S 0 264 Row++;
+0x150b S 0 265 Column=0;
+0x1516 S 0 267 PutCharacter(String[i], Row, Column);
+0x152a S 0 268 if(Column==31) {
+0x1539 S 0 269 Row++;
+0x1540 S 0 270 Column=0;
+0x154b S 0 271 } else Column++;
+0x1552 S 0 258 for(i=0; i<Length; i++) {
+0x1556 S 0 275 LockRelease(ConsoleLock);
+0x155f S 0 277 SimulatorWriteString(String);
+0x1572 S 0 281 unsigned short ConsoleReadLine(char* String) {
+0x1582 S 0 284 Character[1]='\0';
+0x158f S 0 286 ConsoleWrite("#");
+0x1597 S 0 287 do {
+0x1599 S 0 288 Character[0]=GetKeypress();
+0x15a7 S 0 289 if(Character[0]!='\0') {
+0x15ac S 0 290 ConsoleWrite(Character);
+0x15b9 S 0 291 String[i]=Character[0];
+0x15ce S 0 292 i++;
+0x15cf S 0 294 } while(Character[0]!='\n' && i<256);
+0x15e8 S 0 295 String[i-1]='\0';
+0x15f9 S 0 296 return i;
+0x1f6a S 1 18 unsigned int GetRegister(enum {PC, SP, A, BC, DE, HL, IX, IY} Reg) {
+0x1f75 S 1 19 switch(Reg) {
+0x1fac S 1 25 _endasm;
+0x1fb2 S 1 26 break;
+0x1fba S 1 33 break;
+0x1fc3 S 1 40 break;
+0x1fcc S 1 47 break;
+0x1fd4 S 1 54 break;
+0x1fdd S 1 61 break;
+0x1fe6 S 1 68 break;
+0x1ff5 S 1 71 }
+0x1ffb S 1 77 return RegValue;
+0x2004 S 1 81 void Alert(enum {alertHalt, alertBreak} Type, char* Message) {
+0x2014 S 1 83 Pause();
+0x201f S 1 86 if(Type==alertBreak) {
+0x2033 S 1 87 SimulatorWriteString("BREAK: ");
+0x203d S 1 88 SimulatorWriteString(Message);
+0x204a S 1 89 SimulatorWriteString("\n");
+0x2054 S 1 90 SimulatorWriteString("-------------------\n");
+0x205e S 1 91 SimulatorDumpRegs();
+0x2063 S 1 92 SimulatorWriteString("-------------------\n");
+0x2070 S 1 94 SimulatorWriteString("HALT: ");
+0x207a S 1 95 SimulatorWriteString(Message);
+0x2087 S 1 96 SimulatorWriteString("\n");
+0x2091 S 1 97 SimulatorWriteString("-------------------\n");
+0x209b S 1 98 SimulatorDumpRegs();
+0x20a0 S 1 99 SimulatorWriteString("-------------------\n");
+0x20aa S 1 100 SimulatorTerminate();
+0x20af S 1 104 PutString("\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4", 18, 0);
+0x20be S 1 105 PutString("                                ", 19, 0);
+0x20cd S 1 106 PutString("\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4", 20, 0);
+0x20dc S 1 107 PutString("                                ", 21, 0);
+0x20eb S 1 108 PutString("                                ", 22, 0);
+0x20fa S 1 109 PutString("                                ", 23, 0);
+0x2109 S 1 110 SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 1);
+0x2118 S 1 111 SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 2);
+0x2127 S 1 112 SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 3);
+0x2136 S 1 113 SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 4);
+0x2145 S 1 114 if(Type==alertBreak) {
+0x214a S 1 115 SetAttrib(SCRATTR_FLASH|SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 5);
+0x2157 S 1 116 PutString(" BREAK ", 19, 0);
+0x2164 S 1 117 PutString(Message, 19, 7);
+0x2177 S 1 119 PutString(" HALT ", 19, 0);
+0x2184 S 1 120 PutString(Message, 19, 6);
+0x2194 S 1 123 PutString(" A", 21, 2);	WordToHex(GetRegister(A), Value); PutString(Value, 21, 5);
+0x21c8 S 1 124 PutString("BC", 21, 12); WordToHex(GetRegister(BC), Value); PutString(Value, 21, 15);
+0x21f8 S 1 125 PutString("DE", 21, 22); WordToHex(GetRegister(DE), Value); PutString(Value, 21, 25);
+0x2228 S 1 127 PutString("HL", 22, 2); WordToHex(GetRegister(HL), Value); PutString(Value, 22, 5);
+0x2258 S 1 128 PutString("IX", 22, 12); WordToHex(SavedIX, Value); PutString(Value, 22, 15);
+0x227f S 1 129 PutString("IY", 22, 22); WordToHex(SavedIY, Value); PutString(Value, 22, 25);
+0x22a6 S 1 131 PutString("SP", 23, 2); WordToHex(GetRegister(SP), Value); PutString(Value, 23, 5);
+0x22d6 S 1 132 PutString("PC", 23, 12); WordToHex(SavedPC, Value); PutString(Value, 23, 15);
+0x22fb S 1 134 Beep();
+0x2301 S 1 138 Sleep(350);
+0x230e S 1 139 if(Type==alertHalt) for(;;);
+0x231b S 1 140 PutString("                                ", 18, 0);
+0x2328 S 1 141 PutString("                                ", 19, 0);
+0x2335 S 1 142 PutString("                                ", 20, 0);
+0x2342 S 1 143 PutString("                                ", 21, 0);
+0x234f S 1 144 PutString("                                ", 22, 0);
+0x235c S 1 145 PutString("                                ", 23, 0);
+0x2369 S 1 146 SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 1);
+0x2376 S 1 147 SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 2);
+0x2383 S 1 148 SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 3);
+0x2390 S 1 149 SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 4);
+0x239d S 1 150 SetAttrib(SCRATTR_BLACKPAPER|SCRATTR_WHITEINK, 19, 5);
+0x2441 S 1 153 void Halt(char* ErrorMessage) {
+0x244c S 1 154 SupervisorMode();
+0x2465 S 1 158 void Break(char* Message) {
+0x2470 S 1 159 LockObtain(SystemLock);
+0x2479 S 1 170 _endasm;
+0x248a S 1 171 ExchangeRegs();
+0x249d S 1 173 ExchangeRegs();
+0x24af S 1 177 void SystemMonitor() {
+0x24bf S 1 179 ConsoleWrite("SYSTEM MONITOR\n");
+0x24c7 S 1 180 do {
+0x24cf S 1 182 ConsoleReadLine(CommandLine);
+0x24dc S 1 183 if(!IsMultitasking()) Halt("PAUSE WITHOUT RESUME");
+0x24f0 S 1 184 if(SameString("HELP", CommandLine)) {
+0x24ff S 1 185 ConsoleWrite("THIS IS THE SYSTEM MONITOR OF\nLJL OS. THERE IS NO HELP SYSTEM\nAT THE MOMENT.\n");
+0x2507 S 1 187 } while(1);
+0x26a9 S 3 19 bool KeyboardInited; void KeyboardInit() {
+0x26ac S 3 20 if(!KeyboardInited) {
+0x26b7 S 3 21 RegisterInterrupt(PollKeyboard);
+0x26bf S 3 22 KeyboardBufferCount=0;
+0x26c7 S 3 23 KeyboardPollCount=0;
+0x26cf S 3 25 SimulatorWriteString("Keyboard initialized\n");
+0x26f1 S 3 30 void PollKeyboard() {
+0x26f4 S 3 48 _endasm;
+0x270a S 3 49 if(KeyboardPollCount>0) {
+0x2716 S 3 50 KeyboardPollCount--;
+0x271c S 3 52 Char='\0';
+0x272d S 3 54 else if(KeyTable[0]&0x04) Char='x';
+0x2738 S 3 55 else if(KeyTable[0]&0x08) Char='c';
+0x2743 S 3 56 else if(KeyTable[0]&0x10) Char='v';
+0x274b S 3 57 if(KeyTable[1]&0x01) Char='a';
+0x275a S 3 58 else if(KeyTable[1]&0x02) Char='s';
+0x2765 S 3 59 else if(KeyTable[1]&0x04) Char='d';
+0x2770 S 3 60 else if(KeyTable[1]&0x08) Char='f';
+0x277b S 3 61 else if(KeyTable[1]&0x10) Char='g';
+0x2783 S 3 62 if(KeyTable[2]&0x01) Char='q';
+0x2792 S 3 63 else if(KeyTable[2]&0x02) Char='w';
+0x279d S 3 64 else if(KeyTable[2]&0x04) Char='e';
+0x27a8 S 3 65 else if(KeyTable[2]&0x08) Char='r';
+0x27b3 S 3 66 else if(KeyTable[2]&0x10) Char='t';
+0x27bb S 3 67 if(KeyTable[3]&0x01) Char='1';
+0x27ca S 3 68 else if(KeyTable[3]&0x02) Char='2';
+0x27d5 S 3 69 else if(KeyTable[3]&0x04) Char='3';
+0x27e0 S 3 70 else if(KeyTable[3]&0x08) Char='4';
+0x27eb S 3 71 else if(KeyTable[3]&0x10) Char='5';
+0x27f3 S 3 72 if(KeyTable[4]&0x01) Char='0';
+0x2802 S 3 73 else if(KeyTable[4]&0x02) Char='9';
+0x280d S 3 74 else if(KeyTable[4]&0x04) Char='8';
+0x2818 S 3 75 else if(KeyTable[4]&0x08) Char='7';
+0x2823 S 3 76 else if(KeyTable[4]&0x10) Char='6';
+0x282b S 3 77 if(KeyTable[5]&0x01) Char='p';
+0x283a S 3 78 else if(KeyTable[5]&0x02) Char='o';
+0x2845 S 3 79 else if(KeyTable[5]&0x04) Char='i';
+0x2850 S 3 80 else if(KeyTable[5]&0x08) Char='u';
+0x285b S 3 81 else if(KeyTable[5]&0x10) Char='y';
+0x2863 S 3 82 if(KeyTable[6]&0x01) Char='\n';
+0x2872 S 3 83 else if(KeyTable[6]&0x02) Char='l';
+0x287d S 3 84 else if(KeyTable[6]&0x04) Char='k';
+0x2888 S 3 85 else if(KeyTable[6]&0x08) Char='j';
+0x2893 S 3 86 else if(KeyTable[6]&0x10) Char='h';
+0x289b S 3 87 if(KeyTable[7]&0x01) Char=' ';
+0x28aa S 3 88 else if(KeyTable[7]&0x02) Char=' ';
+0x28b5 S 3 89 else if(KeyTable[7]&0x04) Char='m';
+0x28c0 S 3 90 else if(KeyTable[7]&0x08) Char='n';
+0x28cb S 3 91 else if(KeyTable[7]&0x10) Char='b';
+0x28d3 S 3 92 if(Char>='a' && Char<='z') if(KeyTable[0]&0x01) Char=Char+('A'-'a');
+0x28eb S 3 93 if(Char!='\0') {
+0x28f0 S 3 94 if(KeyboardBufferCount>=MAX_KEYBOARDBUFFER) Beep(); else {
+0x2904 S 3 95 KeyboardBuffer[KeyboardBufferCount]=Char;
+0x2912 S 3 96 KeyboardBufferCount++;
+0x2919 S 3 97 KeyboardPollCount=6;
+0x2925 S 3 103 char GetKeypress() {
+0x2928 S 3 106 Pause();
+0x2936 S 3 108 Keypress=KeyboardBuffer[0];
+0x293b S 3 109 for(i=1; i<KeyboardBufferCount; i++) KeyboardBuffer[i-1]=KeyboardBuffer[i];
+0x2964 S 3 110 KeyboardBufferCount--;
+0x296e S 3 112 Keypress='\0';
+0x2970 S 3 114 Resume();
+0x2975 S 3 115 return Keypress;
+0x1738 S 4 13 bool LocksInited; void LocksInit() {
+0x173b S 4 14 if(!LocksInited) {
+0x1746 S 4 15 LockCount=0;
+0x174e S 4 16 SchedulingInit();
+0x1759 S 4 19 SimulatorWriteString("Locks initialized\n");
+0x1778 S 4 24 lock LockCreate() {
+0x177b S 4 26 Pause();
+0x1785 S 4 28 Locks[NewLock]=FALSE;
+0x1790 S 4 29 LockCount++;
+0x1798 S 4 31 return NewLock;
+0x179d S 4 35 void LockObtain(lock Handle) {
+0x17a8 S 4 36 if(!IsMultitasking() && LockQuery(Handle)) Halt("DEADLOCK IN KERNEL MODE");
+0x17c6 S 4 37 while(LockQuery(Handle)) AwaitEvent(EVENT_UNLOCK);
+0x17df S 4 38 Pause();
+0x17ef S 4 41 SimulatorWriteString("Lock ");
+0x17f7 S 4 42 SimulatorWriteWord((unsigned int)Handle);
+0x1801 S 4 43 SimulatorWriteString(" set\n");
+0x1809 S 4 45 Resume();
+0x1836 S 4 48 void LockRelease(lock Handle) {
+0x1841 S 4 49 Pause();
+0x1854 S 4 51 Locks[Handle]=FALSE;
+0x1859 S 4 53 BroadcastEvent(EVENT_UNLOCK, Handle);
+0x186b S 4 54 } else Resume();
+0x1874 S 4 57 bool LockQuery(lock Handle) {
+0x187f S 4 59 Pause();
+0x188f S 4 68 Resume();
+0x1894 S 4 69 return State;
+0x003d S 5 27 void PrintNumber(unsigned int n) {
+0x004d S 5 29 WordToString(n, Temp);
+0x0062 S 5 30 ConsoleWrite(Temp);
+0x006f S 5 33 void SystemInit() {
+0x0072 S 5 34 }
+0x0076 S 5 36 void Task1() {
+0x0079 S 5 37 while(1) {
+0x0081 S 5 41 SimulatorWriteString("Interrupts disabled in used mode, count at ");
+0x0089 S 5 42 SimulatorWriteWord(ControlRequests);
+0x0092 S 5 43 SimulatorWriteString("\n");
+0x009a S 5 47 if(LockQuery(SystemLock)) Halt("SYSTEM LOCKED");
+0x00b0 S 5 49 ConsoleWrite("1");
+0x00fd S 5 53 void Task2() {
+0x0100 S 5 54 while(1) {
+0x0108 S 5 58 SimulatorWriteString("Interrupts disabled in used mode, count at ");
+0x0110 S 5 59 SimulatorWriteWord(ControlRequests);
+0x0119 S 5 60 SimulatorWriteString("\n");
+0x0121 S 5 64 if(LockQuery(SystemLock)) Halt("SYSTEM LOCKED");
+0x0137 S 5 66 ConsoleWrite("2");
+0x0184 S 5 70 void SystemTask() {
+0x0187 S 5 71 if(!IsMultitasking()) Halt("PAUSE WITHOUT RESUME");
+0x0197 S 5 73 SimulatorWriteString("Starting system task\n");
+0x019f S 5 75 SystemMonitor();
+0x01d1 S 5 78 void main() {
+0x01d4 S 5 95 _endasm;
+0x01eb S 5 98 SimulatorWriteString("\n-------------------\n");
+0x01f3 S 5 99 SimulatorWriteString("System reset\n");
+0x01fb S 5 100 SimulatorWriteString("-------------------\n");
+0x0203 S 5 102 IntsOff();
+0x020c S 5 107 HardwareInit();
+0x0212 S 5 109 SchedulingInit();
+0x0218 S 5 111 TimeInit();
+0x021e S 5 113 MemoryInit();
+0x0224 S 5 115 TapeInit();
+0x022a S 5 117 ConsoleWrite("LJL OS 0.1 FOR ZX SPECTRUM 48\n");
+0x0232 S 5 118 ConsoleWrite("\nCONSOLE OUTPUT\n\n");
+0x023a S 5 128 MainEntry=Task1;
+0x0246 S 5 129 TI1=CreateTask(MainEntry, 100);
+0x0254 S 5 130 MainEntry=Task2;
+0x0260 S 5 131 TI2=CreateTask(MainEntry, 100);
+0x026e S 5 132 SetScheduler(DefaultScheduler);
+0x0276 S 5 133 Resume();
+0x028c S 5 136 Halt("SYSTEM SHUTDOWN");
+0x033c S 5 139 void TestMemory()
+0x033f S 5 142 PutString("TESTING MEMORY A", 1, 1);
+0x034c S 5 143 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x0358 S 5 144 *i=0xAA;
+0x035b S 5 143 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x035f S 5 146 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x036b S 5 147 if(*i!=0xAA) {
+0x0372 S 5 148 PutString("BAD MEMORY", 1, 1);
+0x0381 S 5 149 Halt("BAD MEMORY");
+0x038b S 5 146 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x038f S 5 152 PutString("TESTING MEMORY B", 2, 1);
+0x039c S 5 153 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x03a8 S 5 154 *i=(~0xAA);
+0x03ab S 5 153 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x03af S 5 156 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x03bb S 5 157 if(*i!=(~0xAA)) Halt("BAD MEMORY");
+0x03cc S 5 156 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x03d0 S 5 159 PutString("MEMORY TEST COMPLETE", 3, 1);
+0x03dd S 5 160 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x03e9 S 5 161 *i=0;
+0x03ec S 5 160 for(i=(char*)0x4000; i<(char*)0xEEEA; i++) {
+0x03f0 S 5 164 SimulatorWriteString("Memory test completed\n");
+0x1604 S 6 10 bool MemoryInited; void MemoryInit() {
+0x1607 S 6 11 if(!MemoryInited) {
+0x1612 S 6 12 NextFreeBlock=(char*)0xe000;
+0x161e S 6 13 MemoryInited=TRUE;
+0x1626 S 6 15 SimulatorWriteString("Memory initialized\n");
+0x1646 S 6 20 void MemoryCopy(void* Destination, void* Source, unsigned int Length) {
+0x1656 S 6 22 for(i=0; i<Length; i++) {
+0x166a S 6 23 *((char*)Destination+i)=*((char*)Source+i);
+0x1683 S 6 22 for(i=0; i<Length; i++) {
+0x168f S 6 27 void* MemoryAllocate(unsigned int Bytes, memType Type) {
+0x169a S 6 29 if(NextFreeBlock<(char*)0x9000) Halt("OUT OF MEMORY");
+0x16b3 S 6 32 Pointer=NextFreeBlock;
+0x16c8 S 6 34 NextFreeBlock=NextFreeBlock-Bytes;
+0x16d8 S 6 35 if(NextFreeBlock<(char*)0x4000) {
+0x16e9 S 6 36 SimulatorWriteWord(Bytes);
+0x16f0 S 6 37 SimulatorWriteWord((unsigned int)NextFreeBlock);
+0x1701 S 6 39 if(Type==memSTACK) {
+0x170b S 6 40 return (void*)Pointer;
+0x1710 S 6 42 return (void*)NextFreeBlock;
+0x1727 S 6 46 void MemoryFree(void* Pointer) {
+0x1732 S 6 48 Pointer;
+0x189b S 7 34 void RegisterInterrupt(void (*InterruptFunction)()) {
+0x18a6 S 7 35 InterruptVector[InterruptVectorCount++]=InterruptFunction;
+0x18cd S 7 39 void _InterruptService() {
+0x18d0 S 7 41 ExchangeRegs();
+0x18d7 S 7 43 SaveIndexes();
+0x18df S 7 44 if(ControlRequests<0) Halt("NEGATIVE CONTROLREQUESTS");
+0x18f3 S 7 45 if(!IsMultitasking()) Halt("INTERRUPT IN KERNEL MODE");
+0x1903 S 7 46 ControlRequests++;
+0x190a S 7 47 Tick();
+0x191a S 7 49 (InterruptVector[i])();
+0x1936 S 7 48 for(i=0; i<InterruptVectorCount; i++) {
+0x193a S 7 52 SimulatorReturn();
+0x1945 S 7 55 Halt("OUT OF REACH");
+0x1990 S 7 58 bool SchedulingInited; void SchedulingInit() {
+0x1993 S 7 59 if(!SchedulingInited) {
+0x199e S 7 60 MemoryInit();
+0x19a4 S 7 62 ControlRequests=1;
+0x19ac S 7 63 CurrentTask=SystemTasks=NULL;
+0x19c4 S 7 64 ActiveScheduler=NullScheduler;
+0x19d0 S 7 65 InterruptVectorCount=0;
+0x19d8 S 7 66 SystemLock=LockCreate();
+0x19e3 S 7 68 SchedulingInited=TRUE;
+0x19eb S 7 70 SimulatorWriteString("Scheduling initialized, lock number ");
+0x19f3 S 7 71 SimulatorWriteWord((unsigned int)SystemLock);
+0x1a01 S 7 72 SimulatorWriteString("\n");
+0x1a34 S 7 77 void SetScheduler(void (*SchedulerFunction)()) {
+0x1a3f S 7 78 ActiveScheduler=SchedulerFunction;
+0x1a55 S 7 81 void Scheduler(void* SP) {
+0x1a60 S 7 82 OldSP=SP;
+0x1a70 S 7 83 if(ControlRequests>10) Halt("TOO MANY REQUESTS");
+0x1a84 S 7 85 SimulatorReturn();
+0x1aa7 S 7 90 void NullScheduler() {
+0x1aaa S 7 91 ControlRequests--;
+0x1ab1 S 7 92 SetStackPointerASM(_OldSP);
+0x1ab8 S 7 94 ReloadIndexes();
+0x1ac0 S 7 95 IntsOn();
+0x1ac7 S 7 98 void DoNothingScheduler() {
+0x1aca S 7 99 }
+0x1ace S 7 101 void DefaultScheduler() {
+0x1ad1 S 7 102 if(LockQuery(SystemLock)) {
+0x1adf S 7 103 Halt("SYSTEM LOCKED SCH");
+0x1ae7 S 7 104 NullScheduler();
+0x1aed S 7 107 if(SystemTasks==NULL) Break("SCHEDULING NO TASK");
+0x1b05 S 7 108 if(CurrentTask==NULL) {
+0x1b15 S 7 109 CurrentTask=SystemTasks;
+0x1b25 S 7 111 CurrentSP=&(CurrentTask->Value.SP);
+0x1b32 S 7 115 do {
+0x1b44 S 7 117 CurrentTask=SystemTasks;
+0x1b54 S 7 119 CurrentTask=CurrentTask->Next;
+0x1b6e S 7 121 } while(CurrentTask->Value.RegisteredEvents!=EVENT_RUNTASK);
+0x1b7e S 7 123 SimulatorReturn();
+0x1bb2 S 7 128 task* CreateTask(void* EntryPoint, unsigned int AssignedStack) {
+0x1bbd S 7 132 NewTask=MemoryAllocate(sizeof(taskElement), memHEAP);
+0x1bcc S 7 133 SimulatorWriteString("P"); SimulatorWriteWord((unsigned int)NewTask);
+0x1bdf S 7 134 NewTask->Next=SystemTasks;
+0x1bf6 S 7 135 SystemTasks=NewTask;
+0x1bfc S 7 138 TaskInfo->SP=MemoryAllocate(AssignedStack, memSTACK);
+0x1c15 S 7 139 TaskInfo->SP--; *(void**)(TaskInfo->SP)=EntryPoint;
+0x1c27 S 7 141 SimulatorWriteString("Task's entry point is at ");
+0x1c33 S 7 142 SimulatorWriteWord((unsigned int)TaskInfo->SP);
+0x1c3e S 7 143 SimulatorWriteString("\n");
+0x1c4a S 7 145 TaskInfo->SP--; *TaskInfo->SP=0; // AF
+0x1c58 S 7 146 TaskInfo->SP--; *TaskInfo->SP=0; // BC
+0x1c66 S 7 147 TaskInfo->SP--; *TaskInfo->SP=0; // DE
+0x1c74 S 7 148 TaskInfo->SP--; *TaskInfo->SP=0; // HL
+0x1c82 S 7 149 TaskInfo->SP--; *TaskInfo->SP=0; // IX
+0x1c90 S 7 150 TaskInfo->SP--; *TaskInfo->SP=0; // IY
+0x1c9e S 7 152 SimulatorWriteString("Task's stack is at ");
+0x1caa S 7 153 SimulatorWriteWord((unsigned int)TaskInfo->SP);
+0x1cb3 S 7 154 SimulatorWriteString("\n");
+0x1cbd S 7 156 TaskInfo->RegisteredEvents=EVENT_RUNTASK;
+0x1cc6 S 7 157 TaskInfo->EventId=0;
+0x1ccc S 7 159 SimulatorWriteString("Created a new task\n");
+0x1cd6 S 7 161 return TaskInfo;
+0x1d24 S 7 164 void SupervisorMode() {
+0x1d27 S 7 165 IntsOff();
+0x1d2f S 7 172 void UserMode() {
+0x1d32 S 7 176 ExchangeRegs();
+0x1d3c S 7 180 void Pause() {
+0x1d3f S 7 181 IntsOff();
+0x1d47 S 7 183 if(ControlRequests==1) ExchangeRegs();
+0x1d59 S 7 186 void Resume() {
+0x1d5c S 7 187 if(ControlRequests>0) {
+0x1d68 S 7 188 ControlRequests--;
+0x1d75 S 7 190 UserMode();
+0x1d7b S 7 193 Halt("RESUME WITHOUT PAUSE");
+0x1d9c S 7 197 void BroadcastEvent(int EventClass, short EventId) {
+0x1dac S 7 199 Pause();
+0x1db8 S 7 201 while(Task!=NULL) {
+0x1dc1 S 7 202 if(Task->Value.RegisteredEvents&EventClass) {
+0x1ddd S 7 203 Task->Value.RegisteredEvents=EVENT_RUNTASK;
+0x1de4 S 7 204 Task->Value.EventId=EventId;
+0x1df4 S 7 206 Task=Task->Next;
+0x1e0d S 7 208 Resume();
+0x1e18 S 7 213 short AwaitEvent(int EventClass) {
+0x1e23 S 7 214 Pause();
+0x1e44 S 7 216 Resume();
+0x1e4a S 7 218 return CurrentTask->Value.EventId;
+0x1e59 S 7 221 void Switch() {
+0x1e5c S 7 227 IntsOff();
+0x1e60 S 7 229 ControlRequests++;
+0x1e67 S 7 230 GetStackPointerASM(_OldSP);
+0x1e73 S 7 232 Scheduler(OldSP);
+0x1e7b S 7 234 SimulatorWriteString("Forced task switch\n");
+0x1e9b S 7 238 void NewContext(int* SP) {
+0x1ea6 S 7 240 SP; FunctionArgToReg(H, L);
+0x1eb2 S 7 243 SetStackPointerASM(_OldSP);
+0x1eb9 S 7 245 ReloadIndexes();
+0x1ec1 S 7 247 SaveContext();
+0x1ec9 S 7 250 ExchangeRegs();
+0x1ed0 S 7 252 SetStackPointerREG(HL);
+0x1ee4 S 7 255 ExchangeRegs();
+0x1eef S 7 264 _endasm;
+0x1ef2 S 7 265 SimulatorDumpRegs();
+0x1ef6 S 7 271 if(ControlRequests==0) Halt("ISR IN USER MODE");
+0x1f0c S 7 272 ControlRequests--;
+0x1f13 S 7 273 IntsOn();
+0x1f2e S 7 277 void ScheduleTask(task* Task) {
+0x1f39 S 7 278 NewContext(Task->SP);
+0x1f4e S 7 281 bool IsMultitasking() {
+0x1f51 S 7 282 if(ControlRequests==0) return TRUE; else return FALSE;
+0x07cb S 8 178 void ScreenClear(color Paper, color Ink) {
+0x07d6 S 8 180 for(i=0; i<0x1800; i++) {
+0x07e2 S 8 181 ScreenMemory[i]=0;
+0x07e8 S 8 180 for(i=0; i<0x1800; i++) {
+0x07ec S 8 183 for(i=0; i<0x0300; i++) {
+0x0805 S 8 184 AttribMemory[i]=Paper<<3|Ink;
+0x080a S 8 183 for(i=0; i<0x0300; i++) {
+0x080e S 8 187 SimulatorWriteString("Screen cleared\n");
+0x102c S 8 191 void SetAttrib(char Attrib, short Row, short Column) {
+0x1037 S 8 192 AttribMemory[Column+(Row<<5)]=Attrib;
+0x1057 S 8 195 void PutCharacter(char AsciiCode, short Row, short Column) {
+0x1067 S 8 199 SectionStart=0; SectionOffset=Row;
+0x1073 S 8 201 SectionOffset-=8;
+0x1077 S 8 202 SectionStart+=2048;
+0x1082 S 8 204 CharStart=SectionStart+Column+((int)SectionOffset<<5);
+0x10ab S 8 205 for(i=0; i<8; i++) {
+0x10be S 8 206 ScreenMemory[CharStart+((int)i<<8)]=CharacterSet[AsciiCode-' '][i];
+0x1105 S 8 205 for(i=0; i<8; i++) {
+0x1113 S 8 210 void PutString(char* String, short Row, short Column) {
+0x111e S 8 213 Length=StringLength(String);
+0x112a S 8 214 for(i=0; i<Length; i++) {
+0x1131 S 8 215 PutCharacter(String[i], Row, Column+i);
+0x1153 S 8 214 for(i=0; i<Length; i++) {
+0x1157 S 8 218 SimulatorWriteString("String: ");
+0x115f S 8 219 SimulatorWriteString(String);
+0x116a S 8 220 SimulatorWriteCharacter('\n');
+0x264b S 9 5 void Beep() {
+0x264e S 9 6 Pause();
+0x26a2 S 9 86 Resume();
+0x0476 S 10 5 int StringLength(char* String) {
+0x0481 S 10 8 while(String[i]!='\0') i++;
+0x0495 S 10 9 return i;
+0x049d S 10 12 void StringWrite(char* Destination, const char* Source) {
+0x04a8 S 10 13 MemoryCopy((void*)Destination, (void*)Source, StringLength(Source));
+0x04ce S 10 16 bool SameString(char* String1, char* String2) {
+0x04d9 S 10 19 while(String1[i]!='\0') {
+0x04e9 S 10 20 if(String1[i]!=String2[i]) return FALSE;
+0x04fb S 10 21 i++;
+0x04ff S 10 23 return TRUE;
+0x0507 S 10 26 unsigned int Mod(unsigned int Dividend, unsigned int Divisor) {
+0x0512 S 10 28 Temp=Dividend;
+0x0518 S 10 29 while(Temp>=Divisor) {
+0x0523 S 10 30 Temp-=Divisor;
+0x0530 S 10 32 return Temp;
+0x0538 S 10 35 unsigned int Divide(unsigned int Dividend, int Divisor) {
+0x0548 S 10 39 Temp=Dividend;
+0x054e S 10 40 while(Temp>=Divisor) {
+0x0563 S 10 41 Temp-=Divisor;
+0x056b S 10 42 i++;
+0x0577 S 10 44 return i;
+0x0585 S 10 48 int Power(int Base, int Exponent) {
+0x0595 S 10 51 Temp=1;
+0x059d S 10 52 for(i=0; i<Exponent; i++) {
+0x05ab S 10 53 Temp=Temp*Base;
+0x05c8 S 10 52 for(i=0; i<Exponent; i++) {
+0x05cc S 10 55 return Temp;
+0x05da S 10 58 void WordToHex(unsigned int Number, char* String) {
+0x05ea S 10 61 Temp=Number;
+0x05f6 S 10 62 for(i=3; i>=0; i--) {
+0x05ff S 10 63 Module=Temp&15;
+0x060b S 10 64 if(Module<10) String[i]=Module+'0'; else String[i]=Module+'A'-10;
+0x0645 S 10 65 Temp=(Temp>>4)&0xfff;
+0x0664 S 10 62 for(i=3; i>=0; i--) {
+0x0668 S 10 67 String[4]='\0';
+0x067e S 10 71 void WordToString(unsigned int Number, char* String) {
+0x068e S 10 74 Temp=Number;
+0x0694 S 10 75 for(i=0; i<7; i++) String[i]=' ';
+0x06ad S 10 77 while(Temp!=0) {
+0x06ba S 10 78 String[5-i]=Mod(Temp, 10)+'0';
+0x06e8 S 10 79 Temp=Divide(Temp, 10);
+0x06f6 S 10 80 i++;
+0x0702 S 10 82 String[6]='\0';
+0x0718 S 10 86 void IntToString(int Number, char* String) {
+0x0728 S 10 89 Temp=Number;
+0x072e S 10 90 for(i=0; i<7; i++) String[i]=' ';
+0x0747 S 10 91 i=0;
+0x0750 S 10 93 Temp=-Temp;
+0x0757 S 10 94 String[i]='-';
+0x075f S 10 95 i++;
+0x076d S 10 98 String[5-i]=Mod(Temp, 10)+'0';
+0x079b S 10 99 Temp=Divide(Temp, 10);
+0x07a9 S 10 100 i++;
+0x07b5 S 10 102 String[6]='\0';
+0x297a S 11 7 bool TapeInited; void TapeInit() {
+0x297d S 11 8 if(!TapeInited) {
+0x2988 S 11 9 TapeHalfWaveLength=60;
+0x2990 S 11 10 TapeMeanWaveLength=(TapeHalfWaveLength*3)/2;
+0x2998 S 11 11 TapeInited=TRUE;
+0x29a4 S 11 15 void PortOutput(char PortNumber, char Value) {
+0x29af S 11 20 _endasm;
+0x29bd S 11 23 void TapeSaveC(void *Start, void* End) {
+0x29cd S 11 28 for(i=Start; i<End; i++) {
+0x29ee S 11 29 Byte=*((char*)i);
+0x29f6 S 11 30 for(j=0; j<8; j++) {
+0x29fa S 11 31 Byte=Byte>>1;
+0x29fe S 11 32 Condition=Byte&1;
+0x2a07 S 11 33 if(Condition) PortOutput(0xfe, 0x02);
+0x2a18 S 11 34 if(!Condition) PortOutput(0xfe, 0x0d);
+0x2a2c S 11 30 for(j=0; j<8; j++) {
+0x2a33 S 11 28 for(i=Start; i<End; i++) {
+0x2a3e S 11 39 void TapeSaveManchester(void *StartPosition, void* StopPosition) {
+0x2a49 S 11 80 _endasm;
+0x2a80 S 11 83 void TapeLoad(void* StartPosition, void* StopPosition) {
+0x2a8b S 11 145 _endasm;
+0x2ae0 S 11 148 void TapeSave(void* StartPosition, void* EndPosition) {
+0x2aeb S 11 200 _endasm;
+0x2b3b S 11 204 void SaveBlock(void* BlockStart) {
+0x2b46 S 11 299 _endasm;
+0x258d S 12 7 void TimeInit() {
+0x2590 S 12 8 TickCounter=0;
+0x25a1 S 12 10 SimulatorWriteString("Time services initialized\n");
+0x25c8 S 12 14 void Tick() {
+0x25cb S 12 15 TickCounter++;
+0x25e8 S 12 18 void Sleep(long Ticks) {
+0x25f8 S 12 20 Start=TickCounter;
+0x2608 S 12 21 while(TickCounter-Start<Ticks);
